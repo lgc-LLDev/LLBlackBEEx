@@ -7,7 +7,7 @@
 
 </div>
 
-[LxlBlackBE](https://www.minebbs.com/threads/lxlblackbe.7482/)的改进版，全部改用真命令注册，并且加入了私有库支持与游戏内查询（移植自[BlackBEQuery](https://github.com/lgc2333/LLSEPlugins/tree/main/BlackBEQuery)）
+[LxlBlackBE](https://www.minebbs.com/threads/lxlblackbe.7482/)的改进版，全部改用真命令注册，并且加入了私有库支持与游戏内查询（移植自[BlackBEQuery](https://github.com/lgc-LLSEDev/BlackBEQuery)）
 
 BlackBE 站长：NyanCatda [云黑官网](https://blackbe.xyz) [赞助云黑](https://afdian.net/@BlackBE)
 
@@ -24,7 +24,7 @@ BlackBE 站长：NyanCatda [云黑官网](https://blackbe.xyz) [赞助云黑](ht
 
 ## 安装方法
 
-见[插件下载安装教程](../tutorial.md)
+将 `LLBlackBEEx.lls.js` 扔进 BDS 插件目录即可
 
 ## 配置文件
 
