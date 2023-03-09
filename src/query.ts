@@ -1,4 +1,10 @@
-// import { isPromise } from 'util/types';
+import {
+  CustomFormEx,
+  CustomFormInputObject,
+  sendModalFormAsync,
+  SimpleFormEx,
+} from 'form-api-ex';
+
 import {
   BlackBECommonData,
   BlackBECommonInfo,
@@ -13,12 +19,6 @@ import {
 } from './blackbe';
 import { config, LocalBlackListItem, localList, saveLocalList } from './config';
 import { PLUGIN_NAME } from './const';
-import {
-  CustomFormEx,
-  CustomFormInputObject,
-  sendModalFormAsync,
-  SimpleFormEx,
-} from './form-api';
 import { checkValInArray, formatDate, wrapAsyncFunc } from './util';
 
 export async function queryBlackBE(
