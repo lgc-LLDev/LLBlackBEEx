@@ -80,6 +80,7 @@ export function queryLocal(
         )
       ) {
         ret.push(it);
+        break;
       }
     }
   }
@@ -141,15 +142,15 @@ export function formatLocalInfo(
   return lines.join('\n');
 }
 
-// function isBlackBECommonInfo(obj: any): obj is BlackBECommonInfo {
-//   return obj.black_id === '1';
-// }
+export function formatLocalItemShort(obj: LocalBlackListItem): string {
+  const { name, xuid, ips, clientIds } = obj;
+  const items = [name, xuid, ...(ips ?? []), ...(clientIds ?? [])].filter(
+    (v) => v
+  ) as string[];
 
-// function isBlackBEPrivInfoWithRespId(
-//   obj: any
-// ): obj is BlackBEPrivInfoWithRespId {
-//   return obj.black_id && obj.black_id !== '1';
-// }
+  const it1 = items.shift();
+  return `§b${it1}${items.length ? ` §7(${items.join(', ')})` : ''}`;
+}
 
 export type QueryResultTypes = 'common' | 'private' | 'local';
 
@@ -272,13 +273,31 @@ export async function localItemForm(
         return;
       }
 
-      delLocalListItem(obj);
+      // 引用 可以直接改
       obj.endTime = forever
         ? undefined
         : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
-
-      localList.list.push(obj);
       saveLocalList();
+
+      player.tell('§a操作成功！');
+    } else {
+      player.tell('§6修改操作已取消');
+    }
+  };
+
+  const editDesc = async () => {
+    const res = await new CustomFormEx(PLUGIN_NAME)
+      .addInput('reason', '请输入想修改的封禁原因内容', {
+        placeholder: '如想要清空封禁原因请留空',
+        default: obj.reason,
+      })
+      .sendAsync(player);
+
+    if (res) {
+      const reason = res.reason.trim();
+      obj.reason = reason || undefined;
+      saveLocalList();
+
       player.tell('§a操作成功！');
     } else {
       player.tell('§6修改操作已取消');
@@ -288,7 +307,11 @@ export async function localItemForm(
   const form = setupFunctionalityForm([['返回', null]]);
   form.content = formatLocalInfo(obj, moreInfo);
   if (moreInfo)
-    form.buttons.unshift(['删除条目', delItem], ['修改封禁时间', editTime]);
+    form.buttons.unshift(
+      ['删除条目', delItem],
+      ['修改封禁时间', editTime],
+      ['修改封禁原因', editDesc]
+    );
   // eslint-disable-next-line no-return-await
   return await processListFormReturn(await form.sendAsync(player));
 }
@@ -302,6 +325,35 @@ export async function blackBEItemForm(
   form.content = await formatBlackBEInfo(obj, moreInfo);
   // eslint-disable-next-line no-return-await
   return await processListFormReturn(await form.sendAsync(player));
+}
+
+export async function localListForm(player: Player) {
+  if (!localList.list.length) {
+    player.tell(`§6本地黑名单列表为空`);
+    return;
+  }
+
+  const form = new SimpleFormEx(localList.list);
+  form.title = PLUGIN_NAME;
+  form.canTurnPage = true;
+  form.canJumpPage = true;
+  form.hasSearchButton = true;
+  form.formatter = ({ name, xuid, endTime }) => [
+    `§6${name ?? '未知'} §7(${xuid ?? '未知'})\n` +
+      `§2${
+        endTime ? `${formatDate({ date: new Date(endTime) })} 解封` : '永久封禁'
+      }`,
+  ];
+  form.searcher = (_, param) => queryLocal(param, true);
+
+  const sendTask = async () => {
+    const res = await form.sendAsync(player);
+    if (res) {
+      const infoRes = await localItemForm(player, res, true);
+      if (infoRes === false) sendTask();
+    }
+  };
+  sendTask();
 }
 
 export async function queryResultForm(
@@ -336,9 +388,9 @@ export async function queryResultForm(
 
   if (!localNum && !privNum && !commNum) {
     player.tell(
-      `§6很抱歉，我们找遍了本地黑名单${
-        config.disableBlackBE ? '' : '和 BlackBE'
-      }，但是没有查询到任何结果 QAQ`
+      // prettier-ignore
+      `§6很抱歉，我们找遍了本地黑名单${config.disableBlackBE ? '' : '和 BlackBE'}，` +
+        `但是没有查询到任何结果 QAQ`
     );
     return;
   }
@@ -374,7 +426,7 @@ export async function queryResultForm(
       if (infoRes === false) sendTask();
     }
   };
-  await sendTask();
+  sendTask();
 }
 
 export async function queryFormAsync(player: Player, param?: string) {

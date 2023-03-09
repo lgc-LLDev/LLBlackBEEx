@@ -21,6 +21,8 @@ export interface Config {
   apiHost: string;
   clearCacheInterval: number;
   registerBanCommand: boolean;
+  checkLocalListInterval: number;
+  processOnPreJoin: boolean;
 }
 
 export interface LocalBlackListItem {
@@ -50,6 +52,8 @@ export const config: Config = {
   apiHost: 'https://api.blackbe.work/',
   clearCacheInterval: 3600000,
   registerBanCommand: true,
+  checkLocalListInterval: 5000,
+  processOnPreJoin: true,
 };
 
 export const localList: LocalBlackList = { list: [] };
@@ -88,8 +92,8 @@ export function reloadConfig() {
       protocol: protocol.replace(':', ''),
     };
     if (username || password) config.proxy.auth = { username, password };
-    saveConfig();
   }
+  saveConfig();
 
   let localListChanged = false;
   for (const bl of localList.list) {

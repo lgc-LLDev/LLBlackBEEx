@@ -15,7 +15,7 @@ export function banPlayer(
   data:
     | { player: Player }
     | { name?: string; xuid?: string; ip?: string; clientId?: string },
-  options: { time?: number; reason?: string } = {}
+  options: { time?: number; reason?: string; kickTip?: string } = {}
 ): false | { isModify: boolean; results: LocalBlackListItem[] } {
   let name: string | undefined;
   let xuid: string | undefined;
@@ -25,10 +25,10 @@ export function banPlayer(
     const { player } = data;
     ({ realName: name, xuid } = player);
     ({ ip, clientId } = player.getDevice());
-    ip = stripIp(ip);
   } else {
     ({ name, xuid, ip, clientId } = data);
   }
+  if (ip) ip = stripIp(ip);
 
   const queryParams = [name, xuid, ip, clientId].filter((v) => v);
   if (!queryParams.length) return false;
@@ -67,7 +67,8 @@ export function banPlayer(
   }
 
   if ('player' in data) {
-    data.player.kick(formatLocalKickMsg(results[0]));
+    const { kickTip } = options;
+    data.player.kick(kickTip ?? formatLocalKickMsg(results[0]));
   }
 
   saveLocalList();

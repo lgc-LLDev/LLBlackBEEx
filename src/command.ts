@@ -1,8 +1,14 @@
 import { banPlayer } from './ban';
 import { config, reloadConfig } from './config';
 import { PLUGIN_NAME } from './const';
-import { delLocalListItem, queryCmd, queryLocal } from './query';
-import { delFormatCode } from './util';
+import {
+  delLocalListItem,
+  formatLocalItemShort,
+  localListForm,
+  queryCmd,
+  queryLocal,
+} from './query';
+import { delFormatCode, wrapAsyncFunc } from './util';
 
 function checkOp(player?: Player): boolean {
   return !player || player.isOP();
@@ -10,8 +16,8 @@ function checkOp(player?: Player): boolean {
 
 const ONLT_OP_TEXT = '此命令仅限OP执行';
 const NO_CONSOLE_TEXT = '此命令无法在控制台中执行';
-
-const cmdMain = mc.newCommand('blackbe', PLUGIN_NAME, PermType.Any);
+const REFUSE_LIST_QUERY_TEXT =
+  '本地黑名单请查阅插件配置文件，云黑记录请上云黑官网查询，懒得再给控制台查询写一套代码了';
 
 function tell(msg: string, player?: Player) {
   if (player) player.tell(msg);
@@ -32,15 +38,15 @@ function banCommand(
   }
 
   const willBanPlayer = mc.getPlayer(willBan);
+  const isXuid = /^[0-9]{16}$/.test(willBan);
+  const isIp = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(willBan);
   const res = banPlayer(
     willBanPlayer
       ? { player: willBanPlayer }
       : {
-          name: willBan,
-          xuid: /^[0-9]{16}$/.test(willBan) ? willBan : undefined,
-          ip: /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(willBan)
-            ? willBan
-            : undefined,
+          name: (isXuid ? data.xuid2name(willBan) : null) ?? willBan,
+          xuid: isXuid ? willBan : data.name2xuid(willBan) ?? undefined,
+          ip: isIp ? willBan : undefined,
         },
     {
       time: time ? time * 60 * 1000 : undefined,
@@ -53,9 +59,7 @@ function banCommand(
   if (results.length) {
     tell(
       `§a已成功${isModify ? '修改' : '增加'} §6${results.length} §a条项目§r\n` +
-        `${results
-          .map((v) => `- §b${v.name ?? '未知'} §7(${v.xuid ?? '未知'})§r`)
-          .join('\n')}`,
+        `${results.map((v) => `- ${formatLocalItemShort(v)}§r`).join('\n')}`,
       player
     );
   } else {
@@ -77,9 +81,7 @@ function unBanCommand(willUnBan: string, player?: Player) {
 
   tell(
     `§a已成功删除 §6${succ.length} §a条项目§r\n` +
-      `${succ
-        .map((v) => `- §b${v.name ?? '未知'} §7(${v.xuid ?? '未知'})§r`)
-        .join('\n')}`,
+      `${succ.map((v) => `- ${formatLocalItemShort(v)}§r`).join('\n')}`,
     player
   );
 }
@@ -97,7 +99,11 @@ interface CmdMainCallbackData {
 
   enumUnban?: 'unban';
   // player 上面有
+
+  enumLocal?: 'local';
 }
+
+const cmdMain = mc.newCommand('blackbe', PLUGIN_NAME, PermType.Any);
 
 cmdMain.setEnum('enumReload', ['reload']);
 cmdMain.mandatory('enumReload', ParamType.Enum, 'enumReload', 1);
@@ -120,6 +126,10 @@ cmdMain.mandatory('enumUnBan', ParamType.Enum, 'enumUnBan', 1);
 // player 上面有
 cmdMain.overload(['enumUnBan', 'player']);
 
+cmdMain.setEnum('enumLocal', ['local']);
+cmdMain.mandatory('enumLocal', ParamType.Enum, 'enumLocal', 1);
+cmdMain.overload(['enumLocal']);
+
 cmdMain.overload([]);
 
 // @ts-expect-error 补全库有问题，这里result应为any
@@ -133,6 +143,7 @@ cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
     reason,
     duration,
     enumUnban,
+    enumLocal,
   } = result;
 
   if (enumReload) {
@@ -147,16 +158,16 @@ cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
       out.error(`出错了！\n${String(e)}`);
       return false;
     }
-    out.success(`§a成功重载配置文件`);
+    out.success(
+      `§a成功重载配置文件与本地黑名单！部分配置项需要重启服务器才可以生效！`
+    );
     return true;
   }
 
   if (enumQuery) {
     if (!player) {
       out.error(NO_CONSOLE_TEXT);
-      out.error(
-        '本地黑名单请查阅插件配置文件，云黑记录请上云黑官网查询，懒得再给控制台查询写一套代码了'
-      );
+      out.error(REFUSE_LIST_QUERY_TEXT);
       return false;
     }
     queryCmd(player, queryString);
@@ -180,6 +191,23 @@ cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
     }
 
     unBanCommand(stringSelector, player);
+    return true;
+  }
+
+  if (enumLocal) {
+    if (!player) {
+      out.error(NO_CONSOLE_TEXT);
+      out.error(REFUSE_LIST_QUERY_TEXT);
+      return false;
+    }
+
+    if (!player.isOP()) {
+      out.error(ONLT_OP_TEXT);
+      return false;
+    }
+
+    wrapAsyncFunc(localListForm)(player);
+    return true;
   }
 
   out.error(`请输入子命令`);
