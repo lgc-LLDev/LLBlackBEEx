@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* global ll JsonConfigFile logger mc data Format network PermType ParamType */
 // LiteLoaderScript Dev Helper
-/// <reference path="d:\Coding\bds\LLSEAids/dts/llaids/src/index.d.ts"/>
+/// <reference path="../../HelperLib/src/index.d.ts"/>
 
 const pluginName = 'LLBlackBEEx';
 const pluginVersion = [0, 2, 0];
