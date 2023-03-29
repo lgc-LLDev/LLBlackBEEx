@@ -1,19 +1,19 @@
 {
   "format_version": 1,
   "tooth": "github.com/lgc-LLSEDev/LLBlackBEEx",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "dependencies": {},
   "information": {
     "name": "LLBlackBEEx",
-    "description": "LxlBlackBE的改进版，功能强大的本地/云端黑名单插件",
+    "description": "LxlBlackBE的改进版，支持本地云端双名单、功能更完善的黑名单插件",
     "author": "lgc2333",
     "license": "Apache-2.0",
     "homepage": "https://github.com/lgc-LLSEDev/LLBlackBEEx"
   },
   "placement": [
     {
-      "source": "v0/LLBlackBEEx.lls.js",
-      "destination": "plugins/LLBlackBEEx.js"
+      "source": "dist/*",
+      "destination": "plugins/nodejs/ll-black-be-ex/*"
     }
   ],
   "possession": ["plugins/LLBlackBEEx/"]

@@ -8,4 +8,3 @@ require('./command');
 require('./listener');
 ll.registerPlugin(const_1.PLUGIN_NAME, const_1.PLUGIN_DESCRIPTION, const_1.PLUGIN_VERSION, const_1.PLUGIN_EXTRA);
 // todo: 私有库管理，手动上传私有库，本地黑名单传私有库
-// todo: GUI 封禁
