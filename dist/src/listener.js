@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ban_1 = require("./ban");
+const black_local_1 = require("./black-local");
 const blackbe_1 = require("./blackbe");
 const config_1 = require("./config");
 const query_1 = require("./query");
@@ -24,7 +24,7 @@ mc.listen(listenerType, (0, util_1.wrapAsyncFunc)(async (player) => {
                 (banIp && it.ips && it.ips.includes(stripedIp)) ||
                 (banDevice && it.clientIds && it.clientIds.includes(clientId))) {
                 // 更新信息，例如 ip 地址，顺便踢掉
-                (0, ban_1.banPlayer)({ player }, { kickTip: (0, ban_1.formatLocalKickMsg)(it) });
+                (0, black_local_1.banPlayer)({ player }, { kickTip: (0, black_local_1.formatLocalKickMsg)(it) });
                 logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`);
                 return;
             }
@@ -41,10 +41,10 @@ mc.listen(listenerType, (0, util_1.wrapAsyncFunc)(async (player) => {
     try {
         const { data: { exist, info }, } = await (0, blackbe_1.check)({ name: realName, xuid });
         if (exist) {
-            (0, ban_1.banPlayer)({ player }, { kickTip: kickByCloudMsg });
+            (0, black_local_1.banPlayer)({ player }, { kickTip: kickByCloudMsg });
             const formattedInfo = `§6查询到玩家 §d${realName} §6在 BlackBE 中存在违规记录！\n` +
                 `§c已将其踢出并加入本地黑名单！§r\n` +
-                `${await (0, query_1.formatBlackBEInfo)(info[0])}`;
+                `${await (0, blackbe_1.formatBlackBEInfo)(info[0])}`;
             mc.broadcast(formattedInfo);
             logger.warn((0, util_1.delFormatCode)(formattedInfo));
             return;

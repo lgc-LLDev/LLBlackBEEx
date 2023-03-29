@@ -4,7 +4,8 @@
   "description": "Improved version of LxlBlackBe",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "author": "lgc2333 <lgc2333@126.com>",
   "license": "Apache-2.0",

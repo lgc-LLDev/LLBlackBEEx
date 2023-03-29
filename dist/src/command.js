@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ban_1 = require("./ban");
+const black_local_1 = require("./black-local");
 const config_1 = require("./config");
 const const_1 = require("./const");
+const manage_1 = require("./manage");
 const query_1 = require("./query");
 const util_1 = require("./util");
 function checkOp(player) {
@@ -27,7 +28,7 @@ function banCommand(willBan, time, reason, player) {
     const willBanPlayer = mc.getPlayer(willBan);
     const isXuid = /^[0-9]{16}$/.test(willBan);
     const isIp = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(willBan);
-    const res = (0, ban_1.banPlayer)(willBanPlayer
+    const res = (0, black_local_1.banPlayer)(willBanPlayer
         ? { player: willBanPlayer }
         : {
             name: (isXuid ? data.xuid2name(willBan) : null) ?? willBan,
@@ -49,14 +50,14 @@ function banCommand(willBan, time, reason, player) {
     }
 }
 function unBanCommand(willUnBan, player) {
-    const queried = (0, query_1.queryLocal)(willUnBan, true, true);
+    const queried = (0, black_local_1.queryLocal)(willUnBan, true, true);
     if (!queried.length) {
         tell('§a执行成功，没有项目变动', player);
         return;
     }
     const succ = [];
     for (const obj of queried) {
-        if ((0, query_1.delLocalListItem)(obj))
+        if ((0, manage_1.delLocalListItem)(obj))
             succ.push(obj);
     }
     tell(`§a已成功删除 §6${succ.length} §a条项目§r\n` +
@@ -84,7 +85,6 @@ cmdMain.setEnum('enumLocal', ['local']);
 cmdMain.mandatory('enumLocal', ParamType.Enum, 'enumLocal', 1);
 cmdMain.overload(['enumLocal']);
 cmdMain.overload([]);
-// @ts-expect-error 补全库有问题，这里result应为any
 cmdMain.setCallback((_, { player }, out, result) => {
     const { enumReload, enumQuery, queryString, enumBan, player: stringSelector, reason, duration, enumUnban, enumLocal, } = result;
     if (enumReload) {
@@ -137,7 +137,7 @@ cmdMain.setCallback((_, { player }, out, result) => {
             out.error(ONLT_OP_TEXT);
             return false;
         }
-        (0, util_1.wrapAsyncFunc)(query_1.localListForm)(player);
+        (0, util_1.wrapAsyncFunc)(manage_1.localListForm)(player);
         return true;
     }
     out.error(`请输入子命令`);
@@ -150,9 +150,7 @@ if (config_1.config.registerBanCommand) {
     cmdBan.optional('reason', ParamType.String);
     cmdBan.optional('duration', ParamType.Int);
     cmdBan.overload(['player', 'reason', 'duration']);
-    cmdBan.setCallback(
-    // @ts-expect-error 补全库有问题，这里result应为any
-    (_, { player }, __, { player: stringSelector, reason, duration, }) => {
+    cmdBan.setCallback((_, { player }, __, { player: stringSelector, reason, duration, }) => {
         banCommand(stringSelector, duration, reason, player);
         return true;
     });
@@ -160,9 +158,7 @@ if (config_1.config.registerBanCommand) {
     const cmdUnBan = mc.newCommand('unban', `${const_1.PLUGIN_NAME} - 本地黑名单解封`, PermType.GameMasters);
     cmdUnBan.mandatory('player', ParamType.String);
     cmdUnBan.overload(['player']);
-    cmdUnBan.setCallback(
-    // @ts-expect-error 补全库有问题，这里result应为any
-    (_, { player }, __, { player: stringSelector, }) => {
+    cmdUnBan.setCallback((_, { player }, __, { player: stringSelector, }) => {
         unBanCommand(stringSelector, player);
         return true;
     });

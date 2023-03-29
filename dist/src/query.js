@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.queryCmd = exports.queryFormAsync = exports.queryResultForm = exports.localListForm = exports.blackBEItemForm = exports.localItemForm = exports.delLocalListItem = exports.processListFormReturn = exports.setupFunctionalityForm = exports.queryResultFormatter = exports.formatLocalItemShort = exports.formatLocalInfo = exports.formatBlackBEInfo = exports.queryLocal = exports.queryBlackBE = void 0;
+exports.queryCmd = exports.queryFormAsync = exports.queryResultForm = exports.queryResultFormatter = exports.formatLocalItemShort = exports.queryBlackBE = void 0;
 const form_api_ex_1 = require("form-api-ex");
+const black_local_1 = require("./black-local");
 const blackbe_1 = require("./blackbe");
 const config_1 = require("./config");
 const const_1 = require("./const");
+const manage_1 = require("./manage");
 const util_1 = require("./util");
 async function queryBlackBE(param) {
     const tasks = [
@@ -28,72 +30,6 @@ async function queryBlackBE(param) {
     return [commInfo, privInfo];
 }
 exports.queryBlackBE = queryBlackBE;
-function queryLocal(param, moreInfo = false, strict = false) {
-    param = param.trim();
-    const params = strict ? [param] : param.split(/\s/g);
-    const ret = [];
-    // 遍历列表中的对象
-    for (const it of config_1.localList.list) {
-        const { name, xuid, ips, clientIds } = it;
-        const willCheck = [name, xuid];
-        if (moreInfo) {
-            if (ips)
-                willCheck.push(...ips);
-            if (clientIds)
-                willCheck.push(...clientIds);
-        }
-        // 遍历待匹配的值
-        for (const val of willCheck) {
-            // 使用搜索词匹配 value
-            if (val &&
-                (0, util_1.checkValInArray)(params, (pr) => strict ? val === pr : val.includes(pr))) {
-                ret.push(it);
-                break;
-            }
-        }
-    }
-    return ret;
-}
-exports.queryLocal = queryLocal;
-async function formatBlackBEInfo(obj, moreInfo = false) {
-    const isPriv = 'phone' in obj;
-    const { uuid, name, xuid, info, level, qq, black_id } = obj;
-    const repo = await (0, blackbe_1.getRepoByUuid)(black_id);
-    const repoName = repo ? repo.name : '未知';
-    const [lvlDesc, lvlColor] = (0, blackbe_1.formatBlackBELvl)(level);
-    const lines = [];
-    lines.push(`§2玩家ID§r： §l§d${name}§r`);
-    lines.push(`§2危险等级§r： ${lvlColor}等级 §l${level} §r${lvlColor}（${lvlDesc}）`);
-    lines.push(`§2记录原因§r： §b${info}`);
-    if (isPriv)
-        lines.push(`§2违规服务器§r： §b${obj.server}`);
-    lines.push(`§2XUID§r： §b${xuid}`);
-    lines.push(`§2玩家QQ§r： §b${qq}`);
-    if (isPriv && moreInfo)
-        lines.push(`§2玩家电话§r： §b${obj.area_code} ${obj.phone}`);
-    if (isPriv)
-        lines.push(`§2记录时间§r： §b${obj.time}`);
-    lines.push(`§2记录UUID§r： §b${uuid}`);
-    lines.push(`§2来源库§r： §b${repoName} （${black_id}）`);
-    return lines.join('\n');
-}
-exports.formatBlackBEInfo = formatBlackBEInfo;
-function formatLocalInfo(obj, moreInfo = false) {
-    const formatList = (li) => li && li.length ? `\n${li.map((v) => `  - §b${v}§r`).join('\n')}` : '§b无';
-    const { name, xuid, ips, endTime, clientIds, reason } = obj;
-    const lines = [];
-    lines.push(`§2玩家ID§r： §l§d${name ?? '未知'}§r`);
-    lines.push(`§2XUID§r： §b${xuid ?? '未知'}`);
-    lines.push(`§2记录原因§r： §b${reason ?? '无'}`);
-    if (moreInfo)
-        lines.push(`§2结束时间§r： §b${endTime ? (0, util_1.formatDate)({ date: new Date(endTime) }) : '永久'}`);
-    if (moreInfo)
-        lines.push(`§2已记录IP§r： ${formatList(ips)}`);
-    if (moreInfo)
-        lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`);
-    return lines.join('\n');
-}
-exports.formatLocalInfo = formatLocalInfo;
 function formatLocalItemShort(obj) {
     const { name, xuid, ips, clientIds } = obj;
     const items = [name, xuid, ...(ips ?? []), ...(clientIds ?? [])].filter((v) => v);
@@ -119,127 +55,6 @@ const queryResultFormatter = ({ type, value, }) => {
     return [`${line1}\n${line2}`];
 };
 exports.queryResultFormatter = queryResultFormatter;
-function setupFunctionalityForm(buttons) {
-    const form = new form_api_ex_1.SimpleFormEx(buttons);
-    form.title = const_1.PLUGIN_NAME;
-    form.formatter = (v) => [`§3${v[0]}`];
-    return form;
-}
-exports.setupFunctionalityForm = setupFunctionalityForm;
-/**
- * 返回 false 代表按下表单内返回按钮 (null)
- */
-async function processListFormReturn(res) {
-    if (res) {
-        const [, func] = res;
-        if (!func)
-            return false;
-        /* const cb = */ func();
-        // if (isPromise(cb)) await cb;
-    }
-    return true;
-}
-exports.processListFormReturn = processListFormReturn;
-function delLocalListItem(obj) {
-    const { list } = config_1.localList;
-    const deleted = list.splice(list.indexOf(obj), 1);
-    (0, config_1.saveLocalList)();
-    return !!deleted.length;
-}
-exports.delLocalListItem = delLocalListItem;
-async function localItemForm(player, obj, moreInfo = false) {
-    const delItem = async () => {
-        if (await (0, form_api_ex_1.sendModalFormAsync)(player, const_1.PLUGIN_NAME, '§6真的要删除这条黑名单项目吗？\n§c删前请三思！！！')) {
-            player.tell(delLocalListItem(obj)
-                ? '§a删除成功！'
-                : '§c删除失败！未找到该黑名单项目');
-        }
-        else {
-            player.tell('§6删除操作已取消');
-        }
-    };
-    const editTime = async () => {
-        const res = await new form_api_ex_1.CustomFormEx(const_1.PLUGIN_NAME)
-            .addSwitch('forever', '是否永久封禁', !obj.endTime)
-            .addInput('time', '如果不是永久封禁，请输入从现在开始要封禁的时间（单位分钟）')
-            .sendAsync(player);
-        if (res) {
-            const { forever, time } = res;
-            const timeNum = Number(time);
-            if ((!timeNum || timeNum <= 0) && !forever) {
-                await (0, form_api_ex_1.sendModalFormAsync)(player, const_1.PLUGIN_NAME, '§c请输入正确的封禁时间！', '§a知道了', '§a知道了');
-                editTime();
-                return;
-            }
-            // 引用 可以直接改
-            obj.endTime = forever
-                ? undefined
-                : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
-            (0, config_1.saveLocalList)();
-            player.tell('§a操作成功！');
-        }
-        else {
-            player.tell('§6修改操作已取消');
-        }
-    };
-    const editDesc = async () => {
-        const res = await new form_api_ex_1.CustomFormEx(const_1.PLUGIN_NAME)
-            .addInput('reason', '请输入想修改的封禁原因内容', {
-            placeholder: '如想要清空封禁原因请留空',
-            default: obj.reason,
-        })
-            .sendAsync(player);
-        if (res) {
-            const reason = res.reason.trim();
-            obj.reason = reason || undefined;
-            (0, config_1.saveLocalList)();
-            player.tell('§a操作成功！');
-        }
-        else {
-            player.tell('§6修改操作已取消');
-        }
-    };
-    const form = setupFunctionalityForm([['返回', null]]);
-    form.content = formatLocalInfo(obj, moreInfo);
-    if (moreInfo)
-        form.buttons.unshift(['删除条目', delItem], ['修改封禁时间', editTime], ['修改封禁原因', editDesc]);
-    // eslint-disable-next-line no-return-await
-    return await processListFormReturn(await form.sendAsync(player));
-}
-exports.localItemForm = localItemForm;
-async function blackBEItemForm(player, obj, moreInfo = false) {
-    const form = setupFunctionalityForm([['返回', null]]);
-    form.content = await formatBlackBEInfo(obj, moreInfo);
-    // eslint-disable-next-line no-return-await
-    return await processListFormReturn(await form.sendAsync(player));
-}
-exports.blackBEItemForm = blackBEItemForm;
-async function localListForm(player) {
-    if (!config_1.localList.list.length) {
-        player.tell(`§6本地黑名单列表为空`);
-        return;
-    }
-    const form = new form_api_ex_1.SimpleFormEx(config_1.localList.list);
-    form.title = const_1.PLUGIN_NAME;
-    form.canTurnPage = true;
-    form.canJumpPage = true;
-    form.hasSearchButton = true;
-    form.formatter = ({ name, xuid, endTime }) => [
-        `§6${name ?? '未知'} §7(${xuid ?? '未知'})\n` +
-            `§2${endTime ? `${(0, util_1.formatDate)({ date: new Date(endTime) })} 解封` : '永久封禁'}`,
-    ];
-    form.searcher = (_, param) => queryLocal(param, true);
-    const sendTask = async () => {
-        const res = await form.sendAsync(player);
-        if (res) {
-            const infoRes = await localItemForm(player, res, true);
-            if (infoRes === false)
-                sendTask();
-        }
-    };
-    sendTask();
-}
-exports.localListForm = localListForm;
 async function queryResultForm(player, param, moreInfo = false) {
     param = param?.trim();
     if (!param) {
@@ -251,7 +66,7 @@ async function queryResultForm(player, param, moreInfo = false) {
     const blackBECommRes = [];
     const blackBEPrivRes = [];
     try {
-        localRes.push(...queryLocal(param, moreInfo));
+        localRes.push(...(0, black_local_1.queryLocal)(param, moreInfo));
         if (!config_1.config.disableBlackBE) {
             const [comm, priv] = await queryBlackBE(param);
             blackBECommRes.push(...comm);
@@ -298,8 +113,8 @@ async function queryResultForm(player, param, moreInfo = false) {
         if (res) {
             const { type, value } = res;
             const infoRes = await (type === 'local'
-                ? localItemForm(player, value, moreInfo)
-                : blackBEItemForm(player, value, moreInfo));
+                ? (0, manage_1.localItemForm)(player, value, moreInfo)
+                : (0, manage_1.blackBEItemForm)(player, value, moreInfo));
             if (infoRes === false)
                 sendTask();
         }

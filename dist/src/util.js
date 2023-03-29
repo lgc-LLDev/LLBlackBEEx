@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
+exports.processListFormReturn = exports.setupFunctionalityForm = exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
+const form_api_ex_1 = require("form-api-ex");
+const const_1 = require("./const");
 function wrapAsyncFunc(func) {
     return (...args) => {
         setTimeout(() => func(...args).catch((e) => logger.error(String(e))), 0);
@@ -49,3 +51,24 @@ function pushNoDuplicateItem(list, item) {
     return list;
 }
 exports.pushNoDuplicateItem = pushNoDuplicateItem;
+function setupFunctionalityForm(buttons) {
+    const form = new form_api_ex_1.SimpleFormEx(buttons);
+    form.title = const_1.PLUGIN_NAME;
+    form.formatter = (v) => [`§3${v[0]}`];
+    return form;
+}
+exports.setupFunctionalityForm = setupFunctionalityForm;
+/**
+ * 返回 false 代表按下表单内返回按钮 (null)
+ */
+async function processListFormReturn(res) {
+    if (res) {
+        const [, func] = res;
+        if (!func)
+            return false;
+        /* const cb = */ func();
+        // if (isPromise(cb)) await cb;
+    }
+    return true;
+}
+exports.processListFormReturn = processListFormReturn;

@@ -1,6 +1,6 @@
 "use strict";
 // LiteLoaderScript Dev Helper
-/// <reference path="d:\Coding\bds\LLSEAids/dts/llaids/src/index.d.ts"/>
+/// <reference path="../../HelperLib/src/index.d.ts"/>
 Object.defineProperty(exports, "__esModule", { value: true });
 const const_1 = require("./const");
 logger.setTitle(const_1.PLUGIN_NAME);

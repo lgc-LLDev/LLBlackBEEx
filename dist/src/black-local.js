@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.banPlayer = exports.formatLocalKickMsg = void 0;
+exports.formatLocalInfo = exports.queryLocal = exports.banPlayer = exports.formatLocalKickMsg = void 0;
 const config_1 = require("./config");
 const util_1 = require("./util");
 function formatLocalKickMsg(data) {
@@ -69,3 +69,46 @@ function banPlayer(data, options = {}) {
     return { isModify, results };
 }
 exports.banPlayer = banPlayer;
+function queryLocal(param, moreInfo = false, strict = false) {
+    param = param.trim();
+    const params = strict ? [param] : param.split(/\s/g);
+    const ret = [];
+    // 遍历列表中的对象
+    for (const it of config_1.localList.list) {
+        const { name, xuid, ips, clientIds } = it;
+        const willCheck = [name, xuid];
+        if (moreInfo) {
+            if (ips)
+                willCheck.push(...ips);
+            if (clientIds)
+                willCheck.push(...clientIds);
+        }
+        // 遍历待匹配的值
+        for (const val of willCheck) {
+            // 使用搜索词匹配 value
+            if (val &&
+                (0, util_1.checkValInArray)(params, (pr) => strict ? val === pr : val.includes(pr))) {
+                ret.push(it);
+                break;
+            }
+        }
+    }
+    return ret;
+}
+exports.queryLocal = queryLocal;
+function formatLocalInfo(obj, moreInfo = false) {
+    const formatList = (li) => li && li.length ? `\n${li.map((v) => `  - §b${v}§r`).join('\n')}` : '§b无';
+    const { name, xuid, ips, endTime, clientIds, reason } = obj;
+    const lines = [];
+    lines.push(`§2玩家ID§r： §l§d${name ?? '未知'}§r`);
+    lines.push(`§2XUID§r： §b${xuid ?? '未知'}`);
+    lines.push(`§2记录原因§r： §b${reason ?? '无'}`);
+    if (moreInfo)
+        lines.push(`§2结束时间§r： §b${endTime ? (0, util_1.formatDate)({ date: new Date(endTime) }) : '永久'}`);
+    if (moreInfo)
+        lines.push(`§2已记录IP§r： ${formatList(ips)}`);
+    if (moreInfo)
+        lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`);
+    return lines.join('\n');
+}
+exports.formatLocalInfo = formatLocalInfo;

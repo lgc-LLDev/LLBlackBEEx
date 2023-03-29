@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCache = exports.formatBlackBELvl = exports.getRepoByUuid = exports.checkPrivate = exports.check = exports.deletePrivatePiece = exports.uploadPrivatePiece = exports.getPrivatePieceList = exports.getPrivateRespList = exports.cachedPrivResp = void 0;
+exports.clearCache = exports.formatBlackBEInfo = exports.formatBlackBELvl = exports.getRepoByUuid = exports.checkPrivate = exports.check = exports.deletePrivatePiece = exports.uploadPrivatePiece = exports.getPrivatePieceList = exports.getPrivateRespList = exports.cachedPrivResp = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("./config");
 const util_1 = require("./util");
@@ -124,6 +124,29 @@ function formatBlackBELvl(lvl) {
     }
 }
 exports.formatBlackBELvl = formatBlackBELvl;
+async function formatBlackBEInfo(obj, moreInfo = false) {
+    const isPriv = 'phone' in obj;
+    const { uuid, name, xuid, info, level, qq, black_id } = obj;
+    const repo = await getRepoByUuid(black_id);
+    const repoName = repo ? repo.name : '未知';
+    const [lvlDesc, lvlColor] = formatBlackBELvl(level);
+    const lines = [];
+    lines.push(`§2玩家ID§r： §l§d${name}§r`);
+    lines.push(`§2危险等级§r： ${lvlColor}等级 §l${level} §r${lvlColor}（${lvlDesc}）`);
+    lines.push(`§2记录原因§r： §b${info}`);
+    if (isPriv)
+        lines.push(`§2违规服务器§r： §b${obj.server}`);
+    lines.push(`§2XUID§r： §b${xuid}`);
+    lines.push(`§2玩家QQ§r： §b${qq}`);
+    if (isPriv && moreInfo)
+        lines.push(`§2玩家电话§r： §b${obj.area_code} ${obj.phone}`);
+    if (isPriv)
+        lines.push(`§2记录时间§r： §b${obj.time}`);
+    lines.push(`§2记录UUID§r： §b${uuid}`);
+    lines.push(`§2来源库§r： §b${repoName} （${black_id}）`);
+    return lines.join('\n');
+}
+exports.formatBlackBEInfo = formatBlackBEInfo;
 function clearCache() {
     exports.cachedPrivResp.length = 0;
 }
