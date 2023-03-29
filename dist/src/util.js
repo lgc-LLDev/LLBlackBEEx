@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.processListFormReturn = exports.setupFunctionalityForm = exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
+exports.getOnlineRealPlayers = exports.processListFormReturn = exports.setupFunctionalityForm = exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
 const form_api_ex_1 = require("form-api-ex");
 const const_1 = require("./const");
 function wrapAsyncFunc(func) {
@@ -72,3 +72,7 @@ async function processListFormReturn(res) {
     return true;
 }
 exports.processListFormReturn = processListFormReturn;
+function getOnlineRealPlayers() {
+    return mc.getOnlinePlayers().filter((p) => !p.isSimulatedPlayer());
+}
+exports.getOnlineRealPlayers = getOnlineRealPlayers;

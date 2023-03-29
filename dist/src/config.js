@@ -21,6 +21,7 @@ exports.config = {
     registerBanCommand: true,
     checkLocalListInterval: 5000,
     processOnPreJoin: true,
+    onlyOpCanQuery: false,
 };
 exports.localList = { list: [] };
 function saveConfig() {

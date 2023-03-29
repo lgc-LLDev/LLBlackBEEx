@@ -85,3 +85,7 @@ export async function processListFormReturn(res: any): Promise<boolean> {
   }
   return true;
 }
+
+export function getOnlineRealPlayers(): Player[] {
+  return mc.getOnlinePlayers().filter((p) => !p.isSimulatedPlayer());
+}

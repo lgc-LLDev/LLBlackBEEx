@@ -10,6 +10,8 @@ const listenerType = (config_1.config.processOnPreJoin
     ? 'onPreJoin'
     : 'onJoin');
 mc.listen(listenerType, (0, util_1.wrapAsyncFunc)(async (player) => {
+    if (player.isSimulatedPlayer())
+        return;
     // 查本地
     const { hidePassMessage, kickByCloudMsg, banIp, banDevice } = config_1.config;
     const { realName, xuid } = player;

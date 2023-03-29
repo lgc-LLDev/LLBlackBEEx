@@ -3,7 +3,7 @@ import {
   checkValInArray,
   formatDate,
   pushNoDuplicateItem,
-  stripIp
+  stripIp,
 } from './util';
 
 export function formatLocalKickMsg(data: LocalBlackListItem): string {

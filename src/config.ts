@@ -23,6 +23,7 @@ export interface Config {
   registerBanCommand: boolean;
   checkLocalListInterval: number;
   processOnPreJoin: boolean;
+  onlyOpCanQuery: boolean;
 }
 
 export interface LocalBlackListItem {
@@ -54,6 +55,7 @@ export const config: Config = {
   registerBanCommand: true,
   checkLocalListInterval: 5000,
   processOnPreJoin: true,
+  onlyOpCanQuery: false,
 };
 
 export const localList: LocalBlackList = { list: [] };

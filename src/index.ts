@@ -21,4 +21,3 @@ ll.registerPlugin(
 );
 
 // todo: 私有库管理，手动上传私有库，本地黑名单传私有库
-// todo: GUI 封禁
