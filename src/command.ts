@@ -1,13 +1,8 @@
-import { banPlayer } from './ban';
+import { banPlayer, queryLocal } from './black-local';
 import { config, reloadConfig } from './config';
 import { PLUGIN_NAME } from './const';
-import {
-  delLocalListItem,
-  formatLocalItemShort,
-  localListForm,
-  queryCmd,
-  queryLocal,
-} from './query';
+import { delLocalListItem, localListForm } from './manage';
+import { formatLocalItemShort, queryCmd } from './query';
 import { delFormatCode, wrapAsyncFunc } from './util';
 
 function checkOp(player?: Player): boolean {
@@ -132,7 +127,6 @@ cmdMain.overload(['enumLocal']);
 
 cmdMain.overload([]);
 
-// @ts-expect-error 补全库有问题，这里result应为any
 cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
   const {
     enumReload,
@@ -227,7 +221,6 @@ if (config.registerBanCommand) {
   cmdBan.optional('duration', ParamType.Int);
   cmdBan.overload(['player', 'reason', 'duration']);
   cmdBan.setCallback(
-    // @ts-expect-error 补全库有问题，这里result应为any
     (
       _,
       { player },
@@ -256,7 +249,6 @@ if (config.registerBanCommand) {
   cmdUnBan.mandatory('player', ParamType.String);
   cmdUnBan.overload(['player']);
   cmdUnBan.setCallback(
-    // @ts-expect-error 补全库有问题，这里result应为any
     (
       _,
       { player },

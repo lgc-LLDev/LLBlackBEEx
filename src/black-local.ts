@@ -1,5 +1,10 @@
 import { config, LocalBlackListItem, localList, saveLocalList } from './config';
-import { formatDate, pushNoDuplicateItem, stripIp } from './util';
+import {
+  checkValInArray,
+  formatDate,
+  pushNoDuplicateItem,
+  stripIp
+} from './util';
 
 export function formatLocalKickMsg(data: LocalBlackListItem): string {
   const { reason, endTime } = data;
@@ -73,4 +78,65 @@ export function banPlayer(
 
   saveLocalList();
   return { isModify, results };
+}
+
+export function queryLocal(
+  param: string,
+  moreInfo = false,
+  strict = false
+): LocalBlackListItem[] {
+  param = param.trim();
+  const params = strict ? [param] : param.split(/\s/g);
+  const ret: LocalBlackListItem[] = [];
+
+  // 遍历列表中的对象
+  for (const it of localList.list) {
+    const { name, xuid, ips, clientIds } = it;
+    const willCheck: (string | undefined)[] = [name, xuid];
+    if (moreInfo) {
+      if (ips) willCheck.push(...ips);
+      if (clientIds) willCheck.push(...clientIds);
+    }
+
+    // 遍历待匹配的值
+    for (const val of willCheck) {
+      // 使用搜索词匹配 value
+      if (
+        val &&
+        checkValInArray(params, (pr) =>
+          strict ? val === pr : val.includes(pr)
+        )
+      ) {
+        ret.push(it);
+        break;
+      }
+    }
+  }
+
+  return ret;
+}
+
+export function formatLocalInfo(
+  obj: LocalBlackListItem,
+  moreInfo = false
+): string {
+  const formatList = (li?: string[]): string =>
+    li && li.length ? `\n${li.map((v) => `  - §b${v}§r`).join('\n')}` : '§b无';
+
+  const { name, xuid, ips, endTime, clientIds, reason } = obj;
+  const lines: string[] = [];
+
+  lines.push(`§2玩家ID§r： §l§d${name ?? '未知'}§r`);
+  lines.push(`§2XUID§r： §b${xuid ?? '未知'}`);
+  lines.push(`§2记录原因§r： §b${reason ?? '无'}`);
+  if (moreInfo)
+    lines.push(
+      `§2结束时间§r： §b${
+        endTime ? formatDate({ date: new Date(endTime) }) : '永久'
+      }`
+    );
+  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ips)}`);
+  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`);
+
+  return lines.join('\n');
 }

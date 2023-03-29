@@ -1,25 +1,20 @@
-import {
-  CustomFormEx,
-  CustomFormInputObject,
-  sendModalFormAsync,
-  SimpleFormEx,
-} from 'form-api-ex';
+import { CustomFormEx, CustomFormInputObject, SimpleFormEx } from 'form-api-ex';
+import { queryLocal } from './black-local';
 
 import {
   BlackBECommonData,
   BlackBECommonInfo,
   BlackBEPrivateData,
   BlackBEPrivInfoWithRespId,
-  BlackBEQueryInfoWithRespId,
   BlackBEReturn,
   check,
   checkPrivate,
-  formatBlackBELvl,
-  getRepoByUuid,
+  formatBlackBELvl
 } from './blackbe';
-import { config, LocalBlackListItem, localList, saveLocalList } from './config';
+import { config, LocalBlackListItem } from './config';
 import { PLUGIN_NAME } from './const';
-import { checkValInArray, formatDate, wrapAsyncFunc } from './util';
+import { blackBEItemForm, localItemForm } from './manage';
+import { wrapAsyncFunc } from './util';
 
 export async function queryBlackBE(
   param: string
@@ -50,96 +45,6 @@ export async function queryBlackBE(
   }
 
   return [commInfo, privInfo];
-}
-
-export function queryLocal(
-  param: string,
-  moreInfo = false,
-  strict = false
-): LocalBlackListItem[] {
-  param = param.trim();
-  const params = strict ? [param] : param.split(/\s/g);
-  const ret: LocalBlackListItem[] = [];
-
-  // 遍历列表中的对象
-  for (const it of localList.list) {
-    const { name, xuid, ips, clientIds } = it;
-    const willCheck: (string | undefined)[] = [name, xuid];
-    if (moreInfo) {
-      if (ips) willCheck.push(...ips);
-      if (clientIds) willCheck.push(...clientIds);
-    }
-
-    // 遍历待匹配的值
-    for (const val of willCheck) {
-      // 使用搜索词匹配 value
-      if (
-        val &&
-        checkValInArray(params, (pr) =>
-          strict ? val === pr : val.includes(pr)
-        )
-      ) {
-        ret.push(it);
-        break;
-      }
-    }
-  }
-
-  return ret;
-}
-
-export async function formatBlackBEInfo(
-  obj: BlackBEQueryInfoWithRespId,
-  moreInfo = false
-): Promise<string> {
-  const isPriv = 'phone' in obj;
-  const { uuid, name, xuid, info, level, qq, black_id } = obj;
-
-  const repo = await getRepoByUuid(black_id);
-  const repoName = repo ? repo.name : '未知';
-  const [lvlDesc, lvlColor] = formatBlackBELvl(level);
-
-  const lines: string[] = [];
-  lines.push(`§2玩家ID§r： §l§d${name}§r`);
-  lines.push(
-    `§2危险等级§r： ${lvlColor}等级 §l${level} §r${lvlColor}（${lvlDesc}）`
-  );
-  lines.push(`§2记录原因§r： §b${info}`);
-  if (isPriv) lines.push(`§2违规服务器§r： §b${obj.server}`);
-  lines.push(`§2XUID§r： §b${xuid}`);
-  lines.push(`§2玩家QQ§r： §b${qq}`);
-  if (isPriv && moreInfo)
-    lines.push(`§2玩家电话§r： §b${obj.area_code} ${obj.phone}`);
-  if (isPriv) lines.push(`§2记录时间§r： §b${obj.time}`);
-  lines.push(`§2记录UUID§r： §b${uuid}`);
-  lines.push(`§2来源库§r： §b${repoName} （${black_id}）`);
-
-  return lines.join('\n');
-}
-
-export function formatLocalInfo(
-  obj: LocalBlackListItem,
-  moreInfo = false
-): string {
-  const formatList = (li?: string[]): string =>
-    li && li.length ? `\n${li.map((v) => `  - §b${v}§r`).join('\n')}` : '§b无';
-
-  const { name, xuid, ips, endTime, clientIds, reason } = obj;
-  const lines: string[] = [];
-
-  lines.push(`§2玩家ID§r： §l§d${name ?? '未知'}§r`);
-  lines.push(`§2XUID§r： §b${xuid ?? '未知'}`);
-  lines.push(`§2记录原因§r： §b${reason ?? '无'}`);
-  if (moreInfo)
-    lines.push(
-      `§2结束时间§r： §b${
-        endTime ? formatDate({ date: new Date(endTime) }) : '永久'
-      }`
-    );
-  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ips)}`);
-  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`);
-
-  return lines.join('\n');
 }
 
 export function formatLocalItemShort(obj: LocalBlackListItem): string {
@@ -195,166 +100,6 @@ export const queryResultFormatter = ({
 
   return [`${line1}\n${line2}`];
 };
-
-export function setupFunctionalityForm<
-  T extends [string, ((...args: any[]) => any | Promise<any>) | null][]
->(buttons?: T) {
-  const form = new SimpleFormEx(buttons);
-  form.title = PLUGIN_NAME;
-  form.formatter = (v) => [`§3${v[0]}`];
-  return form;
-}
-
-/**
- * 返回 false 代表按下表单内返回按钮 (null)
- */
-export async function processListFormReturn(res: any): Promise<boolean> {
-  if (res) {
-    const [, func] = res;
-    if (!func) return false;
-
-    /* const cb = */ func();
-    // if (isPromise(cb)) await cb;
-  }
-  return true;
-}
-
-export function delLocalListItem(obj: LocalBlackListItem): boolean {
-  const { list } = localList;
-  const deleted = list.splice(list.indexOf(obj), 1);
-  saveLocalList();
-  return !!deleted.length;
-}
-
-export async function localItemForm(
-  player: Player,
-  obj: LocalBlackListItem,
-  moreInfo = false
-): Promise<boolean> {
-  const delItem = async () => {
-    if (
-      await sendModalFormAsync(
-        player,
-        PLUGIN_NAME,
-        '§6真的要删除这条黑名单项目吗？\n§c删前请三思！！！'
-      )
-    ) {
-      player.tell(
-        delLocalListItem(obj)
-          ? '§a删除成功！'
-          : '§c删除失败！未找到该黑名单项目'
-      );
-    } else {
-      player.tell('§6删除操作已取消');
-    }
-  };
-
-  const editTime = async () => {
-    const res = await new CustomFormEx(PLUGIN_NAME)
-      .addSwitch('forever', '是否永久封禁', !obj.endTime)
-      .addInput(
-        'time',
-        '如果不是永久封禁，请输入从现在开始要封禁的时间（单位分钟）'
-      )
-      .sendAsync(player);
-
-    if (res) {
-      const { forever, time } = res;
-      const timeNum = Number(time);
-      if ((!timeNum || timeNum <= 0) && !forever) {
-        await sendModalFormAsync(
-          player,
-          PLUGIN_NAME,
-          '§c请输入正确的封禁时间！',
-          '§a知道了',
-          '§a知道了'
-        );
-        editTime();
-        return;
-      }
-
-      // 引用 可以直接改
-      obj.endTime = forever
-        ? undefined
-        : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
-      saveLocalList();
-
-      player.tell('§a操作成功！');
-    } else {
-      player.tell('§6修改操作已取消');
-    }
-  };
-
-  const editDesc = async () => {
-    const res = await new CustomFormEx(PLUGIN_NAME)
-      .addInput('reason', '请输入想修改的封禁原因内容', {
-        placeholder: '如想要清空封禁原因请留空',
-        default: obj.reason,
-      })
-      .sendAsync(player);
-
-    if (res) {
-      const reason = res.reason.trim();
-      obj.reason = reason || undefined;
-      saveLocalList();
-
-      player.tell('§a操作成功！');
-    } else {
-      player.tell('§6修改操作已取消');
-    }
-  };
-
-  const form = setupFunctionalityForm([['返回', null]]);
-  form.content = formatLocalInfo(obj, moreInfo);
-  if (moreInfo)
-    form.buttons.unshift(
-      ['删除条目', delItem],
-      ['修改封禁时间', editTime],
-      ['修改封禁原因', editDesc]
-    );
-  // eslint-disable-next-line no-return-await
-  return await processListFormReturn(await form.sendAsync(player));
-}
-
-export async function blackBEItemForm(
-  player: Player,
-  obj: BlackBECommonInfo | BlackBEPrivInfoWithRespId,
-  moreInfo = false
-): Promise<boolean> {
-  const form = setupFunctionalityForm([['返回', null]]);
-  form.content = await formatBlackBEInfo(obj, moreInfo);
-  // eslint-disable-next-line no-return-await
-  return await processListFormReturn(await form.sendAsync(player));
-}
-
-export async function localListForm(player: Player) {
-  if (!localList.list.length) {
-    player.tell(`§6本地黑名单列表为空`);
-    return;
-  }
-
-  const form = new SimpleFormEx(localList.list);
-  form.title = PLUGIN_NAME;
-  form.canTurnPage = true;
-  form.canJumpPage = true;
-  form.hasSearchButton = true;
-  form.formatter = ({ name, xuid, endTime }) => [
-    `§6${name ?? '未知'} §7(${xuid ?? '未知'})\n` +
-      `§2${
-        endTime ? `${formatDate({ date: new Date(endTime) })} 解封` : '永久封禁'
-      }`,
-  ];
-  form.searcher = (_, param) => queryLocal(param, true);
-
-  const sendTask = async () => {
-    const res = await form.sendAsync(player);
-    if (res) {
-      const infoRes = await localItemForm(player, res, true);
-      if (infoRes === false) sendTask();
-    }
-  };
-  sendTask();
-}
 
 export async function queryResultForm(
   player: Player,

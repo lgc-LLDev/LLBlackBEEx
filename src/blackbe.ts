@@ -275,6 +275,35 @@ export function formatBlackBELvl(lvl: number): [string, string] {
   }
 }
 
+export async function formatBlackBEInfo(
+  obj: BlackBEQueryInfoWithRespId,
+  moreInfo = false
+): Promise<string> {
+  const isPriv = 'phone' in obj;
+  const { uuid, name, xuid, info, level, qq, black_id } = obj;
+
+  const repo = await getRepoByUuid(black_id);
+  const repoName = repo ? repo.name : '未知';
+  const [lvlDesc, lvlColor] = formatBlackBELvl(level);
+
+  const lines: string[] = [];
+  lines.push(`§2玩家ID§r： §l§d${name}§r`);
+  lines.push(
+    `§2危险等级§r： ${lvlColor}等级 §l${level} §r${lvlColor}（${lvlDesc}）`
+  );
+  lines.push(`§2记录原因§r： §b${info}`);
+  if (isPriv) lines.push(`§2违规服务器§r： §b${obj.server}`);
+  lines.push(`§2XUID§r： §b${xuid}`);
+  lines.push(`§2玩家QQ§r： §b${qq}`);
+  if (isPriv && moreInfo)
+    lines.push(`§2玩家电话§r： §b${obj.area_code} ${obj.phone}`);
+  if (isPriv) lines.push(`§2记录时间§r： §b${obj.time}`);
+  lines.push(`§2记录UUID§r： §b${uuid}`);
+  lines.push(`§2来源库§r： §b${repoName} （${black_id}）`);
+
+  return lines.join('\n');
+}
+
 export function clearCache() {
   cachedPrivResp.length = 0;
 }

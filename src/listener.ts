@@ -1,7 +1,7 @@
-import { banPlayer, formatLocalKickMsg } from './ban';
-import { check } from './blackbe';
+import { banPlayer, formatLocalKickMsg } from './black-local';
+import { check, formatBlackBEInfo } from './blackbe';
 import { config, localList, saveLocalList } from './config';
-import { formatBlackBEInfo, formatLocalItemShort } from './query';
+import { formatLocalItemShort } from './query';
 import { delFormatCode, stripIp, wrapAsyncFunc } from './util';
 
 // hhh

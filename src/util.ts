@@ -1,3 +1,6 @@
+import { SimpleFormEx } from 'form-api-ex';
+import { PLUGIN_NAME } from './const';
+
 export function wrapAsyncFunc<T extends Array<unknown>>(
   func: (...args: T) => Promise<unknown>
 ): (...args: T) => void {
@@ -58,4 +61,27 @@ export function pushNoDuplicateItem<T, TI>(
 ): (T | TI)[] {
   if (!list.includes(item)) list.push(item);
   return list;
+}
+
+export function setupFunctionalityForm<
+  T extends [string, ((...args: any[]) => any | Promise<any>) | null][]
+>(buttons?: T) {
+  const form = new SimpleFormEx(buttons);
+  form.title = PLUGIN_NAME;
+  form.formatter = (v) => [`§3${v[0]}`];
+  return form;
+}
+
+/**
+ * 返回 false 代表按下表单内返回按钮 (null)
+ */
+export async function processListFormReturn(res: any): Promise<boolean> {
+  if (res) {
+    const [, func] = res;
+    if (!func) return false;
+
+    /* const cb = */ func();
+    // if (isPromise(cb)) await cb;
+  }
+  return true;
 }
