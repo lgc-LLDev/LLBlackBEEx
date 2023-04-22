@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
+  <img src="https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
 
 # LLBlackBEEx
 
