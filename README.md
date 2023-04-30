@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD036 MD041 -->
 
 <div align="center">
-  <img src="https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
+  <img src="https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
 
 # LLBlackBEEx
 
@@ -22,17 +22,17 @@ _✨ 支持本地云端双名单、功能**更**完善的黑名单插件 ✨_
 材质：方纹淡彩 _~~XK 打钱！~~_
 
 - 插件命令列表  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/1.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/1.png)
 - 本地黑名单列表  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/2.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/2.png)
 - 本地黑名单列表项详细信息  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/3.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/3.png)
 - 黑名单查询页面  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/4.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/4.png)
 - 黑名单查询结果  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/5.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/5.png)
 - BlackBE 私有库记录详细信息  
-  ![i](https://media.githubusercontent.com/media/lgc-LLSEDev/readme/main/LLBlackBEEx/6.png)
+  ![i](https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/6.png)
 
 ## 安装
 
