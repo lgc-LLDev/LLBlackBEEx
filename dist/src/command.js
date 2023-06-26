@@ -103,10 +103,9 @@ cmdMain.mandatory('player', ParamType.String);
 cmdMain.optional('reason', ParamType.String);
 cmdMain.optional('duration', ParamType.Int);
 cmdMain.overload(['enumBan', 'player', 'reason', 'duration']);
-cmdMain.overload(['enumBan']); // ban form
+cmdMain.overload(['enumBan']);
 cmdMain.setEnum('enumUnBan', ['unban']);
 cmdMain.mandatory('enumUnBan', ParamType.Enum, 'enumUnBan', 1);
-// player 上面有
 cmdMain.overload(['enumUnBan', 'player']);
 cmdMain.setEnum('enumLocal', ['local']);
 cmdMain.mandatory('enumLocal', ParamType.Enum, 'enumLocal', 1);
@@ -167,7 +166,7 @@ cmdMain.setCallback((_, { player }, out, result) => {
             unBanCommand(stringSelector, player);
             return true;
         }
-        return false; // never reach?
+        return false;
     }
     if (enumLocal) {
         if (!player) {

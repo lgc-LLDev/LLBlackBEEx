@@ -2,18 +2,19 @@ import { config, LocalBlackListItem, localList, saveLocalList } from './config';
 import {
   checkValInArray,
   formatDate,
+  formatVarString,
   pushNoDuplicateItem,
   stripIp,
 } from './util';
 
 export function formatLocalKickMsg(data: LocalBlackListItem): string {
   const { reason, endTime } = data;
-  return config.kickByLocalMsg
-    .replace(/%REASON%/g, reason ?? '无')
-    .replace(
-      /%ENDTIME%/g,
-      endTime ? formatDate({ date: new Date(endTime) }) : '永久'
-    );
+  return formatVarString(config.kickByLocalMsg, {
+    NAME: data.name ?? '未知',
+    XUID: data.xuid ?? '未知',
+    REASON: reason ?? '无',
+    ENDTIME: endTime ? formatDate({ date: new Date(endTime) }) : '永久',
+  });
 }
 
 export function banPlayer(

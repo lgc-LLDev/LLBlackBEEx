@@ -38,7 +38,6 @@ async function localItemForm(player, obj, moreInfo = false) {
                 editTime();
                 return;
             }
-            // 引用 可以直接改
             obj.endTime = forever
                 ? undefined
                 : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
@@ -70,14 +69,12 @@ async function localItemForm(player, obj, moreInfo = false) {
     form.content = (0, black_local_1.formatLocalInfo)(obj, moreInfo);
     if (moreInfo)
         form.buttons.unshift(['删除条目', delItem], ['修改封禁时间', editTime], ['修改封禁原因', editDesc]);
-    // eslint-disable-next-line no-return-await
     return await (0, util_1.processListFormReturn)(await form.sendAsync(player));
 }
 exports.localItemForm = localItemForm;
 async function blackBEItemForm(player, obj, moreInfo = false) {
     const form = (0, util_1.setupFunctionalityForm)([['返回', null]]);
     form.content = await (0, blackbe_1.formatBlackBEInfo)(obj, moreInfo);
-    // eslint-disable-next-line no-return-await
     return await (0, util_1.processListFormReturn)(await form.sendAsync(player));
 }
 exports.blackBEItemForm = blackBEItemForm;

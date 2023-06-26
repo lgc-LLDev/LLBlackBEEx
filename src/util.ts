@@ -89,3 +89,10 @@ export async function processListFormReturn(res: any): Promise<boolean> {
 export function getOnlineRealPlayers(): Player[] {
   return mc.getOnlinePlayers().filter((p) => !p.isSimulatedPlayer());
 }
+
+export function formatVarString(
+  str: string,
+  vars: Record<string, any>
+): string {
+  return str.replace(/%([a-zA-Z0-9_]+)%/g, (m, p1) => vars[p1] ?? m);
+}

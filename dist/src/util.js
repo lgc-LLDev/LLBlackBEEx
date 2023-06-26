@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOnlineRealPlayers = exports.processListFormReturn = exports.setupFunctionalityForm = exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
+exports.formatVarString = exports.getOnlineRealPlayers = exports.processListFormReturn = exports.setupFunctionalityForm = exports.pushNoDuplicateItem = exports.stripIp = exports.fuzzyValIsInArray = exports.checkValInArray = exports.delFormatCode = exports.formatDate = exports.wrapAsyncFunc = void 0;
 const form_api_ex_1 = require("form-api-ex");
 const const_1 = require("./const");
 function wrapAsyncFunc(func) {
@@ -58,16 +58,12 @@ function setupFunctionalityForm(buttons) {
     return form;
 }
 exports.setupFunctionalityForm = setupFunctionalityForm;
-/**
- * 返回 false 代表按下表单内返回按钮 (null)
- */
 async function processListFormReturn(res) {
     if (res) {
         const [, func] = res;
         if (!func)
             return false;
-        /* const cb = */ func();
-        // if (isPromise(cb)) await cb;
+        func();
     }
     return true;
 }
@@ -76,3 +72,7 @@ function getOnlineRealPlayers() {
     return mc.getOnlinePlayers().filter((p) => !p.isSimulatedPlayer());
 }
 exports.getOnlineRealPlayers = getOnlineRealPlayers;
+function formatVarString(str, vars) {
+    return str.replace(/%([a-zA-Z0-9_]+)%/g, (m, p1) => vars[p1] ?? m);
+}
+exports.formatVarString = formatVarString;

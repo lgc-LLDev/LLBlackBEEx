@@ -122,10 +122,24 @@ lip i llblackbeex
   "disableBlackBE": false,
 
   // 当玩家存在 BlackBE 云端黑名单记录时，玩家被踢出时显示的信息
+  // 可用变量：
+  // - %UUID% (记录 UUID)
+  // - %NAME% (记录玩家名)
+  // - %BLACK_ID% (云黑库 ID)
+  // - %XUID% (记录玩家 XUID)
+  // - %INFO% (封禁原因)
+  // - %LEVEL% (封禁等级编号)
+  // - %LEVEL_DESC% (封禁等级描述)
+  // - %LEVEL_COLOR% (封禁等级格式化颜色代码 (带 §))
+  // - %QQ% (记录玩家 QQ)
   "kickByCloudMsg": "§c您已被BlackBE云端黑名单封禁§r\n\n详情请访问 §ghttps://blackbe.work/",
 
   // 当玩家存在本地黑名单记录时，玩家被踢出时显示的信息
-  // 可用变量：%ENDTIME% (解封时间)；%REASON% (封禁时间)
+  // 可用变量：
+  // - %NAME% (被记录的玩家 XboxID)
+  // - %XUID% (被记录的玩家 XUID)
+  // - %ENDTIME% (解封时间)
+  // - %REASON% (封禁原因)
   "kickByLocalMsg": "§c您已被服务器封禁§r\n\n解封时间: §g%ENDTIME%§r\n封禁原因: §g%REASON%",
 
   // 服务器名称（该配置项暂时没用，准备做私有库管理但是没做）
@@ -153,7 +167,11 @@ lip i llblackbeex
   "processOnPreJoin": true,
 
   // 是否只有 OP 能使用 blackbe query 指令
-  "onlyOpCanQuery": false
+  "onlyOpCanQuery": false,
+
+  // 赦免 BlackBE 违规记录检查的玩家列表
+  // 可以填 玩家名或 XUID 字符串
+  "pardonBlackBE": []
 }
 ```
 
@@ -187,5 +205,11 @@ QQ：3076823485
   </details>
 
 ## 更新日志
+
+### 1.0.1
+
+- 把文件日志记录加回来了
+- BlackBE 踢出原因支持一些变量
+- 支持赦免指定玩家 BlackBE 违规记录的检查
 
 旧版更新日志见 [这里](./v0/README.md#更新日志)

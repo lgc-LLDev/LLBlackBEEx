@@ -22,6 +22,7 @@ exports.config = {
     checkLocalListInterval: 5000,
     processOnPreJoin: true,
     onlyOpCanQuery: false,
+    pardonBlackBE: [],
 };
 exports.localList = { list: [] };
 function saveConfig() {

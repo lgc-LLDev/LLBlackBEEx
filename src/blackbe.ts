@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { config } from './config';
-import { formatDate } from './util';
+import { formatDate, formatVarString } from './util';
 
 export interface BlackBECommonInfo {
   uuid: string;
@@ -302,6 +302,27 @@ export async function formatBlackBEInfo(
   lines.push(`§2来源库§r： §b${repoName} （${black_id}）`);
 
   return lines.join('\n');
+}
+
+export function formatBlackBEKickMsg(info?: BlackBECommonInfo): string {
+  const obj = {};
+
+  if (info) {
+    const [lvlDesc, lvlColor] = formatBlackBELvl(info.level);
+    Object.assign(obj, {
+      UUID: info.uuid,
+      NAME: info.name,
+      BLACK_ID: info.black_id,
+      XUID: info.xuid,
+      INFO: info.info,
+      LEVEL: info.level,
+      LEVEL_DESC: lvlDesc,
+      LEVEL_COLOR: lvlColor,
+      QQ: info.qq,
+    });
+  }
+
+  return formatVarString(config.kickByCloudMsg, obj);
 }
 
 export function clearCache() {

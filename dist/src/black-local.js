@@ -5,9 +5,12 @@ const config_1 = require("./config");
 const util_1 = require("./util");
 function formatLocalKickMsg(data) {
     const { reason, endTime } = data;
-    return config_1.config.kickByLocalMsg
-        .replace(/%REASON%/g, reason ?? '无')
-        .replace(/%ENDTIME%/g, endTime ? (0, util_1.formatDate)({ date: new Date(endTime) }) : '永久');
+    return (0, util_1.formatVarString)(config_1.config.kickByLocalMsg, {
+        NAME: data.name ?? '未知',
+        XUID: data.xuid ?? '未知',
+        REASON: reason ?? '无',
+        ENDTIME: endTime ? (0, util_1.formatDate)({ date: new Date(endTime) }) : '永久',
+    });
 }
 exports.formatLocalKickMsg = formatLocalKickMsg;
 function banPlayer(data, options = {}) {
@@ -73,7 +76,6 @@ function queryLocal(param, moreInfo = false, strict = false) {
     param = param.trim();
     const params = strict ? [param] : param.split(/\s/g);
     const ret = [];
-    // 遍历列表中的对象
     for (const it of config_1.localList.list) {
         const { name, xuid, ips, clientIds } = it;
         const willCheck = [name, xuid];
@@ -83,9 +85,7 @@ function queryLocal(param, moreInfo = false, strict = false) {
             if (clientIds)
                 willCheck.push(...clientIds);
         }
-        // 遍历待匹配的值
         for (const val of willCheck) {
-            // 使用搜索词匹配 value
             if (val &&
                 (0, util_1.checkValInArray)(params, (pr) => strict ? val === pr : val.includes(pr))) {
                 ret.push(it);

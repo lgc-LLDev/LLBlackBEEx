@@ -1,5 +1,5 @@
 import { banPlayer, formatLocalKickMsg } from './black-local';
-import { check, formatBlackBEInfo } from './blackbe';
+import { check, formatBlackBEInfo, formatBlackBEKickMsg } from './blackbe';
 import { config, localList, saveLocalList } from './config';
 import { formatLocalItemShort } from './query';
 import { delFormatCode, stripIp, wrapAsyncFunc } from './util';
@@ -15,7 +15,7 @@ mc.listen(
     if (player.isSimulatedPlayer()) return;
 
     // 查本地
-    const { hidePassMessage, kickByCloudMsg, banIp, banDevice } = config;
+    const { hidePassMessage, banIp, banDevice } = config;
 
     const { realName, xuid } = player;
     const { ip, clientId } = player.getDevice();
@@ -40,22 +40,31 @@ mc.listen(
       }
     } catch (e) {
       logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！\n${String(e)}`);
+      return;
     }
 
     if (!hidePassMessage)
       logger.info(`没有查询到玩家 ${realName} 的本地黑名单记录`);
 
     // 查 BlackBE
+    if (
+      config.pardonBlackBE.includes(realName) ||
+      config.pardonBlackBE.includes(xuid)
+    ) {
+      if (!hidePassMessage)
+        logger.info(`玩家 ${realName} 的 BlackBE 违规记录检查已被赦免`);
+      return;
+    }
+
     if (!hidePassMessage)
       logger.info(`正在从 BlackBE 查询玩家 ${realName} 的违规记录……`);
 
     try {
-      const {
-        data: { exist, info },
-      } = await check({ name: realName, xuid });
+      const { data } = await check({ name: realName, xuid });
+      const { exist, info } = data;
 
       if (exist) {
-        banPlayer({ player }, { kickTip: kickByCloudMsg });
+        banPlayer({ player }, { kickTip: formatBlackBEKickMsg(info[0]) });
 
         const formattedInfo =
           `§6查询到玩家 §d${realName} §6在 BlackBE 中存在违规记录！\n` +
@@ -70,6 +79,7 @@ mc.listen(
       logger.error(
         `查询玩家 ${realName} 的 BlackBE 违规记录出错！\n${String(e)}`
       );
+      return;
     }
 
     if (!hidePassMessage)

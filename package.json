@@ -1,6 +1,6 @@
 {
   "name": "ll-black-be-ex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Improved version of LxlBlackBe",
   "main": "index.js",
   "scripts": {

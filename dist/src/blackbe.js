@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCache = exports.formatBlackBEInfo = exports.formatBlackBELvl = exports.getRepoByUuid = exports.checkPrivate = exports.check = exports.deletePrivatePiece = exports.uploadPrivatePiece = exports.getPrivatePieceList = exports.getPrivateRespList = exports.cachedPrivResp = void 0;
+exports.clearCache = exports.formatBlackBEKickMsg = exports.formatBlackBEInfo = exports.formatBlackBELvl = exports.getRepoByUuid = exports.checkPrivate = exports.check = exports.deletePrivatePiece = exports.uploadPrivatePiece = exports.getPrivatePieceList = exports.getPrivateRespList = exports.cachedPrivResp = void 0;
 const axios_1 = __importDefault(require("axios"));
 const config_1 = require("./config");
 const util_1 = require("./util");
@@ -18,18 +18,12 @@ const defaultUploadParams = {
 };
 exports.cachedPrivResp = [];
 function getHeaders(auth = true) {
-    const headers = {
-    // 'Content-Type': 'application/json',
-    };
+    const headers = {};
     if (auth && config_1.config.apiToken)
         headers.Authorization = `Bearer ${config_1.config.apiToken}`;
     return headers;
 }
 const buildUrl = (path) => String(new URL(`openapi/v3/${path}`, config_1.config.apiHost));
-// 请求失败 axios 会抛出错误
-// export const isBlackBESuccessReturn = <T>(
-//   v: BlackBEReturn<T>
-// ): v is BlackBESuccessReturn<T> => v.success && 'data' in v; // && !!v.data;
 function checkIsWithToken(options) {
     const withToken = options.withToken ?? true;
     delete options.withToken;
@@ -40,10 +34,8 @@ async function getPrivateRespList() {
         headers: getHeaders(),
         proxy: config_1.config.proxy,
     })).data;
-    // if (isBlackBESuccessReturn(resp)) {
     exports.cachedPrivResp.length = 0;
     exports.cachedPrivResp.push(...resp.data.repositories_list);
-    // }
     return resp;
 }
 exports.getPrivateRespList = getPrivateRespList;
@@ -108,9 +100,6 @@ async function getRepoByUuid(uuid) {
     return null;
 }
 exports.getRepoByUuid = getRepoByUuid;
-/**
- * @returns [ 等级描述，对应颜色 ]
- */
 function formatBlackBELvl(lvl) {
     switch (lvl) {
         case 1:
@@ -147,6 +136,25 @@ async function formatBlackBEInfo(obj, moreInfo = false) {
     return lines.join('\n');
 }
 exports.formatBlackBEInfo = formatBlackBEInfo;
+function formatBlackBEKickMsg(info) {
+    const obj = {};
+    if (info) {
+        const [lvlDesc, lvlColor] = formatBlackBELvl(info.level);
+        Object.assign(obj, {
+            UUID: info.uuid,
+            NAME: info.name,
+            BLACK_ID: info.black_id,
+            XUID: info.xuid,
+            INFO: info.info,
+            LEVEL: info.level,
+            LEVEL_DESC: lvlDesc,
+            LEVEL_COLOR: lvlColor,
+            QQ: info.qq,
+        });
+    }
+    return (0, util_1.formatVarString)(config_1.config.kickByCloudMsg, obj);
+}
+exports.formatBlackBEKickMsg = formatBlackBEKickMsg;
 function clearCache() {
     exports.cachedPrivResp.length = 0;
 }

@@ -24,6 +24,7 @@ export interface Config {
   checkLocalListInterval: number;
   processOnPreJoin: boolean;
   onlyOpCanQuery: boolean;
+  pardonBlackBE: string[];
 }
 
 export interface LocalBlackListItem {
@@ -56,6 +57,7 @@ export const config: Config = {
   checkLocalListInterval: 5000,
   processOnPreJoin: true,
   onlyOpCanQuery: false,
+  pardonBlackBE: [],
 };
 
 export const localList: LocalBlackList = { list: [] };

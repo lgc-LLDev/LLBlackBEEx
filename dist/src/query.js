@@ -15,7 +15,6 @@ async function queryBlackBE(param) {
             ? (0, blackbe_1.checkPrivate)({ name: param, qq: param, xuid: param })
             : Promise.resolve(),
     ];
-    // @ts-expect-error 故意需要
     const [comm, priv] = await Promise.all(tasks);
     const commInfo = [];
     const privInfo = [];
@@ -80,9 +79,7 @@ async function queryResultForm(player, param, moreInfo = false) {
     const privNum = blackBEPrivRes.length;
     const commNum = blackBECommRes.length;
     if (!localNum && !privNum && !commNum) {
-        player.tell(
-        // prettier-ignore
-        `§6很抱歉，我们找遍了本地黑名单${config_1.config.disableBlackBE ? '' : '和 BlackBE'}，` +
+        player.tell(`§6很抱歉，我们找遍了本地黑名单${config_1.config.disableBlackBE ? '' : '和 BlackBE'}，` +
             `但是没有查询到任何结果 QAQ`);
         return;
     }
@@ -95,9 +92,7 @@ async function queryResultForm(player, param, moreInfo = false) {
         headingSuffixes.push(`§l§e${privNum} §r§a条云黑私有库记录`);
     if (headingSuffixes.length > 1)
         headingSuffixes.push(`和 ${headingSuffixes.pop()}`);
-    const heading = 
-    // prettier-ignore
-    `§a为您找到了关于 §l§2${param} §r§a的 ${headingSuffixes.join('， ')}`;
+    const heading = `§a为您找到了关于 §l§2${param} §r§a的 ${headingSuffixes.join('， ')}`;
     const form = new form_api_ex_1.SimpleFormEx([
         ...localRes.map((value) => ({ type: 'local', value })),
         ...blackBECommRes.map((value) => ({ type: 'common', value })),

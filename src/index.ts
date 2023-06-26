@@ -9,6 +9,7 @@ import {
 } from './const';
 
 logger.setTitle(PLUGIN_NAME);
+logger.setFile(`logs/${PLUGIN_NAME}.log`);
 
 require('./command');
 require('./listener');
