@@ -1,7 +1,8 @@
 <!-- markdownlint-disable MD033 MD036 MD041 -->
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
+
+<img alt="logo" src="https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
 
 # LLBlackBEEx
 
@@ -39,12 +40,8 @@ _✨ 支持本地云端双名单、功能**更**完善的黑名单插件 ✨_
 ### 使用 Lip
 
 ```shell
-lip i llblackbeex
+lip i https://github.com/lgc-LLDev/LLBlackBEEx
 ```
-
-### 手动打包
-
-将 `dist` 文件夹中内容打包成 `llplugin` 安装即可
 
 ## 指令
 
@@ -145,11 +142,6 @@ lip i llblackbeex
   // 服务器名称（该配置项暂时没用，准备做私有库管理但是没做）
   "serverName": "服务器",
 
-  // 请求 BlackBE API 使用的代理
-  // 格式类似 http://127.0.0.1:7890，填写 false 为不使用
-  // 填写之后会自动解析为对象结构
-  "proxy": false,
-
   // BlackBE API 域名
   "apiHost": "https://api.blackbe.work/",
 
@@ -205,6 +197,11 @@ QQ：3076823485
   </details>
 
 ## 更新日志
+
+### 1.1.0
+
+- 适配 LeviLamina（LL3）的 LegacyScriptEngine
+  - 因 `network.httpGet` & `network.httpPost` 不支持 `proxy`，移除了 `proxy` 配置项
 
 ### 1.0.1
 
