@@ -1,6 +1,11 @@
-import { CustomFormEx, sendModalFormAsync, SimpleFormEx } from 'form-api-ex';
-import { formatLocalInfo, queryLocal } from './black-local';
+import {
+  CustomFormEx,
+  FormClose,
+  sendModalFormAsync,
+  SimpleFormEx,
+} from 'form-api-ex';
 
+import { formatLocalInfo, queryLocal } from './black-local';
 import {
   BlackBECommonInfo,
   BlackBEPrivInfoWithRespId,
@@ -53,31 +58,32 @@ export async function localItemForm(
       )
       .sendAsync(player);
 
-    if (res) {
-      const { forever, time } = res;
-      const timeNum = Number(time);
-      if ((!timeNum || timeNum <= 0) && !forever) {
-        await sendModalFormAsync(
-          player,
-          PLUGIN_NAME,
-          '§c请输入正确的封禁时间！',
-          '§a知道了',
-          '§a知道了'
-        );
-        editTime();
-        return;
-      }
-
-      // 引用 可以直接改
-      obj.endTime = forever
-        ? undefined
-        : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
-      saveLocalList();
-
-      player.tell('§a操作成功！');
-    } else {
+    if (res === FormClose) {
       player.tell('§6修改操作已取消');
+      return;
     }
+
+    const { forever, time } = res;
+    const timeNum = Number(time);
+    if ((!timeNum || timeNum <= 0) && !forever) {
+      await sendModalFormAsync(
+        player,
+        PLUGIN_NAME,
+        '§c请输入正确的封禁时间！',
+        '§a知道了',
+        '§a知道了'
+      );
+      editTime();
+      return;
+    }
+
+    // 引用 可以直接改
+    obj.endTime = forever
+      ? undefined
+      : new Date(Date.now() + timeNum * 60 * 1000).toJSON();
+    saveLocalList();
+
+    player.tell('§a操作成功！');
   };
 
   const editDesc = async () => {
@@ -88,15 +94,16 @@ export async function localItemForm(
       })
       .sendAsync(player);
 
-    if (res) {
-      const reason = res.reason.trim();
-      obj.reason = reason || undefined;
-      saveLocalList();
-
-      player.tell('§a操作成功！');
-    } else {
+    if (res === FormClose) {
       player.tell('§6修改操作已取消');
+      return;
     }
+
+    const reason = res.reason.trim();
+    obj.reason = reason || undefined;
+    saveLocalList();
+
+    player.tell('§a操作成功！');
   };
 
   const form = setupFunctionalityForm([['返回', null]]);
@@ -107,8 +114,7 @@ export async function localItemForm(
       ['修改封禁时间', editTime],
       ['修改封禁原因', editDesc]
     );
-  // eslint-disable-next-line no-return-await
-  return await processListFormReturn(await form.sendAsync(player));
+  return processListFormReturn(await form.sendAsync(player));
 }
 
 export async function blackBEItemForm(
@@ -118,8 +124,7 @@ export async function blackBEItemForm(
 ): Promise<boolean> {
   const form = setupFunctionalityForm([['返回', null]]);
   form.content = await formatBlackBEInfo(obj, moreInfo);
-  // eslint-disable-next-line no-return-await
-  return await processListFormReturn(await form.sendAsync(player));
+  return processListFormReturn(await form.sendAsync(player));
 }
 
 export async function localListForm(player: Player) {
@@ -143,7 +148,7 @@ export async function localListForm(player: Player) {
 
   const sendTask = async () => {
     const res = await form.sendAsync(player);
-    if (res) {
+    if (res !== FormClose) {
       const infoRes = await localItemForm(player, res, true);
       if (infoRes === false) sendTask();
     }

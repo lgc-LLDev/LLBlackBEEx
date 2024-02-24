@@ -1,4 +1,5 @@
 import { SimpleFormEx } from 'form-api-ex';
+
 import { PLUGIN_NAME } from './const';
 
 export function wrapAsyncFunc<T extends Array<unknown>>(
@@ -95,4 +96,80 @@ export function formatVarString(
   vars: Record<string, any>
 ): string {
   return str.replace(/%([a-zA-Z0-9_]+)%/g, (m, p1) => vars[p1] ?? m);
+}
+
+export class RequestError extends Error {
+  constructor(public readonly status: number, public readonly data: string) {
+    super(`Request failed with status ${status}: ${data}`);
+    this.name = 'RequestError';
+  }
+}
+
+export type ResponseType = 'json' | 'text';
+
+export interface GetAsyncOptions {
+  url: string;
+  params?: Record<string, any>;
+  headers?: Record<string, any>;
+  responseType?: ResponseType;
+}
+
+export interface PostAsyncOptions extends GetAsyncOptions {
+  data?: any;
+}
+
+export function appendParamsToUrl(url: string, params?: Record<string, any>) {
+  const urlObj = new URL(url);
+  if (params)
+    for (const [k, v] of Object.entries(params))
+      urlObj.searchParams.set(k, `${v}`);
+  return urlObj.toString();
+}
+
+export function normalizeHeaders(headers: Record<string, any>) {
+  const normalized: Record<string, string> = {};
+  for (const [k, v] of Object.entries(headers)) normalized[k] = `${v}`;
+  return normalized;
+}
+
+export async function getAsync(
+  options: GetAsyncOptions & { responseType: 'json' }
+): Promise<any>;
+export async function getAsync(options: GetAsyncOptions): Promise<string>;
+export async function getAsync(options: GetAsyncOptions) {
+  const { url, params, headers, responseType } = options;
+  const res = await new Promise<string>((resolve, reject) => {
+    network.httpGet(
+      appendParamsToUrl(url, params),
+      headers ? normalizeHeaders(headers) : {},
+      (status, result) => {
+        if (status !== 200) reject(new RequestError(status, result));
+        else resolve(result);
+      }
+    );
+  });
+  return responseType === 'json' ? JSON.parse(res) : res;
+}
+
+export async function postAsync(
+  options: PostAsyncOptions & { responseType: 'json' }
+): Promise<any>;
+export async function postAsync(options: PostAsyncOptions): Promise<string>;
+export async function postAsync(options: PostAsyncOptions) {
+  const { url, params, headers, data, responseType } = options;
+  const isDataText = typeof data === 'string';
+  const res = await new Promise<string>((resolve, reject) => {
+    network.httpPost(
+      appendParamsToUrl(url, params),
+      headers ? normalizeHeaders(headers) : {},
+      isDataText ? data : JSON.stringify(data),
+      headers?.['Content-Type'] ??
+        (isDataText ? 'text/plain' : 'application/json'),
+      (status, result) => {
+        if (status !== 200) reject(new RequestError(status, result));
+        else resolve(result);
+      }
+    );
+  });
+  return responseType === 'json' ? JSON.parse(res) : res;
 }

@@ -8,11 +8,8 @@ import {
   PLUGIN_VERSION,
 } from './const';
 
-logger.setTitle(PLUGIN_NAME);
-logger.setFile(`logs/${PLUGIN_NAME}.log`);
-
-require('./command');
-require('./listener');
+import './command';
+import './listener';
 
 ll.registerPlugin(
   PLUGIN_NAME,

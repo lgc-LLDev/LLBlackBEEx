@@ -1,7 +1,5 @@
-import axios from 'axios';
-
 import { config } from './config';
-import { formatDate, formatVarString } from './util';
+import { formatDate, formatVarString, getAsync, postAsync } from './util';
 
 export interface BlackBECommonInfo {
   uuid: string;
@@ -133,11 +131,6 @@ function getHeaders(auth = true) {
 const buildUrl = (path: string): string =>
   String(new URL(`openapi/v3/${path}`, config.apiHost));
 
-// 请求失败 axios 会抛出错误
-// export const isBlackBESuccessReturn = <T>(
-//   v: BlackBEReturn<T>
-// ): v is BlackBESuccessReturn<T> => v.success && 'data' in v; // && !!v.data;
-
 function checkIsWithToken(options: { withToken?: boolean }): boolean {
   const withToken = options.withToken ?? true;
   delete options.withToken;
@@ -147,75 +140,65 @@ function checkIsWithToken(options: { withToken?: boolean }): boolean {
 export async function getPrivateRespList(): Promise<
   BlackBEReturn<BlackBEPrivRespData>
 > {
-  const resp: BlackBEReturn<BlackBEPrivRespData> = (
-    await axios.get(buildUrl('private/repositories/list'), {
-      headers: getHeaders(),
-      proxy: config.proxy,
-    })
-  ).data;
+  const resp: BlackBEReturn<BlackBEPrivRespData> = await getAsync({
+    url: buildUrl('private/repositories/list'),
+    headers: getHeaders(),
+    responseType: 'json',
+  });
 
-  // if (isBlackBESuccessReturn(resp)) {
   cachedPrivResp.length = 0;
   cachedPrivResp.push(...resp.data.repositories_list);
-  // }
-
   return resp;
 }
 
-export async function getPrivatePieceList(options: {
+export function getPrivatePieceList(options: {
   uuid: string;
   page?: number;
   page_size?: number;
 }): Promise<BlackBEReturn<BlackBEPrivPieceData>> {
-  return (
-    await axios.get(buildUrl('private/repositories/piece/list'), {
-      params: options,
-      headers: getHeaders(),
-      proxy: config.proxy,
-    })
-  ).data;
+  return getAsync({
+    url: buildUrl('private/repositories/piece/list'),
+    params: options,
+    headers: getHeaders(),
+    responseType: 'json',
+  });
 }
 
-export async function uploadPrivatePiece(
+export function uploadPrivatePiece(
   options: BlackBEPrivUploadParam
 ): Promise<BlackBEReturn<BlackBEPrivUploadData>> {
-  return (
-    await axios.post(
-      buildUrl('private/repositories/piece/upload'),
-      { ...defaultUploadParams, options },
-      {
-        headers: getHeaders(),
-        proxy: config.proxy,
-      }
-    )
-  ).data;
+  return postAsync({
+    url: buildUrl('private/repositories/piece/upload'),
+    data: { ...defaultUploadParams, options },
+    headers: getHeaders(),
+    responseType: 'json',
+  });
 }
 
-export async function deletePrivatePiece(options: {
+export function deletePrivatePiece(options: {
   piece_uuid: string;
 }): Promise<BlackBEReturn<[]>> {
-  return (
-    await axios.post(buildUrl('private/repositories/piece/delete'), options, {
-      headers: getHeaders(),
-      proxy: config.proxy,
-    })
-  ).data;
+  return postAsync({
+    url: buildUrl('private/repositories/piece/delete'),
+    data: options,
+    headers: getHeaders(),
+    responseType: 'json',
+  });
 }
 
-export async function check(options: {
+export function check(options: {
   name?: string;
   qq?: string;
   xuid?: string;
   withToken?: boolean;
 }): Promise<BlackBEReturn<BlackBECommonData>> {
   const withToken = checkIsWithToken(options);
-  return (
-    await axios.get(buildUrl('check'), {
-      params: options,
-      headers: getHeaders(withToken),
-      proxy: config.proxy,
-    })
-  ).data;
+  return postAsync({
+    url: buildUrl('check'),
+    data: options,
+    headers: getHeaders(withToken),
+    responseType: 'json',
+  });
 }
 
 export async function checkPrivate(options: {
@@ -224,20 +207,13 @@ export async function checkPrivate(options: {
   xuid?: string;
 }): Promise<BlackBEReturn<BlackBEPrivateData[]>> {
   if (!cachedPrivResp.length) await getPrivateRespList();
-
-  return (
-    await axios.post(
-      buildUrl('check/private'),
-      {
-        repositories_uuid: cachedPrivResp.map((v) => v.uuid),
-      },
-      {
-        params: options,
-        headers: getHeaders(),
-        proxy: config.proxy,
-      }
-    )
-  ).data;
+  return postAsync({
+    url: buildUrl('check/private'),
+    params: options,
+    data: { repositories_uuid: cachedPrivResp.map((v) => v.uuid) },
+    headers: getHeaders(),
+    responseType: 'json',
+  });
 }
 
 export async function getRepoByUuid(

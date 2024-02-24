@@ -1,20 +1,24 @@
 {
-  "format_version": 1,
-  "tooth": "github.com/lgc-LLSEDev/LLBlackBEEx",
-  "version": "1.0.0",
-  "dependencies": {},
-  "information": {
+  "$schema": "https://raw.githubusercontent.com/lippkg/lip/main/schemas/tooth.v2.schema.json",
+  "format_version": 2,
+  "tooth": "github.com/lgc-LLDev/LLBlackBEEx",
+  "version": "1.1.0",
+  "info": {
     "name": "LLBlackBEEx",
-    "description": "LxlBlackBE的改进版，支持本地云端双名单、功能更完善的黑名单插件",
-    "author": "lgc2333",
-    "license": "Apache-2.0",
-    "homepage": "https://github.com/lgc-LLSEDev/LLBlackBEEx"
+    "description": "The improved version of LxlBlackBE, a more powerful cloud blacklist plugin",
+    "author": "student_2333",
+    "tags": ["plugin", "lse", "quickjs", "ban", "blackbe", "blacklist"]
   },
-  "placement": [
-    {
-      "source": "dist/*",
-      "destination": "plugins/nodejs/ll-black-be-ex/*"
-    }
-  ],
-  "possession": ["plugins/LLBlackBEEx/"]
+  "files": {
+    "place": [
+      {
+        "src": "dist/LLBlackBEEx.js",
+        "dest": "plugins/LLBlackBEEx/LLBlackBEEx.js"
+      },
+      {
+        "src": "manifest.json",
+        "dest": "plugins/LLBlackBEEx/manifest.json"
+      }
+    ]
+  }
 }

@@ -1,4 +1,5 @@
-import { CustomFormEx } from 'form-api-ex';
+import { CustomFormEx, FormClose } from 'form-api-ex';
+
 import { banPlayer, queryLocal } from './black-local';
 import { config, reloadConfig } from './config';
 import { PLUGIN_NAME } from './const';
@@ -84,7 +85,7 @@ export async function banForm(player: Player) {
     .addInput('reason', '请输入封禁理由（可选）');
 
   const res = await form.sendAsync(player);
-  if (!res) return;
+  if (res === FormClose) return;
 
   const { playerDropdown, time } = res;
 
@@ -122,205 +123,207 @@ function unBanCommand(willUnBan: string, player?: Player) {
   );
 }
 
-interface CmdMainCallbackData {
-  enumReload?: 'reload';
+mc.listen('onServerStarted', () => {
+  interface CmdMainCallbackData {
+    enumReload?: 'reload';
 
-  enumQuery?: 'query';
-  queryString?: string;
+    enumQuery?: 'query';
+    queryString?: string;
 
-  enumBan?: 'ban';
-  player?: string;
-  reason?: string;
-  duration?: number;
+    enumBan?: 'ban';
+    player?: string;
+    reason?: string;
+    duration?: number;
 
-  enumUnBan?: 'unban';
+    enumUnBan?: 'unban';
+    // player 上面有
+
+    enumLocal?: 'local';
+  }
+
+  const cmdMain = mc.newCommand('blackbe', PLUGIN_NAME, PermType.Any);
+
+  cmdMain.setEnum('enumReload', ['reload']);
+  cmdMain.mandatory('enumReload', ParamType.Enum, 'enumReload', 1);
+  cmdMain.overload(['enumReload']);
+
+  cmdMain.setEnum('enumQuery', ['query']);
+  cmdMain.mandatory('enumQuery', ParamType.Enum, 'enumQuery', 1);
+  cmdMain.optional('queryString', ParamType.String);
+  cmdMain.overload(['enumQuery', 'queryString']);
+
+  cmdMain.setEnum('enumBan', ['ban']);
+  cmdMain.mandatory('enumBan', ParamType.Enum, 'enumBan', 1);
+  cmdMain.mandatory('player', ParamType.String);
+  cmdMain.optional('reason', ParamType.String);
+  cmdMain.optional('duration', ParamType.Int);
+  cmdMain.overload(['enumBan', 'player', 'reason', 'duration']);
+  cmdMain.overload(['enumBan']); // ban form
+
+  cmdMain.setEnum('enumUnBan', ['unban']);
+  cmdMain.mandatory('enumUnBan', ParamType.Enum, 'enumUnBan', 1);
   // player 上面有
+  cmdMain.overload(['enumUnBan', 'player']);
 
-  enumLocal?: 'local';
-}
+  cmdMain.setEnum('enumLocal', ['local']);
+  cmdMain.mandatory('enumLocal', ParamType.Enum, 'enumLocal', 1);
+  cmdMain.overload(['enumLocal']);
 
-const cmdMain = mc.newCommand('blackbe', PLUGIN_NAME, PermType.Any);
+  cmdMain.overload([]);
 
-cmdMain.setEnum('enumReload', ['reload']);
-cmdMain.mandatory('enumReload', ParamType.Enum, 'enumReload', 1);
-cmdMain.overload(['enumReload']);
+  cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
+    const {
+      enumReload,
+      enumQuery,
+      queryString,
+      enumBan,
+      player: stringSelector,
+      reason,
+      duration,
+      enumUnBan,
+      enumLocal,
+    } = result;
 
-cmdMain.setEnum('enumQuery', ['query']);
-cmdMain.mandatory('enumQuery', ParamType.Enum, 'enumQuery', 1);
-cmdMain.optional('queryString', ParamType.String);
-cmdMain.overload(['enumQuery', 'queryString']);
+    if (enumReload) {
+      if (!checkCommandOp(player)) {
+        out.error(ONLY_OP_TEXT);
+        return false;
+      }
 
-cmdMain.setEnum('enumBan', ['ban']);
-cmdMain.mandatory('enumBan', ParamType.Enum, 'enumBan', 1);
-cmdMain.mandatory('player', ParamType.String);
-cmdMain.optional('reason', ParamType.String);
-cmdMain.optional('duration', ParamType.Int);
-cmdMain.overload(['enumBan', 'player', 'reason', 'duration']);
-cmdMain.overload(['enumBan']); // ban form
-
-cmdMain.setEnum('enumUnBan', ['unban']);
-cmdMain.mandatory('enumUnBan', ParamType.Enum, 'enumUnBan', 1);
-// player 上面有
-cmdMain.overload(['enumUnBan', 'player']);
-
-cmdMain.setEnum('enumLocal', ['local']);
-cmdMain.mandatory('enumLocal', ParamType.Enum, 'enumLocal', 1);
-cmdMain.overload(['enumLocal']);
-
-cmdMain.overload([]);
-
-cmdMain.setCallback((_, { player }, out, result: CmdMainCallbackData) => {
-  const {
-    enumReload,
-    enumQuery,
-    queryString,
-    enumBan,
-    player: stringSelector,
-    reason,
-    duration,
-    enumUnBan,
-    enumLocal,
-  } = result;
-
-  if (enumReload) {
-    if (!checkCommandOp(player)) {
-      out.error(ONLY_OP_TEXT);
-      return false;
-    }
-
-    try {
-      reloadConfig();
-    } catch (e) {
-      out.error(`出错了！\n${String(e)}`);
-      return false;
-    }
-    out.success(
-      `§a成功重载配置文件与本地黑名单！部分配置项需要重启服务器才可以生效！`
-    );
-    return true;
-  }
-
-  if (enumQuery) {
-    if (!player) {
-      out.error(NO_CONSOLE_TEXT);
-      out.error(REFUSE_LIST_QUERY_TEXT);
-      return false;
-    }
-    if (config.onlyOpCanQuery && !player.isOP()) {
-      out.error(ONLY_OP_TEXT);
-      return false;
-    }
-    queryCmd(player, queryString);
-    return true;
-  }
-
-  if (enumBan) {
-    if (!checkCommandOp(player)) {
-      out.error(ONLY_OP_TEXT);
-      return false;
-    }
-
-    if (player && !stringSelector) {
-      wrapAsyncFunc(banForm)(player);
+      try {
+        reloadConfig();
+      } catch (e) {
+        out.error(`出错了！\n${String(e)}`);
+        return false;
+      }
+      out.success(
+        `§a成功重载配置文件与本地黑名单！部分配置项需要重启服务器才可以生效！`
+      );
       return true;
     }
 
-    if (stringSelector) {
-      banCommand(stringSelector, duration, reason, player);
+    if (enumQuery) {
+      if (!player) {
+        out.error(NO_CONSOLE_TEXT);
+        out.error(REFUSE_LIST_QUERY_TEXT);
+        return false;
+      }
+      if (config.onlyOpCanQuery && !player.isOP()) {
+        out.error(ONLY_OP_TEXT);
+        return false;
+      }
+      queryCmd(player, queryString);
       return true;
     }
 
-    out.error(NO_ENOUGH_ARG);
+    if (enumBan) {
+      if (!checkCommandOp(player)) {
+        out.error(ONLY_OP_TEXT);
+        return false;
+      }
+
+      if (player && !stringSelector) {
+        wrapAsyncFunc(banForm)(player);
+        return true;
+      }
+
+      if (stringSelector) {
+        banCommand(stringSelector, duration, reason, player);
+        return true;
+      }
+
+      out.error(NO_ENOUGH_ARG);
+      return false;
+    }
+
+    if (enumUnBan) {
+      if (!checkCommandOp(player)) {
+        out.error(ONLY_OP_TEXT);
+        return false;
+      }
+
+      if (stringSelector) {
+        unBanCommand(stringSelector, player);
+        return true;
+      }
+      return false; // never reach?
+    }
+
+    if (enumLocal) {
+      if (!player) {
+        out.error(NO_CONSOLE_TEXT);
+        out.error(REFUSE_LIST_QUERY_TEXT);
+        return false;
+      }
+
+      if (!player.isOP()) {
+        out.error(ONLY_OP_TEXT);
+        return false;
+      }
+
+      wrapAsyncFunc(localListForm)(player);
+      return true;
+    }
+
+    out.error(`请输入子命令`);
     return false;
+  });
+
+  cmdMain.setup();
+
+  if (config.registerBanCommand) {
+    const cmdBan = mc.newCommand(
+      'ban',
+      `${PLUGIN_NAME} - 本地黑名单封禁`,
+      PermType.GameMasters
+    );
+    cmdBan.mandatory('player', ParamType.String);
+    cmdBan.optional('reason', ParamType.String);
+    cmdBan.optional('duration', ParamType.Int);
+    cmdBan.overload(['player', 'reason', 'duration']);
+    cmdBan.setCallback(
+      (
+        _,
+        { player },
+        __,
+        {
+          player: stringSelector,
+          reason,
+          duration,
+        }: {
+          player: string;
+          reason?: string;
+          duration?: number;
+        }
+      ) => {
+        banCommand(stringSelector, duration, reason, player);
+        return true;
+      }
+    );
+    cmdBan.setup();
+
+    const cmdUnBan = mc.newCommand(
+      'unban',
+      `${PLUGIN_NAME} - 本地黑名单解封`,
+      PermType.GameMasters
+    );
+    cmdUnBan.mandatory('player', ParamType.String);
+    cmdUnBan.overload(['player']);
+    cmdUnBan.setCallback(
+      (
+        _,
+        { player },
+        __,
+        {
+          player: stringSelector,
+        }: {
+          player: string;
+        }
+      ) => {
+        unBanCommand(stringSelector, player);
+        return true;
+      }
+    );
+    cmdUnBan.setup();
   }
-
-  if (enumUnBan) {
-    if (!checkCommandOp(player)) {
-      out.error(ONLY_OP_TEXT);
-      return false;
-    }
-
-    if (stringSelector) {
-      unBanCommand(stringSelector, player);
-      return true;
-    }
-    return false; // never reach?
-  }
-
-  if (enumLocal) {
-    if (!player) {
-      out.error(NO_CONSOLE_TEXT);
-      out.error(REFUSE_LIST_QUERY_TEXT);
-      return false;
-    }
-
-    if (!player.isOP()) {
-      out.error(ONLY_OP_TEXT);
-      return false;
-    }
-
-    wrapAsyncFunc(localListForm)(player);
-    return true;
-  }
-
-  out.error(`请输入子命令`);
-  return false;
 });
-
-cmdMain.setup();
-
-if (config.registerBanCommand) {
-  const cmdBan = mc.newCommand(
-    'ban',
-    `${PLUGIN_NAME} - 本地黑名单封禁`,
-    PermType.GameMasters
-  );
-  cmdBan.mandatory('player', ParamType.String);
-  cmdBan.optional('reason', ParamType.String);
-  cmdBan.optional('duration', ParamType.Int);
-  cmdBan.overload(['player', 'reason', 'duration']);
-  cmdBan.setCallback(
-    (
-      _,
-      { player },
-      __,
-      {
-        player: stringSelector,
-        reason,
-        duration,
-      }: {
-        player: string;
-        reason?: string;
-        duration?: number;
-      }
-    ) => {
-      banCommand(stringSelector, duration, reason, player);
-      return true;
-    }
-  );
-  cmdBan.setup();
-
-  const cmdUnBan = mc.newCommand(
-    'unban',
-    `${PLUGIN_NAME} - 本地黑名单解封`,
-    PermType.GameMasters
-  );
-  cmdUnBan.mandatory('player', ParamType.String);
-  cmdUnBan.overload(['player']);
-  cmdUnBan.setCallback(
-    (
-      _,
-      { player },
-      __,
-      {
-        player: stringSelector,
-      }: {
-        player: string;
-      }
-    ) => {
-      unBanCommand(stringSelector, player);
-      return true;
-    }
-  );
-  cmdUnBan.setup();
-}

@@ -1,6 +1,11 @@
-import { CustomFormEx, CustomFormInputObject, SimpleFormEx } from 'form-api-ex';
-import { queryLocal } from './black-local';
+import {
+  CustomFormEx,
+  CustomFormInputObject,
+  FormClose,
+  SimpleFormEx,
+} from 'form-api-ex';
 
+import { queryLocal } from './black-local';
 import {
   BlackBECommonData,
   BlackBECommonInfo,
@@ -9,7 +14,7 @@ import {
   BlackBEReturn,
   check,
   checkPrivate,
-  formatBlackBELvl
+  formatBlackBELvl,
 } from './blackbe';
 import { config, LocalBlackListItem } from './config';
 import { PLUGIN_NAME } from './const';
@@ -163,7 +168,7 @@ export async function queryResultForm(
 
   const sendTask = async () => {
     const res = await form.sendAsync(player);
-    if (res) {
+    if (res !== FormClose) {
       const { type, value } = res;
       const infoRes = await (type === 'local'
         ? localItemForm(player, value, moreInfo)
@@ -200,7 +205,7 @@ export async function queryFormAsync(player: Player, param?: string) {
     });
     const res = await form.sendAsync(player);
 
-    if (!res) return;
+    if (res === FormClose) return;
     ({ param } = res);
   }
 
