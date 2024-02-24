@@ -5,7 +5,7 @@ import { config, reloadConfig } from './config';
 import { PLUGIN_NAME } from './const';
 import { delLocalListItem, localListForm } from './manage';
 import { formatLocalItemShort, queryCmd } from './query';
-import { delFormatCode, getOnlineRealPlayers, wrapAsyncFunc } from './util';
+import { delFormatCode, getOnlineRealPlayers, logErr } from './util';
 
 const ONLY_OP_TEXT = '此命令仅限OP执行';
 const NO_CONSOLE_TEXT = '此命令无法在控制台中执行';
@@ -223,7 +223,7 @@ mc.listen('onServerStarted', () => {
       }
 
       if (player && !stringSelector) {
-        wrapAsyncFunc(banForm)(player);
+        banForm(player).catch(logErr);
         return true;
       }
 
@@ -261,7 +261,7 @@ mc.listen('onServerStarted', () => {
         return false;
       }
 
-      wrapAsyncFunc(localListForm)(player);
+      localListForm(player).catch(logErr);
       return true;
     }
 

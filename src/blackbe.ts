@@ -128,8 +128,12 @@ function getHeaders(auth = true) {
   return headers;
 }
 
-const buildUrl = (path: string): string =>
-  String(new URL(`openapi/v3/${path}`, config.apiHost));
+function buildUrl(path: string, slashEnd = false): string {
+  let { apiHost } = config;
+  if (!apiHost.endsWith('/')) apiHost = `${apiHost}/`;
+  if (slashEnd && !path.endsWith('/')) path = `${path}/`;
+  return `${apiHost}openapi/v3/${path}`;
+}
 
 function checkIsWithToken(options: { withToken?: boolean }): boolean {
   const withToken = options.withToken ?? true;
@@ -193,9 +197,9 @@ export function check(options: {
   withToken?: boolean;
 }): Promise<BlackBEReturn<BlackBECommonData>> {
   const withToken = checkIsWithToken(options);
-  return postAsync({
-    url: buildUrl('check'),
-    data: options,
+  return getAsync({
+    url: buildUrl('check', true),
+    params: options,
     headers: getHeaders(withToken),
     responseType: 'json',
   });

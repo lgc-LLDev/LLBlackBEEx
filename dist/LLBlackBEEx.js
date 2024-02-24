@@ -12,7 +12,8 @@ const PLUGIN_EXTRA = {
 };
 logger.setTitle(PLUGIN_NAME);
 logger.setFile(`logs/${PLUGIN_NAME}.log`);
-const DATA_PATH = `data/${PLUGIN_NAME}`;
+const PLUGIN_ROOT = `./plugins/${PLUGIN_NAME}`;
+const DATA_PATH = `${PLUGIN_ROOT}/data`;
 if (!file.exists(DATA_PATH))
     file.mkdir(DATA_PATH);
 
@@ -49,6 +50,25 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
+
+/**
+ * 格式化错误堆栈
+ * @param e 错误对象
+ * @returns 格式化后的错误
+ */
+function formatError(e) {
+    return e instanceof Error ? `${e.message}\n${e.stack}` : String(e);
+}
+/**
+ * 在 sync function 中使用 setTimeout 调用 async function，解决 LLSE 回调调用 async 函数会出现的玄学 bug
+ * @param func async function
+ * @returns wrapped sync function
+ */
+function wrapAsyncFunc(func) {
+    return (...args) => {
+        setTimeout(() => func(...args).catch((e) => logger.error(formatError(e))), 0);
+    };
+}
 /**
  * 使用 json 序列化及反序列化深复制对象
  * @param obj 对象
@@ -622,11 +642,6 @@ function reloadConfig() {
 }
 reloadConfig();
 
-function wrapAsyncFunc(func) {
-    return (...args) => {
-        setTimeout(() => func(...args).catch((e) => logger.error(String(e))), 0);
-    };
-}
 function formatDate(options = {}) {
     const date = options.date ?? new Date();
     const withTime = options.withTime ?? true;
@@ -681,20 +696,26 @@ function getOnlineRealPlayers() {
 function formatVarString(str, vars) {
     return str.replace(/%([a-zA-Z0-9_]+)%/g, (m, p1) => vars[p1] ?? m);
 }
+function logErr(err) {
+    logger.error(formatError(err));
+}
 class RequestError extends Error {
-    constructor(status, data) {
-        super(`Request failed with status ${status}: ${data}`);
+    constructor(status, url, data) {
+        super(`Request '${url}' failed with code ${status}: ` +
+            `${data.length > 50 ? `${data.slice(0, 50)}...` : data}`);
         this.status = status;
+        this.url = url;
         this.data = data;
         this.name = 'RequestError';
     }
 }
 function appendParamsToUrl(url, params) {
-    const urlObj = new URL(url);
-    if (params)
-        for (const [k, v] of Object.entries(params))
-            urlObj.searchParams.set(k, `${v}`);
-    return urlObj.toString();
+    if (!params)
+        return url;
+    const queryString = Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+    return url.includes('?') ? `${url}&${queryString}` : `${url}?${queryString}`;
 }
 function normalizeHeaders(headers) {
     const normalized = {};
@@ -703,29 +724,37 @@ function normalizeHeaders(headers) {
     return normalized;
 }
 async function getAsync(options) {
-    const { url, params, headers, responseType } = options;
-    const res = await new Promise((resolve, reject) => {
-        network.httpGet(appendParamsToUrl(url, params), headers ? normalizeHeaders(headers) : {}, (status, result) => {
+    const doGet = (url, headers) => new Promise((resolve, reject) => {
+        network.httpGet(url, headers, (status, result) => {
             if (status !== 200)
-                reject(new RequestError(status, result));
+                reject(new RequestError(status, url, result));
             else
                 resolve(result);
         });
     });
+    const { url, params, headers, responseType } = options;
+    const urlWithParams = appendParamsToUrl(url, params);
+    const normalizedHeaders = headers ? normalizeHeaders(headers) : {};
+    const res = await doGet(urlWithParams, normalizedHeaders);
     return responseType === 'json' ? JSON.parse(res) : res;
 }
 async function postAsync(options) {
-    const { url, params, headers, data, responseType } = options;
-    const isDataText = typeof data === 'string';
-    const res = await new Promise((resolve, reject) => {
-        network.httpPost(appendParamsToUrl(url, params), headers ? normalizeHeaders(headers) : {}, isDataText ? data : JSON.stringify(data), headers?.['Content-Type'] ??
-            (isDataText ? 'text/plain' : 'application/json'), (status, result) => {
+    const doPost = (url, headers, data, contentType) => new Promise((resolve, reject) => {
+        network.httpPost(url, headers, data, contentType, (status, result) => {
             if (status !== 200)
-                reject(new RequestError(status, result));
+                reject(new RequestError(status, url, result));
             else
                 resolve(result);
         });
     });
+    const { url, params, headers, data, responseType } = options;
+    const isDataText = typeof data === 'string';
+    const dataString = isDataText ? data : JSON.stringify(data);
+    const contentType = headers?.['Content-Type'] ??
+        (isDataText ? 'text/plain' : 'application/json');
+    const urlWithParams = appendParamsToUrl(url, params);
+    const normalizedHeaders = headers ? normalizeHeaders(headers) : {};
+    const res = await doPost(urlWithParams, normalizedHeaders, dataString, contentType);
     return responseType === 'json' ? JSON.parse(res) : res;
 }
 
@@ -851,7 +880,14 @@ function getHeaders(auth = true) {
         headers.Authorization = `Bearer ${config.apiToken}`;
     return headers;
 }
-const buildUrl = (path) => String(new URL(`openapi/v3/${path}`, config.apiHost));
+function buildUrl(path, slashEnd = false) {
+    let { apiHost } = config;
+    if (!apiHost.endsWith('/'))
+        apiHost = `${apiHost}/`;
+    if (slashEnd && !path.endsWith('/'))
+        path = `${path}/`;
+    return `${apiHost}openapi/v3/${path}`;
+}
 function checkIsWithToken(options) {
     const withToken = options.withToken ?? true;
     delete options.withToken;
@@ -869,9 +905,9 @@ async function getPrivateRespList() {
 }
 function check(options) {
     const withToken = checkIsWithToken(options);
-    return postAsync({
-        url: buildUrl('check'),
-        data: options,
+    return getAsync({
+        url: buildUrl('check', true),
+        params: options,
         headers: getHeaders(withToken),
         responseType: 'json',
     });
@@ -1179,7 +1215,7 @@ async function queryFormAsync(player, param) {
     await queryResultForm(player, param, op);
 }
 function queryCmd(player, param) {
-    wrapAsyncFunc(queryFormAsync)(player, param);
+    queryFormAsync(player, param).catch(logErr);
 }
 
 const ONLY_OP_TEXT = '此命令仅限OP执行';
@@ -1321,7 +1357,7 @@ mc.listen('onServerStarted', () => {
                 return false;
             }
             if (player && !stringSelector) {
-                wrapAsyncFunc(banForm)(player);
+                banForm(player).catch(logErr);
                 return true;
             }
             if (stringSelector) {
@@ -1352,7 +1388,7 @@ mc.listen('onServerStarted', () => {
                 out.error(ONLY_OP_TEXT);
                 return false;
             }
-            wrapAsyncFunc(localListForm)(player);
+            localListForm(player).catch(logErr);
             return true;
         }
         out.error(`请输入子命令`);
@@ -1406,7 +1442,7 @@ mc.listen(listenerType, wrapAsyncFunc(async (player) => {
         }
     }
     catch (e) {
-        logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！\n${String(e)}`);
+        logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！\n${formatError(e)}`);
         return;
     }
     if (!hidePassMessage)
@@ -1433,7 +1469,7 @@ mc.listen(listenerType, wrapAsyncFunc(async (player) => {
         }
     }
     catch (e) {
-        logger.error(`查询玩家 ${realName} 的 BlackBE 违规记录出错！\n${String(e)}`);
+        logger.error(`查询玩家 ${realName} 的 BlackBE 违规记录出错！\n${formatError(e)}`);
         return;
     }
     if (!hidePassMessage)

@@ -19,7 +19,7 @@ import {
 import { config, LocalBlackListItem } from './config';
 import { PLUGIN_NAME } from './const';
 import { blackBEItemForm, localItemForm } from './manage';
-import { wrapAsyncFunc } from './util';
+import { logErr } from './util';
 
 export async function queryBlackBE(
   param: string
@@ -213,5 +213,5 @@ export async function queryFormAsync(player: Player, param?: string) {
 }
 
 export function queryCmd(player: Player, param?: string) {
-  wrapAsyncFunc(queryFormAsync)(player, param);
+  queryFormAsync(player, param).catch(logErr);
 }

@@ -1,8 +1,10 @@
+import { formatError, wrapAsyncFunc } from 'form-api-ex';
+
 import { banPlayer, formatLocalKickMsg } from './black-local';
 import { check, formatBlackBEInfo, formatBlackBEKickMsg } from './blackbe';
 import { config, localList, saveLocalList } from './config';
 import { formatLocalItemShort } from './query';
-import { delFormatCode, stripIp, wrapAsyncFunc } from './util';
+import { delFormatCode, stripIp } from './util';
 
 // hhh
 const listenerType = (config.processOnPreJoin
@@ -39,7 +41,9 @@ mc.listen(
         }
       }
     } catch (e) {
-      logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！\n${String(e)}`);
+      logger.error(
+        `查询玩家 ${realName} 的本地黑名单记录出错！\n${formatError(e)}`
+      );
       return;
     }
 
@@ -77,7 +81,7 @@ mc.listen(
       }
     } catch (e) {
       logger.error(
-        `查询玩家 ${realName} 的 BlackBE 违规记录出错！\n${String(e)}`
+        `查询玩家 ${realName} 的 BlackBE 违规记录出错！\n${formatError(e)}`
       );
       return;
     }

@@ -13,7 +13,8 @@ export const PLUGIN_EXTRA = {
 logger.setTitle(PLUGIN_NAME);
 logger.setFile(`logs/${PLUGIN_NAME}.log`);
 
-export const DATA_PATH = `data/${PLUGIN_NAME}`;
+export const PLUGIN_ROOT = `./plugins/${PLUGIN_NAME}`;
+export const DATA_PATH = `${PLUGIN_ROOT}/data`;
 if (!file.exists(DATA_PATH)) file.mkdir(DATA_PATH);
 
 export const DIVIDING_LINE = '-=-=-=-=-=-=-=-=-=-=-=-=-=-';

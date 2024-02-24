@@ -1,6 +1,6 @@
 {
-  "entry": "NBSPlayer.js",
-  "name": "NBSPlayer",
+  "entry": "LLBlackBEEx.js",
+  "name": "LLBlackBEEx",
   "type": "lse-quickjs",
   "dependencies": [
     {
