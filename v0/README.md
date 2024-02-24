@@ -1,13 +1,13 @@
 <!-- markdownlint-disable MD033 MD041 -->
 
 <div align="center">
-<img alt="logo" src="https://raw.githubusercontent.com/lgc-LLSEDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
+<img alt="logo" src="https://raw.githubusercontent.com/lgc-LLDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
 
 # LLBlackBEEx
 
 </div>
 
-[LxlBlackBE](https://www.minebbs.com/threads/lxlblackbe.7482/)的改进版，全部改用真命令注册，并且加入了私有库支持与游戏内查询（移植自[BlackBEQuery](https://github.com/lgc-LLSEDev/BlackBEQuery)）
+[LxlBlackBE](https://www.minebbs.com/threads/lxlblackbe.7482/)的改进版，全部改用真命令注册，并且加入了私有库支持与游戏内查询（移植自[BlackBEQuery](https://github.com/lgc-LLDev/BlackBEQuery)）
 
 BlackBE 站长：NyanCatda [云黑官网](https://blackbe.xyz) [赞助云黑](https://afdian.net/@BlackBE)
 
