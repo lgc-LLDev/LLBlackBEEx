@@ -56,7 +56,7 @@ BlackBE 站长：NyanCatda [云黑官网](https://blackbe.xyz) [赞助云黑](ht
   "kickByCloudMsg": "§c您已被BlackBE云端黑名单封禁\n\n详情请访问 §6https://blackbe.xyz/",
 
   // 是否使用BlackBEAPI镜像站（blackbe.lgc2333.top）
-  "useMirrorBlackBEUrl": 0
+  "useMirrorBlackBEUrl": 0,
 }
 ```
 

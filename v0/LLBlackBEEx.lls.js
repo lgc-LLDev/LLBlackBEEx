@@ -3,8 +3,8 @@
 // LiteLoaderScript Dev Helper
 /// <reference path="../../HelperLib/src/index.d.ts"/>
 
-const pluginName = 'LLBlackBEEx';
-const pluginVersion = [0, 2, 0];
+const pluginName = 'LLBlackBEEx'
+const pluginVersion = [0, 2, 0]
 const {
   Red,
   DarkGreen,
@@ -16,74 +16,72 @@ const {
   Yellow,
   Bold,
   Clear,
-} = Format;
+} = Format
 
-const config = new JsonConfigFile(`plugins/${pluginName}/config.json`);
-const apiToken = config.init('apiToken', '');
-const banIp = config.init('banIp', true);
-const hidePassMessage = config.init('hidePassMessage', false);
-const disableBlackBE = config.init('disableBlackBE', false);
+const config = new JsonConfigFile(`plugins/${pluginName}/config.json`)
+const apiToken = config.init('apiToken', '')
+const banIp = config.init('banIp', true)
+const hidePassMessage = config.init('hidePassMessage', false)
+const disableBlackBE = config.init('disableBlackBE', false)
 const kickByLocalMsg = config.init(
   'kickByLocalMsg',
   `${Red}您已被服务器封禁${Clear}\\n\\n` +
-    `解封时间: ${MinecoinGold}%ENDTIME%${Clear}\\n封禁原因:${MinecoinGold} %REASON%`
-);
+    `解封时间: ${MinecoinGold}%ENDTIME%${Clear}\\n封禁原因:${MinecoinGold} %REASON%`,
+)
 const kickByCloudMsg = config.init(
   'kickByCloudMsg',
   `${Red}您已被BlackBE云端黑名单封禁${Clear}\\n\\n` +
-    `详情请访问 ${Gold}https://blackbe.xyz/`
-);
-const useMirrorBlackBEUrl = config.init('useMirrorBlackBEUrl', false);
+    `详情请访问 ${Gold}https://blackbe.xyz/`,
+)
+const useMirrorBlackBEUrl = config.init('useMirrorBlackBEUrl', false)
 
 const BLACKBE_API_PREFIX = `https://${
   useMirrorBlackBEUrl ? 'blackbe.lgc2333.top' : 'api.blackbe.work'
-}/openapi/v3/`;
+}/openapi/v3/`
 
-const localBlacklist = new JsonConfigFile(
-  `plugins/${pluginName}/local_list.json`
-);
-localBlacklist.init('list', []);
+const localBlacklist = new JsonConfigFile(`plugins/${pluginName}/local_list.json`)
+localBlacklist.init('list', [])
 
-logger.setTitle(pluginName);
-logger.setConsole(true);
-logger.setFile(`./logs/${pluginName}.log`, 4);
+logger.setTitle(pluginName)
+logger.setConsole(true)
+logger.setFile(`./logs/${pluginName}.log`, 4)
 // logger.setLogLevel(5);
 
-const privRespName = new Map([['1', '公有库']]);
+const privRespName = new Map([['1', '公有库']])
 
 /**
  * @returns {Array<Object>}
  */
 function getLocalBlacklist() {
-  return localBlacklist.get('list');
+  return localBlacklist.get('list')
 }
 
 function setLocalBlacklist(li) {
-  return localBlacklist.set('list', li);
+  return localBlacklist.set('list', li)
 }
 
 function formatDate(date) {
-  const yr = date.getFullYear();
-  const mon = date.getMonth() + 1;
-  const day = date.getDate();
-  const hr = date.getHours();
-  const min = date.getMinutes().toString().padStart(2, '0');
-  const sec = date.getSeconds().toString().padStart(2, '0');
-  return `${yr}-${mon}-${day} ${hr}:${min}:${sec}`;
+  const yr = date.getFullYear()
+  const mon = date.getMonth() + 1
+  const day = date.getDate()
+  const hr = date.getHours()
+  const min = date.getMinutes().toString().padStart(2, '0')
+  const sec = date.getSeconds().toString().padStart(2, '0')
+  return `${yr}-${mon}-${day} ${hr}:${min}:${sec}`
 }
 
 /**
  * @returns {String}
  */
 function getLocalKickMsg(banData) {
-  const { reason, endTime } = banData;
+  const { reason, endTime } = banData
   return kickByLocalMsg
     .replace(/%REASON%/g, reason || '被管理员封禁')
-    .replace(/%ENDTIME%/g, endTime ? formatDate(new Date(endTime)) : '永久');
+    .replace(/%ENDTIME%/g, endTime ? formatDate(new Date(endTime)) : '永久')
 }
 
 function formatLocalBanInfo(data, hasColor = false) {
-  /* 
+  /*
     banData:
     {
       name: String
@@ -94,14 +92,14 @@ function formatLocalBanInfo(data, hasColor = false) {
     }
   */
   function c(color) {
-    return hasColor ? color : '';
+    return hasColor ? color : ''
   }
 
   function formatEndT(t) {
-    return t ? formatDate(new Date(t)) : '永久';
+    return t ? formatDate(new Date(t)) : '永久'
   }
 
-  const { name, xuid, ip, endTime, reason } = data;
+  const { name, xuid, ip, endTime, reason } = data
   return (
     `${c(DarkGreen)}玩家名称${c(Clear)}： ` +
     `${c(Bold)}${c(LightPurple)}${name}${c(Clear)}\n` +
@@ -110,7 +108,7 @@ function formatLocalBanInfo(data, hasColor = false) {
     `${c(DarkGreen)}截止时间${c(Clear)}： ${c(Aqua)}${formatEndT(endTime)}\n` +
     `${c(DarkGreen)}封禁理由${c(Clear)}： ${c(Aqua)}${reason || '无'}` +
     `${c(Clear)}`
-  );
+  )
 }
 
 /**
@@ -129,19 +127,19 @@ function parseAPIReturn(data) {
     phone,
     time,
     black_id: blackId,
-  } = data;
+  } = data
   const [lvl, color] = (() => {
     switch (level) {
       case 1:
-        return ['有作弊行为，但未对其他玩家造成实质上损害', Yellow];
+        return ['有作弊行为，但未对其他玩家造成实质上损害', Yellow]
       case 2:
-        return ['有作弊行为，且对玩家造成一定的损害', Gold];
+        return ['有作弊行为，且对玩家造成一定的损害', Gold]
       case 3:
-        return ['严重破坏服务器，对玩家和服务器造成较大的损害', Red];
+        return ['严重破坏服务器，对玩家和服务器造成较大的损害', Red]
       default:
-        return ['未知', Clear];
+        return ['未知', Clear]
     }
-  })();
+  })()
   return (
     `${DarkGreen}玩家ID${Clear}： ${Bold}${LightPurple}${name}${Clear}\n` +
     `${DarkGreen}危险等级${Clear}： ${color}等级 ${Bold}${level} ${Clear}${color}（${lvl}）\n` +
@@ -154,7 +152,7 @@ function parseAPIReturn(data) {
     `${DarkGreen}记录UUID${Clear}： ${Aqua}${uuid}\n` +
     `${DarkGreen}来源库${Clear}： ` +
     `${Aqua}${privRespName.get(blackId) || '未知'} （${blackId}）`
-  );
+  )
 }
 
 /**
@@ -162,7 +160,7 @@ function parseAPIReturn(data) {
  * @param {String} ip
  */
 function stripIp(ip) {
-  return ip.split(':')[0];
+  return ip.split(':')[0]
 }
 
 /**
@@ -170,14 +168,14 @@ function stripIp(ip) {
  * @returns {Object | null}
  */
 function checkPlayerLocal(pl) {
-  const { realName: pName, xuid: pXuid, ip: pIp } = pl;
+  const { realName: pName, xuid: pXuid, ip: pIp } = pl
   for (const i of getLocalBlacklist()) {
-    const { name, xuid, ip } = i;
+    const { name, xuid, ip } = i
     if (name === pName || xuid === pXuid || (banIp && ip === stripIp(pIp))) {
-      return i;
+      return i
     }
   }
-  return null;
+  return null
 }
 
 /**
@@ -188,44 +186,42 @@ function checkPlayerLocal(pl) {
  * @returns {Object | Boolean} true: success, false: playerNotExist, object: update
  */
 function banPlayerLocal(name_, reason, minutes) {
-  const pl = mc.getPlayer(name_);
+  const pl = mc.getPlayer(name_)
   const banData = {
     name: name_,
     xuid: null,
     ip: null,
-    endTime: minutes
-      ? new Date(Date.now() + 1000 * 60 * minutes).toJSON()
-      : null,
+    endTime: minutes ? new Date(Date.now() + 1000 * 60 * minutes).toJSON() : null,
     reason,
-  };
+  }
   if (pl) {
-    const { realName, xuid, ip } = pl;
-    banData.name = realName;
-    banData.xuid = xuid;
-    banData.ip = stripIp(ip);
+    const { realName, xuid, ip } = pl
+    banData.name = realName
+    banData.xuid = xuid
+    banData.ip = stripIp(ip)
     setTimeout(() => {
-      pl.kick(getLocalKickMsg(banData));
-    }, 0);
+      pl.kick(getLocalKickMsg(banData))
+    }, 0)
   } else {
-    const xuid = data.name2xuid(name_);
-    banData.xuid = xuid;
+    const xuid = data.name2xuid(name_)
+    banData.xuid = xuid
   }
 
-  const { name, xuid } = banData;
-  let ret = true;
+  const { name, xuid } = banData
+  let ret = true
 
-  const dataList = getLocalBlacklist();
-  const indexName = dataList.findIndex((i) => i.name === name);
-  const indexXuid = xuid ? dataList.findIndex((i) => i.xuid === xuid) : -1;
+  const dataList = getLocalBlacklist()
+  const indexName = dataList.findIndex((i) => i.name === name)
+  const indexXuid = xuid ? dataList.findIndex((i) => i.xuid === xuid) : -1
 
   // eslint-disable-next-line prefer-destructuring
-  if (indexName !== -1) ret = dataList.splice(indexName, 1)[0];
+  if (indexName !== -1) ret = dataList.splice(indexName, 1)[0]
   // eslint-disable-next-line prefer-destructuring
-  else if (indexXuid !== -1) ret = dataList.splice(indexXuid, 1)[0];
+  else if (indexXuid !== -1) ret = dataList.splice(indexXuid, 1)[0]
 
-  dataList.push(banData);
-  setLocalBlacklist(dataList);
-  return ret;
+  dataList.push(banData)
+  setLocalBlacklist(dataList)
+  return ret
 }
 
 /**
@@ -234,15 +230,15 @@ function banPlayerLocal(name_, reason, minutes) {
  * @returns {Boolean}
  */
 function unbanPlayerLocal(name) {
-  const dataList = getLocalBlacklist();
-  const index = dataList.findIndex((i) => i.name === name);
+  const dataList = getLocalBlacklist()
+  const index = dataList.findIndex((i) => i.name === name)
 
   if (index !== -1) {
-    dataList.splice(index, 1);
-    setLocalBlacklist(dataList);
-    return true;
+    dataList.splice(index, 1)
+    setLocalBlacklist(dataList)
+    return true
   }
-  return false;
+  return false
 }
 
 /**
@@ -250,13 +246,12 @@ function unbanPlayerLocal(name) {
  * @returns {String}
  */
 function listBanLocal(hasColor = false) {
-  const dataList = getLocalBlacklist();
-  if (dataList.length === 0)
-    return `${hasColor ? Red : ''}本地黑名单列表为空。`;
+  const dataList = getLocalBlacklist()
+  if (dataList.length === 0) return `${hasColor ? Red : ''}本地黑名单列表为空。`
 
-  const tmpLi = [`${hasColor ? Green : ''}本地黑名单列表如下：${Clear}`];
-  dataList.forEach((i) => tmpLi.push(formatLocalBanInfo(i, hasColor)));
-  return tmpLi.join('\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n');
+  const tmpLi = [`${hasColor ? Green : ''}本地黑名单列表如下：${Clear}`]
+  dataList.forEach((i) => tmpLi.push(formatLocalBanInfo(i, hasColor)))
+  return tmpLi.join('\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n')
 }
 
 /**
@@ -267,56 +262,54 @@ function listBanLocal(hasColor = false) {
  * @returns
  */
 function parseResult(query, retOpen, retPriv) {
-  const results = [];
-  const msg = [];
+  const results = []
+  const msg = []
   if (!retOpen.success) {
-    const { status, message } = retOpen;
+    const { status, message } = retOpen
     msg.push(
-      `${Gold}提示： 查询公有库失败${Clear}：[${Gold}${status}${Clear}] ${LightPurple}${message}`
-    );
+      `${Gold}提示： 查询公有库失败${Clear}：[${Gold}${status}${Clear}] ${LightPurple}${message}`,
+    )
   } else {
-    results.push(...retOpen.data.info);
+    results.push(...retOpen.data.info)
   }
 
   if (Object.keys(retPriv) === 0 || retPriv.success === false) {
-    const { status, message } = retPriv;
+    const { status, message } = retPriv
     msg.push(
-      `${Gold}提示： 查询私有库失败${Clear}：[${Gold}${status}${Clear}] ${LightPurple}${message}`
-    );
+      `${Gold}提示： 查询私有库失败${Clear}：[${Gold}${status}${Clear}] ${LightPurple}${message}`,
+    )
   } else {
-    const { data } = retPriv;
+    const { data } = retPriv
     if (data) {
       data.forEach((it1) => {
-        const { repo_success: success, repo_uuid: uuid, info } = it1;
+        const { repo_success: success, repo_uuid: uuid, info } = it1
         if (!success) {
-          msg.push(
-            `${Gold}提示： 查询私有库 ${LightPurple}${uuid} ${Gold}失败`
-          );
-          return;
+          msg.push(`${Gold}提示： 查询私有库 ${LightPurple}${uuid} ${Gold}失败`)
+          return
         }
         info.forEach((it) => {
-          const r = it;
-          r.black_id = uuid;
-          results.push(r);
-        });
-      });
+          const r = it
+          r.black_id = uuid
+          results.push(r)
+        })
+      })
     }
   }
 
   if (results.length > 0) {
     msg.push(
-      `${Green}为您查询到关于 ${Bold}${DarkGreen}${query} ${Clear}${Green}的 ${Bold}${Yellow}${results.length} ${Clear}${Green}条相关记录：`
-    );
+      `${Green}为您查询到关于 ${Bold}${DarkGreen}${query} ${Clear}${Green}的 ${Bold}${Yellow}${results.length} ${Clear}${Green}条相关记录：`,
+    )
     results.forEach((i) => {
-      msg.push(`${Clear}-=-=-=-=-=-=-=-=-=-=-=-=-=-`, parseAPIReturn(i));
-    });
+      msg.push(`${Clear}-=-=-=-=-=-=-=-=-=-=-=-=-=-`, parseAPIReturn(i))
+    })
   } else {
     msg.push(
-      `${Green}没有找到关于 ${Bold}${DarkGreen}${query} ${Clear}${Green}的相关记录`
-    );
+      `${Green}没有找到关于 ${Bold}${DarkGreen}${query} ${Clear}${Green}的相关记录`,
+    )
   }
 
-  return msg.join('\n');
+  return msg.join('\n')
 }
 
 /**
@@ -324,11 +317,11 @@ function parseResult(query, retOpen, retPriv) {
  * @returns {Promise}
  */
 function asyncHttpGet(url, noAuth = false) {
-  const header = {};
-  if (!noAuth) header.authorization = `Bearer ${apiToken}`;
+  const header = {}
+  if (!noAuth) header.authorization = `Bearer ${apiToken}`
   return new Promise((resolve) => {
-    network.httpGet(url, header, (code, resp) => resolve({ code, resp }));
-  });
+    network.httpGet(url, header, (code, resp) => resolve({ code, resp }))
+  })
 }
 
 /**
@@ -339,13 +332,11 @@ function asyncHttpGet(url, noAuth = false) {
  * @returns {Promise}
  */
 function asyncHttpPost(url, data, noAuth = false, type = 'application/json') {
-  const header = {};
-  if (!noAuth) header.authorization = `Bearer ${apiToken}`;
+  const header = {}
+  if (!noAuth) header.authorization = `Bearer ${apiToken}`
   return new Promise((resolve) => {
-    network.httpPost(url, header, data, type, (code, resp) =>
-      resolve({ code, resp })
-    );
-  });
+    network.httpPost(url, header, data, type, (code, resp) => resolve({ code, resp }))
+  })
 }
 
 /**
@@ -354,8 +345,8 @@ function asyncHttpPost(url, data, noAuth = false, type = 'application/json') {
  */
 function throwError(e) {
   setTimeout(() => {
-    throw e;
-  }, 0);
+    throw e
+  }, 0)
 }
 
 /**
@@ -366,17 +357,17 @@ function throwError(e) {
  * @param {String} xuid
  */
 function simpleCheck(name, callback, qq = null, xuid = null) {
-  const methodName = 'check/';
-  const encName = encodeURIComponent(name);
-  const params = `?name=${encName}&qq=${qq || encName}&xuid=${xuid || encName}`;
+  const methodName = 'check/'
+  const encName = encodeURIComponent(name)
+  const params = `?name=${encName}&qq=${qq || encName}&xuid=${xuid || encName}`
   asyncHttpGet(`${BLACKBE_API_PREFIX}${methodName}${params}`)
     .then((r) => {
-      const { code, resp } = r;
-      logger.debug(code);
-      logger.debug(resp);
-      callback(code, JSON.parse(resp));
+      const { code, resp } = r
+      logger.debug(code)
+      logger.debug(resp)
+      callback(code, JSON.parse(resp))
     })
-    .catch(throwError);
+    .catch(throwError)
 }
 
 /**
@@ -385,49 +376,49 @@ function simpleCheck(name, callback, qq = null, xuid = null) {
  * @param {(result:String)=>} callback
  */
 function fullCheckMsg(name, callback) {
-  const queryRespUrl = `${BLACKBE_API_PREFIX}private/repositories/list`;
-  const queryOpenUrl = `${BLACKBE_API_PREFIX}check/`;
-  const queryPrivateUrl = `${BLACKBE_API_PREFIX}check/private/`;
+  const queryRespUrl = `${BLACKBE_API_PREFIX}private/repositories/list`
+  const queryOpenUrl = `${BLACKBE_API_PREFIX}check/`
+  const queryPrivateUrl = `${BLACKBE_API_PREFIX}check/private/`
 
-  const encName = encodeURIComponent(name);
-  const params = `?name=${encName}&qq=${encName}&xuid=${encName}`;
+  const encName = encodeURIComponent(name)
+  const params = `?name=${encName}&qq=${encName}&xuid=${encName}`
 
-  (async () => {
-    const respLi = [];
-    let resp;
-    let retPriv = {};
+  ;(async () => {
+    const respLi = []
+    let resp
+    let retPriv = {}
 
     if (apiToken) {
-      resp = (await asyncHttpGet(queryRespUrl)).resp;
-      logger.debug(resp);
-      const retResp = JSON.parse(resp);
-      const repoLi = retResp.data.repositories_list;
+      resp = (await asyncHttpGet(queryRespUrl)).resp
+      logger.debug(resp)
+      const retResp = JSON.parse(resp)
+      const repoLi = retResp.data.repositories_list
       if (repoLi) {
         repoLi.forEach((it) => {
-          const { uuid, name: name_ } = it;
-          privRespName.set(uuid, name_);
-          respLi.push(uuid);
-        });
+          const { uuid, name: name_ } = it
+          privRespName.set(uuid, name_)
+          respLi.push(uuid)
+        })
       }
 
       if (respLi.length > 0) {
         resp = (
           await asyncHttpPost(
             `${queryPrivateUrl}${params}`,
-            JSON.stringify({ repositories_uuid: respLi })
+            JSON.stringify({ repositories_uuid: respLi }),
           )
-        ).resp;
-        logger.debug(resp);
-        retPriv = JSON.parse(resp);
+        ).resp
+        logger.debug(resp)
+        retPriv = JSON.parse(resp)
       }
     }
 
-    resp = (await asyncHttpGet(`${queryOpenUrl}${params}`, true)).resp;
-    logger.debug(resp);
-    const retOpen = JSON.parse(resp);
+    resp = (await asyncHttpGet(`${queryOpenUrl}${params}`, true)).resp
+    logger.debug(resp)
+    const retOpen = JSON.parse(resp)
 
-    callback(parseResult(name, retOpen, retPriv));
-  })().catch((e) => callback(`${Red}出错了！\n${e.stack}`));
+    callback(parseResult(name, retOpen, retPriv))
+  })().catch((e) => callback(`${Red}出错了！\n${e.stack}`))
 }
 
 /**
@@ -436,16 +427,16 @@ function fullCheckMsg(name, callback) {
  * @param {string} query 查询内容
  */
 function formResult(pl, rawQuery) {
-  const query = rawQuery.trim();
+  const query = rawQuery.trim()
   fullCheckMsg(query, (c) => {
     pl.sendForm(
       mc
         .newSimpleForm()
         .setTitle(`${Aqua}${pluginName}${Clear} - ${Green}Query Result`)
         .setContent(c),
-      () => {}
-    );
-  });
+      () => {},
+    )
+  })
 }
 
 /**
@@ -461,17 +452,17 @@ function formQuery(player) {
       .addLabel(`${Green}请输入查询内容`)
       .addLabel(
         `${Gold}请谨慎使用XUID查询：由于历史遗留和XUID采集本身存在难度，` +
-          '导致大部分条目没有记录XUID，所以不推荐依赖XUID来判断玩家是否存在于黑名单'
+          '导致大部分条目没有记录XUID，所以不推荐依赖XUID来判断玩家是否存在于黑名单',
       )
       .addInput('', 'XboxID/QQ号/XUID'),
     (pl, ret) => {
       if (ret && ret[2]) {
-        formResult(pl, ret[2]);
+        formResult(pl, ret[2])
       } else {
-        pl.sendText(`${Red}请输入查询内容`);
+        pl.sendText(`${Red}请输入查询内容`)
       }
-    }
-  );
+    },
+  )
 }
 
 /**
@@ -486,16 +477,16 @@ function formManage(player) {
     ['', ''],
     (pl, id) => {
       if (id == null) {
-        pl.sendText('您已成功退出');
+        pl.sendText('您已成功退出')
       } else if (id === 0) {
         // eslint-disable-next-line no-use-before-define
-        formBan(pl);
+        formBan(pl)
       } else if (id === 1) {
         // eslint-disable-next-line no-use-before-define
-        formBanList(pl);
+        formBanList(pl)
       }
-    }
-  );
+    },
+  )
 }
 
 /**
@@ -503,9 +494,9 @@ function formManage(player) {
  * @param {Player} player
  */
 function formBan(player) {
-  const playerNameList = [];
+  const playerNameList = []
   for (const i of mc.getOnlinePlayers()) {
-    playerNameList.push(i.name);
+    playerNameList.push(i.name)
   }
   player.sendSimpleForm(
     `${Aqua}${pluginName}${Clear} - ${Green}Manage`,
@@ -514,13 +505,13 @@ function formBan(player) {
     new Array(playerNameList.length).fill(''),
     (pl, id) => {
       if (id == null) {
-        formManage(pl);
+        formManage(pl)
       } else {
         // eslint-disable-next-line no-use-before-define
-        formBanConfirm(pl, playerNameList[id]);
+        formBanConfirm(pl, playerNameList[id])
       }
-    }
-  );
+    },
+  )
 }
 
 /**
@@ -538,25 +529,25 @@ function formBanConfirm(player, name) {
       .addInput('封禁原因'),
     (pl, ret) => {
       if (ret == null) {
-        formBan(pl);
-        return;
+        formBan(pl)
+        return
       }
-      let time = 0;
-      let showtime;
+      let time = 0
+      let showtime
       if (ret[2] === 0) {
-        time = ret[1] * 1;
+        time = ret[1] * 1
       }
       if (ret[2] === 1) {
-        time = ret[1] * 60;
+        time = ret[1] * 60
       }
       if (ret[2] === 2) {
-        time = ret[1] * 1440;
+        time = ret[1] * 1440
       }
       if (ret[2] === 3) {
-        showtime = '永久封禁';
-        time = null;
+        showtime = '永久封禁'
+        time = null
       } else {
-        showtime = `${time}分`;
+        showtime = `${time}分`
       }
       pl.sendModalForm(
         '封禁确认',
@@ -566,17 +557,17 @@ function formBanConfirm(player, name) {
         (pl_, confirm) => {
           if (confirm) {
             if (banPlayerLocal(name, ret[3], time)) {
-              pl_.sendText(`${Green}已成功将玩家 ${name} 加入本地黑名单`);
+              pl_.sendText(`${Green}已成功将玩家 ${name} 加入本地黑名单`)
             } else {
-              pl_.sendText(`${Red}玩家 ${name} 已存在于本地黑名单`);
+              pl_.sendText(`${Red}玩家 ${name} 已存在于本地黑名单`)
             }
           } else {
-            formBan(pl_);
+            formBan(pl_)
           }
-        }
-      );
-    }
-  );
+        },
+      )
+    },
+  )
 }
 
 /**
@@ -585,23 +576,23 @@ function formBanConfirm(player, name) {
  */
 function formBanList(player) {
   function formatEndT(t) {
-    return t ? formatDate(new Date(t)) : '永久';
+    return t ? formatDate(new Date(t)) : '永久'
   }
 
-  const dataList = getLocalBlacklist();
-  const form = mc.newSimpleForm();
-  form.setTitle(`${Aqua}${pluginName}${Clear} - ${Green}Manage`);
+  const dataList = getLocalBlacklist()
+  const form = mc.newSimpleForm()
+  form.setTitle(`${Aqua}${pluginName}${Clear} - ${Green}Manage`)
   for (const i of dataList) {
-    form.addButton(`${i.name}\n${formatEndT(i.endTime)}`);
+    form.addButton(`${i.name}\n${formatEndT(i.endTime)}`)
   }
   player.sendForm(form, (pl, id) => {
     if (id == null) {
-      formManage(pl);
+      formManage(pl)
     } else {
       // eslint-disable-next-line no-use-before-define
-      formLocalBanInfo(player, dataList[id]);
+      formLocalBanInfo(player, dataList[id])
     }
-  });
+  })
 }
 
 /**
@@ -617,15 +608,15 @@ function formLocalBanInfo(player, banData) {
     ['', ''],
     (pl, id) => {
       if (id == null) {
-        formBanList(pl);
+        formBanList(pl)
       } else if (id === 0) {
         // eslint-disable-next-line no-use-before-define
-        formChange(pl, banData);
+        formChange(pl, banData)
       } else if (id === 1) {
-        unbanPlayerLocal(banData.name);
+        unbanPlayerLocal(banData.name)
       }
-    }
-  );
+    },
+  )
 }
 
 /**
@@ -636,9 +627,9 @@ function formLocalBanInfo(player, banData) {
 function formChange(player, banData) {
   const lefttime = banData.endTime
     ? Math.round(
-        (new Date(banData.endTime).getTime() - new Date().getTime()) / 60000
+        (new Date(banData.endTime).getTime() - new Date().getTime()) / 60000,
       ).toString()
-    : '';
+    : ''
   player.sendForm(
     mc
       .newCustomForm()
@@ -648,30 +639,30 @@ function formChange(player, banData) {
       .addStepSlider(
         '时间单位',
         ['分', '时', '日', '永久封禁'],
-        lefttime === '' ? 3 : 0
+        lefttime === '' ? 3 : 0,
       )
       .addInput('封禁原因', '', banData.reason),
     (pl, ret) => {
       if (ret == null) {
-        formLocalBanInfo(pl);
-        return;
+        formLocalBanInfo(pl)
+        return
       }
-      let time = 0;
-      let showtime;
+      let time = 0
+      let showtime
       if (ret[2] === 0) {
-        time = ret[1] * 1;
+        time = ret[1] * 1
       }
       if (ret[2] === 1) {
-        time = ret[1] * 60;
+        time = ret[1] * 60
       }
       if (ret[2] === 2) {
-        time = ret[1] * 1440;
+        time = ret[1] * 1440
       }
       if (ret[2] === 3) {
-        showtime = '永久封禁';
-        time = null;
+        showtime = '永久封禁'
+        time = null
       } else {
-        showtime = `${time}分`;
+        showtime = `${time}分`
       }
       pl.sendModalForm(
         '确认修改',
@@ -681,198 +672,179 @@ function formChange(player, banData) {
         (pl_, confirm) => {
           if (confirm) {
             if (banPlayerLocal(banData.name, ret[3], time)) {
-              pl_.sendText(`${Green}已成功修改玩家 ${banData.name} 的封禁信息`);
+              pl_.sendText(`${Green}已成功修改玩家 ${banData.name} 的封禁信息`)
             } else {
-              pl_.sendText(`${Red}玩家 ${banData.name} 封禁信息修改失败`);
+              pl_.sendText(`${Red}玩家 ${banData.name} 封禁信息修改失败`)
             }
           } else {
-            formChange(pl_);
+            formChange(pl_)
           }
-        }
-      );
-    }
-  );
+        },
+      )
+    },
+  )
 }
 
 // 自动解ban
-(() => {
+;(() => {
   function task() {
-    const blackList = getLocalBlacklist();
+    const blackList = getLocalBlacklist()
     blackList.forEach((it, i) => {
-      const { endTime, name } = it;
+      const { endTime, name } = it
       if (new Date(endTime) <= new Date()) {
-        const msg = `玩家 ${name} 的黑名单封禁到期，已自动解封`;
-        mc.broadcast(`${Green}${msg}`);
-        logger.warn(msg);
-        blackList.splice(i, 1);
-        setLocalBlacklist(blackList);
+        const msg = `玩家 ${name} 的黑名单封禁到期，已自动解封`
+        mc.broadcast(`${Green}${msg}`)
+        logger.warn(msg)
+        blackList.splice(i, 1)
+        setLocalBlacklist(blackList)
       }
-    });
+    })
   }
   mc.listen('onServerStarted', () => {
-    setInterval(task, 60000);
-    task(); // 开服先运行一遍，Interval不会立即执行
-  });
-})();
+    setInterval(task, 60000)
+    task() // 开服先运行一遍，Interval不会立即执行
+  })
+})()
 
 /**
  * 去两侧引号
  * @param {String} str
  */
 function trimQuote(str) {
-  if (str && str.startsWith('"') && str.endsWith('"'))
-    return str.slice(1, str.length - 1);
-  return str;
+  if (str && str.startsWith('"') && str.endsWith('"')) {
+    return str.slice(1, str.length - 1)
+  }
+  return str
 }
 
-(() => {
-  const cmd = mc.newCommand('ban', '本地封禁玩家', PermType.GameMasters);
-  cmd.mandatory('name', ParamType.String);
-  cmd.optional('reason', ParamType.String);
-  cmd.optional('duration', ParamType.Int);
-  cmd.overload(['name', 'reason', 'duration']);
+;(() => {
+  const cmd = mc.newCommand('ban', '本地封禁玩家', PermType.GameMasters)
+  cmd.mandatory('name', ParamType.String)
+  cmd.optional('reason', ParamType.String)
+  cmd.optional('duration', ParamType.Int)
+  cmd.overload(['name', 'reason', 'duration'])
   cmd.setCallback((_, __, out, res) => {
-    const { name, reason, duration } = res;
-    const nameStrip = trimQuote(name);
-    const ret = banPlayerLocal(nameStrip, trimQuote(reason), duration);
+    const { name, reason, duration } = res
+    const nameStrip = trimQuote(name)
+    const ret = banPlayerLocal(nameStrip, trimQuote(reason), duration)
     if (ret) {
       if (ret instanceof Object) {
         return out.success(
           `${Green}玩家 ${nameStrip} 的封禁信息已成功更新\n` +
-            `旧封禁信息：\n${formatLocalBanInfo(ret, true)}`
-        );
+            `旧封禁信息：\n${formatLocalBanInfo(ret, true)}`,
+        )
       }
-      return out.success(`${Green}已成功将玩家 ${nameStrip} 加入本地黑名单`);
+      return out.success(`${Green}已成功将玩家 ${nameStrip} 加入本地黑名单`)
     }
-    out.error(`${Red}玩家 ${nameStrip} 已存在于本地黑名单`);
-    return false;
-  });
-  cmd.setup();
-})();
-
-(() => {
-  const cmd = mc.newCommand('unban', '本地解封玩家', PermType.GameMasters);
-  cmd.mandatory('name', ParamType.RawText);
-  cmd.overload(['name']);
+    out.error(`${Red}玩家 ${nameStrip} 已存在于本地黑名单`)
+    return false
+  })
+  cmd.setup()
+})()
+;(() => {
+  const cmd = mc.newCommand('unban', '本地解封玩家', PermType.GameMasters)
+  cmd.mandatory('name', ParamType.RawText)
+  cmd.overload(['name'])
   cmd.setCallback((_, __, out, res) => {
-    const { name } = res;
-    const nameStrip = trimQuote(name);
-    const ret = unbanPlayerLocal(nameStrip);
+    const { name } = res
+    const nameStrip = trimQuote(name)
+    const ret = unbanPlayerLocal(nameStrip)
     if (ret) {
-      return out.success(`${Green}已成功将玩家 ${nameStrip} 从本地黑名单移除`);
+      return out.success(`${Green}已成功将玩家 ${nameStrip} 从本地黑名单移除`)
     }
-    out.error(`${Red}本地黑名单不存在玩家 ${nameStrip}`);
-    return false;
-  });
-  cmd.setup();
-})();
-
-(() => {
-  const cmd = mc.newCommand(
-    'banlist',
-    '查询本地黑名单列表',
-    PermType.GameMasters
-  );
-  cmd.overload([]);
-  cmd.setCallback((_, __, out) => out.success(listBanLocal(true)));
-  cmd.setup();
-})();
-
-(() => {
-  const cmd = mc.newCommand('blackbe', '查询玩家BlackBE云黑记录', PermType.Any);
-  cmd.optional('name', ParamType.RawText);
-  cmd.overload(['name']);
+    out.error(`${Red}本地黑名单不存在玩家 ${nameStrip}`)
+    return false
+  })
+  cmd.setup()
+})()
+;(() => {
+  const cmd = mc.newCommand('banlist', '查询本地黑名单列表', PermType.GameMasters)
+  cmd.overload([])
+  cmd.setCallback((_, __, out) => out.success(listBanLocal(true)))
+  cmd.setup()
+})()
+;(() => {
+  const cmd = mc.newCommand('blackbe', '查询玩家BlackBE云黑记录', PermType.Any)
+  cmd.optional('name', ParamType.RawText)
+  cmd.overload(['name'])
   cmd.setCallback((_, ori, out, res) => {
-    const { name } = res;
-    const nameStrip = trimQuote(name);
+    const { name } = res
+    const nameStrip = trimQuote(name)
 
     if (!ori.player) {
-      out.error(`${Red}控制台无法执行此命令`);
-      return false;
+      out.error(`${Red}控制台无法执行此命令`)
+      return false
     }
 
-    if (nameStrip) formResult(ori.player, nameStrip);
-    else formQuery(ori.player);
-    return true;
-  });
-  cmd.setup();
-})();
-
-(() => {
+    if (nameStrip) formResult(ori.player, nameStrip)
+    else formQuery(ori.player)
+    return true
+  })
+  cmd.setup()
+})()
+;(() => {
   const cmd = mc.newCommand(
     'blacklistgui',
     '黑名单GUI',
     PermType.GameMasters,
     0x80,
-    'mgrgui'
-  );
-  cmd.overload([]);
+    'mgrgui',
+  )
+  cmd.overload([])
   cmd.setCallback((_, ori, out) => {
     if (!ori.player) {
-      out.error(`${Red}控制台无法执行此命令`);
-      return false;
+      out.error(`${Red}控制台无法执行此命令`)
+      return false
     }
-    formManage(ori.player);
-    return true;
-  });
-  cmd.setup();
-})();
+    formManage(ori.player)
+    return true
+  })
+  cmd.setup()
+})()
 
 mc.listen('onJoin', (pl) => {
-  if (pl.isSimulatedPlayer()) return;
+  if (pl.isSimulatedPlayer()) return
 
-  const { realName, xuid } = pl;
-  if (!hidePassMessage) logger.info(`正在对玩家 ${realName} 进行黑名单检测……`);
+  const { realName, xuid } = pl
+  if (!hidePassMessage) logger.info(`正在对玩家 ${realName} 进行黑名单检测……`)
 
-  const banData = checkPlayerLocal(pl);
+  const banData = checkPlayerLocal(pl)
   if (banData) {
     setTimeout(() => {
-      pl.kick(getLocalKickMsg(banData));
-    }, 0);
-    logger.warn(`检测到玩家 ${realName} 存在本地封禁记录，已踢出`);
-    return;
+      pl.kick(getLocalKickMsg(banData))
+    }, 0)
+    logger.warn(`检测到玩家 ${realName} 存在本地封禁记录，已踢出`)
+    return
   }
-  if (!hidePassMessage) logger.info(`对玩家 ${realName} 的本地黑名单检测通过`);
+  if (!hidePassMessage) logger.info(`对玩家 ${realName} 的本地黑名单检测通过`)
 
-  if (!disableBlackBE)
+  if (!disableBlackBE) {
     simpleCheck(
       realName,
       (_, ret) => {
         if (ret.data.exist) {
           setTimeout(() => {
-            pl.kick(kickByCloudMsg);
-          }, 0);
-          logger.warn(`检测到玩家 ${realName} 存在云端封禁记录，已踢出`);
-          return;
+            pl.kick(kickByCloudMsg)
+          }, 0)
+          logger.warn(`检测到玩家 ${realName} 存在云端封禁记录，已踢出`)
+          return
         }
-        if (!hidePassMessage)
-          logger.info(`对玩家 ${realName} 的云端黑名单检测通过`);
+        if (!hidePassMessage) logger.info(`对玩家 ${realName} 的云端黑名单检测通过`)
       },
       null,
-      xuid
-    );
-});
+      xuid,
+    )
+  }
+})
 
 ll.registerPlugin(pluginName, 'BlackBE云黑插件Ex', pluginVersion, {
   Author: 'student_2333',
   License: 'Apache-2.0',
-});
+})
 
-logger.info(
-  '======================================================================'
-);
-logger.info(
-  `                    插件已装载！当前版本：${pluginVersion.join('.')}`
-);
-logger.info(
-  `插件作者： student_2333                     开源证书：      Apache-2.0`
-);
-logger.info(
-  `原作者：      yqs112358                     发布平台：MineBBS & Github`
-);
-logger.info(
-  `开源地址：https://github.com/lgc2333/LLSEPlugins/tree/main/${pluginName}`
-);
-logger.info(
-  '======================================================================'
-);
+logger.info('======================================================================')
+logger.info(`                    插件已装载！当前版本：${pluginVersion.join('.')}`)
+logger.info(`插件作者： student_2333                     开源证书：      Apache-2.0`)
+logger.info(`原作者：      yqs112358                     发布平台：MineBBS & Github`)
+logger.info(`开源地址：https://github.com/lgc2333/LLSEPlugins/tree/main/${pluginName}`)
+logger.info('======================================================================')

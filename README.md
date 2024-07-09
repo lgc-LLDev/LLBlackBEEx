@@ -163,7 +163,7 @@ lip i https://github.com/lgc-LLDev/LLBlackBEEx
 
   // 赦免 BlackBE 违规记录检查的玩家列表
   // 可以填 玩家名或 XUID 字符串
-  "pardonBlackBE": []
+  "pardonBlackBE": [],
 }
 ```
 
