@@ -1,7 +1,6 @@
 import { DATA_PATH } from './const'
 
 const configPath = `${DATA_PATH}/config.json`
-const localListPath = `${DATA_PATH}/localList.json`
 
 export interface Config {
   apiToken: string
@@ -20,20 +19,6 @@ export interface Config {
   processOnPreJoin: boolean
   onlyOpCanQuery: boolean
   pardonBlackBE: string[]
-}
-
-export interface LocalBlackListItem {
-  name?: string
-  xuid?: string
-  ips?: string[]
-  clientIds?: string[]
-  reason?: string
-  /** Date.toJson() */ endTime?: string
-  /** @deprecated */ ip?: string
-}
-
-export interface LocalBlackList {
-  list: LocalBlackListItem[]
 }
 
 export const config: Config = {
@@ -55,14 +40,8 @@ export const config: Config = {
   pardonBlackBE: [],
 }
 
-export const localList: LocalBlackList = { list: [] }
-
 export function saveConfig() {
   file.writeTo(configPath, JSON.stringify(config, null, 2))
-}
-
-export function saveLocalList() {
-  file.writeTo(localListPath, JSON.stringify(localList, null, 2))
 }
 
 export function reloadConfig() {
@@ -76,10 +55,7 @@ export function reloadConfig() {
   }
 
   if (!file.exists(configPath)) saveConfig()
-  if (!file.exists(localListPath)) saveLocalList()
-
   loadConfig(configPath, config)
-  loadConfig(localListPath, localList)
 
   // if (typeof config.proxy === 'string') {
   //   const { hostname, port, protocol, username, password } = new URL(
@@ -93,17 +69,6 @@ export function reloadConfig() {
   //   if (username || password) config.proxy.auth = { username, password };
   // }
   saveConfig()
-
-  let localListChanged = false
-  for (const bl of localList.list) {
-    if (bl.ip) {
-      bl.ips = [bl.ip]
-      bl.clientIds = []
-      delete bl.ip
-      localListChanged = true
-    }
-  }
-  if (localListChanged) saveLocalList()
 }
 
 reloadConfig()

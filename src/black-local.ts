@@ -1,4 +1,5 @@
-import { config, LocalBlackListItem, localList, saveLocalList } from './config'
+import { config } from './config'
+import { Query } from './db'
 import {
   checkValInArray,
   formatDate,
@@ -7,11 +8,14 @@ import {
   stripIp,
 } from './util'
 
-export function formatLocalKickMsg(data: LocalBlackListItem): string {
+export function formatLocalKickMsg(
+  player: Player,
+  data: Omit<Query.BanInfoItem, 'id'>,
+): string {
   const { reason, endTime } = data
   return formatVarString(config.kickByLocalMsg, {
-    NAME: data.name ?? '未知',
-    XUID: data.xuid ?? '未知',
+    NAME: player.realName,
+    XUID: player.xuid,
     REASON: reason ?? '无',
     ENDTIME: endTime ? formatDate({ date: new Date(endTime) }) : '永久',
   })
@@ -74,7 +78,7 @@ export function banPlayer(
 
   if ('player' in data) {
     const { kickTip } = options
-    data.player.kick(kickTip ?? formatLocalKickMsg(results[0]))
+    data.player.kick(kickTip ?? formatLocalKickMsg(data.player, results[0]))
   }
 
   saveLocalList()
@@ -115,23 +119,24 @@ export function queryLocal(
   return ret
 }
 
-export function formatLocalInfo(obj: LocalBlackListItem, moreInfo = false): string {
-  const formatList = (li?: string[]): string =>
-    li && li.length ? `\n${li.map((v) => `  - §b${v}§r`).join('\n')}` : '§b无'
+export function formatLocalInfo(obj: Query.BanFullInfo, moreInfo = false): string {
+  const formatList = (li?: string[], pfx: string = '§b'): string =>
+    li && li.length ? `\n${li.map((v) => `  - ${pfx}${v}§r`).join('\n')}` : '§b无§r'
 
-  const { name, xuid, ips, endTime, clientIds, reason } = obj
+  const { name, xuid, ip, endTime, clientId, reason } = obj
   const lines: string[] = []
 
-  lines.push(`§2玩家ID§r： §l§d${name ?? '未知'}§r`)
-  lines.push(`§2XUID§r： §b${xuid ?? '未知'}`)
   lines.push(`§2记录原因§r： §b${reason ?? '无'}`)
   if (moreInfo) {
     lines.push(
-      `§2结束时间§r： §b${endTime ? formatDate({ date: new Date(endTime) }) : '永久'}`,
+      `§2结束时间§r：` +
+        ` §b${endTime ? formatDate({ date: new Date(endTime) }) : '永久'}`,
     )
   }
-  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ips)}`)
-  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`)
+  lines.push(`§2已记录玩家ID§r： ${formatList(name)}`)
+  lines.push(`§2已记录XUID§r： ${formatList(xuid)}`)
+  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ip)}`)
+  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientId)}`)
 
   return lines.join('\n')
 }

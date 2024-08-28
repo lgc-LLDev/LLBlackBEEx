@@ -2,7 +2,7 @@ import { formatError, wrapAsyncFunc } from 'form-api-ex'
 
 import { banPlayer, formatLocalKickMsg } from './black-local'
 import { check, formatBlackBEInfo, formatBlackBEKickMsg } from './blackbe'
-import { config, localList, saveLocalList } from './config'
+import { config } from './config'
 import { formatLocalItemShort } from './query'
 import { delFormatCode, stripIp } from './util'
 

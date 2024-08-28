@@ -6,7 +6,6 @@ import {
   BlackBEPrivInfoWithRespId,
   formatBlackBEInfo,
 } from './blackbe'
-import { LocalBlackListItem, localList, saveLocalList } from './config'
 import { PLUGIN_NAME } from './const'
 import { formatDate, processListFormReturn, setupFunctionalityForm } from './util'
 

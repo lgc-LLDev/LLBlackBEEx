@@ -16,7 +16,7 @@ import {
   checkPrivate,
   formatBlackBELvl,
 } from './blackbe'
-import { config, LocalBlackListItem } from './config'
+import { config } from './config'
 import { PLUGIN_NAME } from './const'
 import { blackBEItemForm, localItemForm } from './manage'
 import { logErr } from './util'
