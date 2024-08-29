@@ -32,22 +32,8 @@ export function delFormatCode(text: string): string {
   return text.replace(/§[0-9abcdefgklmnor]/g, '')
 }
 
-export function checkValInArray<T>(arr: T[], callback: (v: T) => boolean): boolean {
-  for (const it of arr) if (callback(it)) return true
-  return false
-}
-
-export function fuzzyValIsInArray<T extends string>(arr: T[], val: T): boolean {
-  return checkValInArray(arr, (v) => v.includes(val))
-}
-
 export function stripIp(ip: string): string {
   return ip.split(':')[0]
-}
-
-export function pushNoDuplicateItem<T, TI>(list: (T | TI)[], item: TI): (T | TI)[] {
-  if (!list.includes(item)) list.push(item)
-  return list
 }
 
 export function setupFunctionalityForm<

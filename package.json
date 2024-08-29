@@ -9,11 +9,12 @@
   },
   "author": "lgc2333 <lgc2333@126.com>",
   "license": "Apache-2.0",
-  "dependencies": {},
   "devDependencies": {
-    "form-api-ex": "workspace:^",
+    "cosmokit": "^1.6.2",
     "dumble": "^0.2.0",
+    "form-api-ex": "workspace:^",
     "rimraf": "^6.0.1",
+    "schemastery": "^3.14.3",
     "typescript": "^5.5.4"
   }
 }

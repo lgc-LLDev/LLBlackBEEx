@@ -45,7 +45,6 @@ function banCommand(willBan: string, time?: number, reason?: string, player?: Pl
       reason,
     },
   )
-  if (!res) return
 
   const { isModify, results } = res
   if (results.length) {
@@ -265,6 +264,12 @@ mc.listen('onServerStarted', () => {
   cmdMain.setup()
 
   if (config.registerBanCommand) {
+    interface CmdBanCallbackData {
+      player: string
+      reason?: string
+      duration?: number
+    }
+
     const cmdBan = mc.newCommand(
       'ban',
       `${PLUGIN_NAME} - 本地黑名单封禁`,
@@ -276,24 +281,20 @@ mc.listen('onServerStarted', () => {
     cmdBan.overload(['player', 'reason', 'duration'])
     cmdBan.setCallback(
       (
-        _,
+        _cmd,
         { player },
-        __,
-        {
-          player: stringSelector,
-          reason,
-          duration,
-        }: {
-          player: string
-          reason?: string
-          duration?: number
-        },
+        _out,
+        { player: stringSelector, reason, duration }: CmdBanCallbackData,
       ) => {
         banCommand(stringSelector, duration, reason, player)
         return true
       },
     )
     cmdBan.setup()
+
+    interface CmdUnBanCallbackData {
+      player: string
+    }
 
     const cmdUnBan = mc.newCommand(
       'unban',
@@ -303,16 +304,7 @@ mc.listen('onServerStarted', () => {
     cmdUnBan.mandatory('player', ParamType.String)
     cmdUnBan.overload(['player'])
     cmdUnBan.setCallback(
-      (
-        _,
-        { player },
-        __,
-        {
-          player: stringSelector,
-        }: {
-          player: string
-        },
-      ) => {
+      (_cmd, { player }, _out, { player: stringSelector }: CmdUnBanCallbackData) => {
         unBanCommand(stringSelector, player)
         return true
       },

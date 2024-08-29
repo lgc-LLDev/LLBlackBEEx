@@ -256,6 +256,7 @@ export async function formatBlackBEInfo(
   moreInfo = false,
 ): Promise<string> {
   const isPriv = 'phone' in obj
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { uuid, name, xuid, info, level, qq, black_id } = obj
 
   const repo = await getRepoByUuid(black_id)

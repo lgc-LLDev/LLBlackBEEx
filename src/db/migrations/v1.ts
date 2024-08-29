@@ -3,6 +3,18 @@ import { DATA_PATH } from '../../const'
 import type { MigrateFunc } from '.'
 import type { Query } from '..'
 
+// 设计思路：
+
+// 一个 BanInfo 可以有多个 Xuid、Name、Ip、ClientId 关联，
+// 但是反过来这些信息每个只能对应一个 BanInfo
+
+// 有玩家改名同时需要 ban 掉旧名字的需求，
+// 这边允许多个 name 对应同个 xuid，如果 xuid 更新后续可以再往数据库更新
+
+// 因为可能有仅提供 name 或仅提供 xuid 的情况，
+// 所以这里 xuid 与 name 分开表存
+// 因为多 name 对一 xuid 所以在 name 表中拉 xuid 的外键
+
 export interface BanInfoItemV1 {
   id: number
   reason?: string | null

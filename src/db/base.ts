@@ -3,30 +3,6 @@ export interface Query {}
 export class Query implements Query {
   constructor(readonly ss: DBSession) {}
 
-  begin() {
-    this.ss.execute('BEGIN;')
-  }
-
-  commit() {
-    this.ss.execute('COMMIT;')
-  }
-
-  rollback() {
-    this.ss.execute('ROLLBACK;')
-  }
-
-  withBegin<R>(fn: (q: Query) => R): R {
-    this.begin()
-    try {
-      const r = fn(this)
-      this.commit()
-      return r
-    } catch (e) {
-      this.rollback()
-      throw e
-    }
-  }
-
   bindStmt<T extends Record<string, any>, P = any>(
     sql: string,
     params?: Query.Params<P>,
@@ -41,6 +17,30 @@ export class Query implements Query {
     params?: Query.Params<P>,
   ) {
     this.bindStmt<T, P>(sql, params).execute()
+  }
+
+  begin() {
+    this.executeInStmt('BEGIN;')
+  }
+
+  commit() {
+    this.executeInStmt('COMMIT;')
+  }
+
+  rollback() {
+    this.executeInStmt('ROLLBACK;')
+  }
+
+  withBegin<R>(fn: (q: Query) => R): R {
+    this.begin()
+    try {
+      const r = fn(this)
+      this.commit()
+      return r
+    } catch (e) {
+      this.rollback()
+      throw e
+    }
   }
 
   executeParagraph(sql: string) {
@@ -62,7 +62,14 @@ export class Query implements Query {
     return this.bindStmt<T, P>(sql, params)
   }
 
-  fetchAll<T extends Record<string, any>, P = any>(
+  fetchAll<T extends Record<string, any>, P = any>(stmt: DBStmt<T, P>): T[] {
+    const [keys, ...rows] = stmt.fetchAll()
+    return rows.map((row) =>
+      Object.assign({}, ...keys.map((k, i) => ({ [k]: row[i] }))),
+    )
+  }
+
+  fetchAllToList<T extends Record<string, any>, P = any>(
     stmt: DBStmt<T, P>,
   ): Record<keyof T, T[keyof T][]> {
     const [keys, ...rows] = stmt.fetchAll()
@@ -72,6 +79,21 @@ export class Query implements Query {
       for (const key of keys) result[key].push(row[key])
     }
     return result
+  }
+
+  insertOrReplace<T>(data: T, tableName: string, columns: (keyof T)[]): number {
+    const names = columns.filter((v) => data[v] !== undefined)
+    if (!names.length) {
+      throw new Error('No data to insert')
+    }
+    const values = names.map((v) => data[v])
+
+    const colNamesStr = names.join(', ')
+    const argsStr = names.map(() => '?').join(', ')
+    return this.bindStmt(
+      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}}) VALUES (${argsStr});`,
+      values,
+    ).execute().insertId
   }
 }
 
