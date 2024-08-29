@@ -186,12 +186,11 @@ export function queryLocal(
     if (param.match(/^\d+$/)) {
       pushIds(q.getInfo(parseInt(param, 10))?.id)
     }
-    const searchWords = param.split(/\s+/g)
-    const banInfoCounts: Record<number, number> = {}
 
+    const searchWords = param.split(/\s+/g)
+    const banInfoCounts = new Map<number, number>()
     const countBanInfoId = (banInfoId: number) => {
-      if (banInfoId in banInfoCounts) banInfoCounts[banInfoId] += 1
-      else banInfoCounts[banInfoId] = 1
+      banInfoCounts.set(banInfoId, (banInfoCounts.get(banInfoId) || 0) + 1)
     }
 
     searchWords.forEach((word) => {
@@ -202,8 +201,8 @@ export function queryLocal(
       q.searchBanInfo(word).forEach((item) => countBanInfoId(item.id))
     })
 
-    const sortedBanInfoIds = (Object.keys(banInfoCounts) as any as number[]).sort(
-      (a, b) => banInfoCounts[b] - banInfoCounts[a],
+    const sortedBanInfoIds = [...banInfoCounts.keys()].sort(
+      (a, b) => banInfoCounts.get(b)! - banInfoCounts.get(a)!,
     )
     ids.push(...sortedBanInfoIds)
   }
