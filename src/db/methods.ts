@@ -7,7 +7,7 @@ declare module './base' {
     getIpFromInfoId(id: number): string[]
     getClientIdFromInfoId(id: number): string[]
     getNameInfo(name: string): Query.NameItem | undefined
-    getNamesFromXuid(xuid: string): string[] | undefined
+    getNamesFromXuid(xuid: string): string[]
     getInfoIdFromXuid(xuid: string): number | undefined
     getInfoIdFromName(name: string): number | undefined
     getInfoIdFromIp(ip: string): number | undefined
@@ -46,69 +46,60 @@ declare module './base' {
       ip: string[]
       clientId: string[]
     }
-
-    export enum BanType {
-      XUID = 'xuid',
-      NAME = 'name',
-      IP = 'ip',
-      CLIENT_ID = 'clientId',
-    }
-
-    export let banTypeStrMap: Record<BanType, string>
-    export let banTypeStrMapReverse: Record<string, BanType>
   }
 }
-
-Query.banTypeStrMap = {
-  [Query.BanType.XUID]: 'XUID',
-  [Query.BanType.NAME]: '玩家名',
-  [Query.BanType.IP]: 'IP',
-  [Query.BanType.CLIENT_ID]: '客户端 ID',
-}
-Query.banTypeStrMapReverse = (() => {
-  const ent = Object.entries(Query.banTypeStrMap) as [Query.BanType, string][]
-  return Object.fromEntries(ent.map(([k, v]) => [v, k]))
-})()
 
 //
 
 Query.prototype.getXuidFromInfoId = function (id) {
-  return this.fetchAllToList(
-    this.select<Pick<Query.XuidItem, 'xuid'>>('xuid', 'xuid', 'banInfoId = ?', [id]),
-  ).xuid
+  return (
+    this.fetchAllToList(
+      this.select<Pick<Query.XuidItem, 'xuid'>>('xuid', 'xuid', 'banInfoId = ?', [id]),
+    )?.xuid ?? []
+  )
 }
 
 Query.prototype.getNameFromInfoId = function (id) {
-  return this.fetchAllToList(
-    this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'banInfoId = ?', [id]),
-  ).name
+  return (
+    this.fetchAllToList(
+      this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'banInfoId = ?', [id]),
+    )?.name ?? []
+  )
 }
 
 Query.prototype.getIpFromInfoId = function (id) {
-  return this.fetchAllToList(
-    this.select<Pick<Query.IpItem, 'ip'>>('ip', 'ip', 'banInfoId = ?', [id]),
-  ).ip
+  return (
+    this.fetchAllToList(
+      this.select<Pick<Query.IpItem, 'ip'>>('ip', 'ip', 'banInfoId = ?', [id]),
+    )?.ip ?? []
+  )
 }
 
 Query.prototype.getClientIdFromInfoId = function (id) {
-  return this.fetchAllToList(
-    this.select<Pick<Query.ClientIdItem, 'clientId'>>(
-      'clientId',
-      'clientId',
-      'banInfoId = ?',
-      [id],
-    ),
-  ).clientId
+  return (
+    this.fetchAllToList(
+      this.select<Pick<Query.ClientIdItem, 'clientId'>>(
+        'clientId',
+        'clientId',
+        'banInfoId = ?',
+        [id],
+      ),
+    )?.clientId ?? []
+  )
 }
 
 Query.prototype.getNameInfo = function (name) {
-  return this.select<Query.NameItem>('*', 'name', 'name = ?', [name]).fetch()
+  const r = this.select<Query.NameItem>('*', 'name', 'name = ?', [name]).fetch()
+  if (!('name' in r)) return undefined
+  return r
 }
 
 Query.prototype.getNamesFromXuid = function (xuid) {
-  return this.fetchAllToList(
-    this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'xuid = ?', [xuid]),
-  ).name
+  return (
+    this.fetchAllToList(
+      this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'xuid = ?', [xuid]),
+    )?.name ?? []
+  )
 }
 
 Query.prototype.getInfoIdFromXuid = function (xuid) {
@@ -145,23 +136,27 @@ Query.prototype.getFullInfo = function (id) {
   const it = this.getInfo(id)
   if (!it) return undefined
   const { reason, endTime } = it
-  const { xuid } = this.fetchAllToList(
-    this.select<Pick<Query.XuidItem, 'xuid'>>('xuid', 'xuid', 'banInfoId = ?', [id]),
-  )
-  const { name } = this.fetchAllToList(
-    this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'banInfoId = ?', [id]),
-  )
-  const { ip } = this.fetchAllToList(
-    this.select<Pick<Query.IpItem, 'ip'>>('ip', 'ip', 'banInfoId = ?', [id]),
-  )
-  const { clientId } = this.fetchAllToList(
-    this.select<Pick<Query.ClientIdItem, 'clientId'>>(
-      'clientId',
-      'clientId',
-      'banInfoId = ?',
-      [id],
-    ),
-  )
+  const xuid =
+    this.fetchAllToList(
+      this.select<Pick<Query.XuidItem, 'xuid'>>('xuid', 'xuid', 'banInfoId = ?', [id]),
+    )?.xuid ?? []
+  const name =
+    this.fetchAllToList(
+      this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'banInfoId = ?', [id]),
+    )?.name ?? []
+  const ip =
+    this.fetchAllToList(
+      this.select<Pick<Query.IpItem, 'ip'>>('ip', 'ip', 'banInfoId = ?', [id]),
+    )?.ip ?? []
+  const clientId =
+    this.fetchAllToList(
+      this.select<Pick<Query.ClientIdItem, 'clientId'>>(
+        'clientId',
+        'clientId',
+        'banInfoId = ?',
+        [id],
+      ),
+    )?.clientId ?? []
   return { id, reason, endTime, name, xuid, ip, clientId } as Query.BanFullInfo
 }
 

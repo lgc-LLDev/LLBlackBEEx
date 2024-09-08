@@ -33,538 +33,6 @@ var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read fr
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
 
-// ../FormAPIEx/lib/FormAPIEx.cjs
-var require_FormAPIEx = __commonJS({
-  "../FormAPIEx/lib/FormAPIEx.cjs"(exports2, module2) {
-    "use strict";
-    var __defProp2 = Object.defineProperty;
-    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-    var __getOwnPropNames2 = Object.getOwnPropertyNames;
-    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
-    var __export = /* @__PURE__ */ __name((target, all) => {
-      for (var name in all)
-        __defProp2(target, name, { get: all[name], enumerable: true });
-    }, "__export");
-    var __copyProps2 = /* @__PURE__ */ __name((to, from, except, desc) => {
-      if (from && typeof from === "object" || typeof from === "function") {
-        for (let key of __getOwnPropNames2(from))
-          if (!__hasOwnProp2.call(to, key) && key !== except)
-            __defProp2(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
-      }
-      return to;
-    }, "__copyProps");
-    var __toCommonJS = /* @__PURE__ */ __name((mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod), "__toCommonJS");
-    var src_exports = {};
-    __export(src_exports, {
-      AUTHOR: /* @__PURE__ */ __name(() => AUTHOR, "AUTHOR"),
-      CustomFormEx: /* @__PURE__ */ __name(() => CustomFormEx4, "CustomFormEx"),
-      FormClose: /* @__PURE__ */ __name(() => FormClose4, "FormClose"),
-      LICENSE: /* @__PURE__ */ __name(() => LICENSE, "LICENSE"),
-      NAME: /* @__PURE__ */ __name(() => NAME, "NAME"),
-      SimpleFormAsync: /* @__PURE__ */ __name(() => SimpleFormAsync, "SimpleFormAsync"),
-      SimpleFormEx: /* @__PURE__ */ __name(() => SimpleFormEx4, "SimpleFormEx"),
-      SimpleFormOperational: /* @__PURE__ */ __name(() => SimpleFormOperational, "SimpleFormOperational"),
-      VERSION: /* @__PURE__ */ __name(() => VERSION, "VERSION"),
-      buildCustomForm: /* @__PURE__ */ __name(() => buildCustomForm, "buildCustomForm"),
-      deepClone: /* @__PURE__ */ __name(() => deepClone, "deepClone"),
-      formatError: /* @__PURE__ */ __name(() => formatError3, "formatError"),
-      sendFormAsync: /* @__PURE__ */ __name(() => sendFormAsync, "sendFormAsync"),
-      sendModalFormAsync: /* @__PURE__ */ __name(() => sendModalFormAsync2, "sendModalFormAsync"),
-      wrapAsyncFunc: /* @__PURE__ */ __name(() => wrapAsyncFunc2, "wrapAsyncFunc")
-    });
-    module2.exports = __toCommonJS(src_exports);
-    var version2 = "0.5.2";
-    var NAME = "FormAPIEx";
-    var VERSION = version2.split(".").map((v) => Number(v));
-    var AUTHOR = "student_2333 <lgc2333@126.com>";
-    var LICENSE = "Apache-2.0";
-    var FormClose4 = Symbol(`${NAME}_FormClose`);
-    function formatError3(e) {
-      return e instanceof Error ? `${e.message}
-${e.stack}` : String(e);
-    }
-    __name(formatError3, "formatError");
-    function wrapAsyncFunc2(func) {
-      return (...args) => {
-        setTimeout(() => func(...args).catch((e) => logger.error(formatError3(e))), 0);
-      };
-    }
-    __name(wrapAsyncFunc2, "wrapAsyncFunc");
-    function deepClone(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
-    __name(deepClone, "deepClone");
-    function sendFormAsync(player, form) {
-      return new Promise((resolve) => {
-        player.sendForm(
-          form,
-          (_, data2) => setTimeout(
-            () => resolve(data2 === null || data2 === void 0 ? FormClose4 : data2),
-            0
-          )
-        );
-      });
-    }
-    __name(sendFormAsync, "sendFormAsync");
-    function buildCustomForm(formTitle, objects) {
-      const form = mc.newCustomForm();
-      form.setTitle(formTitle);
-      for (const obj of objects) {
-        switch (obj.type) {
-          case "label": {
-            form.addLabel(obj.text);
-            break;
-          }
-          case "input": {
-            const { title, placeholder, defaultVal } = obj;
-            form.addInput(title, placeholder ?? "", defaultVal ?? "");
-            break;
-          }
-          case "switch": {
-            const { title, defaultVal } = obj;
-            form.addSwitch(title, defaultVal ?? false);
-            break;
-          }
-          case "dropdown": {
-            const { title, items, defaultVal } = obj;
-            form.addDropdown(title, items, defaultVal ?? 0);
-            break;
-          }
-          case "slider": {
-            const { title, min, max, step, defaultVal } = obj;
-            form.addSlider(title, min, max, step ?? 1, defaultVal ?? min);
-            break;
-          }
-          case "stepSlider": {
-            const { title, items, defaultVal } = obj;
-            form.addStepSlider(title, items, defaultVal ?? 0);
-            break;
-          }
-        }
-      }
-      return form;
-    }
-    __name(buildCustomForm, "buildCustomForm");
-    var _objects, _a;
-    var CustomFormEx4 = (_a = class {
-      /**
-       * @param title 表单标题
-       */
-      constructor(title = "") {
-        __privateAdd(this, _objects);
-        this.title = "";
-        __privateSet(this, _objects, []);
-        this.title = title;
-      }
-      /**
-       * 获取表单元素列表
-       */
-      get objects() {
-        return deepClone(__privateGet(this, _objects));
-      }
-      /**
-       * 获取表单元素数量
-       */
-      get length() {
-        return __privateGet(this, _objects).length;
-      }
-      /**
-       * 设置表单标题
-       * @param val 标题
-       * @returns 自身，便于链式调用
-       */
-      setTitle(val) {
-        this.title = val;
-        return this;
-      }
-      // add object
-      // 格式化之后着色有问题
-      // prettier-ignore
-      /**
-       * 向表单尾部添加一个元素
-       * @param id 元素 id
-       * @param obj 元素
-       * @returns 自身，便于链式调用
-       */
-      push(id, obj) {
-        __privateGet(this, _objects).push([id, obj]);
-        return this;
-      }
-      // prettier-ignore
-      /**
-       * 向表单头部添加一个元素
-       * @param id 元素 id
-       * @param obj 元素
-       * @returns 自身，便于链式调用
-       */
-      unshift(id, obj) {
-        __privateGet(this, _objects).unshift([id, obj]);
-        return this;
-      }
-      // prettier-ignore
-      /**
-       * 向表单插入一个元素
-       * @param index 插入位置
-       * @param id 元素 id
-       * @param obj 元素
-       * @returns 自身，便于链式调用
-       */
-      insert(index, id, obj) {
-        __privateGet(this, _objects).splice(index, 0, [id, obj]);
-        return this;
-      }
-      // remove object
-      /**
-       * 删除表单元素
-       * @param id 元素 id
-       * @returns 自身，便于链式调用
-       */
-      remove(id) {
-        for (let i = 0; i < __privateGet(this, _objects).length; i += 1) {
-          const [objId] = __privateGet(this, _objects)[i];
-          if (objId === id) {
-            __privateGet(this, _objects).splice(i, 1);
-            break;
-          }
-        }
-        return this;
-      }
-      get(id) {
-        if (typeof id === "number") return __privateGet(this, _objects)[id];
-        for (const [objId, val] of __privateGet(this, _objects)) {
-          if (objId === id) return val;
-        }
-        return null;
-      }
-      addLabel(arg1, arg2) {
-        const id = arg2 ? arg1 : void 0;
-        const text = arg2 ?? arg1;
-        return this.push(id, { type: "label", text });
-      }
-      /**
-       * 向表单添加一个输入框
-       * @param id 元素 id
-       * @param title 输入框标题
-       * @param options 附加选项
-       * @returns 自身，便于链式调用
-       */
-      addInput(id, title, options = {}) {
-        const { placeholder, default: defaultVal } = options;
-        return this.push(id, {
-          type: "input",
-          title,
-          placeholder,
-          defaultVal
-        });
-      }
-      /**
-       * 向表单添加一个开关
-       * @param id 元素 id
-       * @param title 开关标题
-       * @param defaultVal 开关默认状态，默认为 `false`
-       * @returns 自身，便于链式调用
-       */
-      addSwitch(id, title, defaultVal = false) {
-        return this.push(id, { type: "switch", title, defaultVal });
-      }
-      /**
-       * 向表单添加一个下拉框
-       * @param id 元素 id
-       * @param title 下拉框标题
-       * @param items 下拉框元素
-       * @param defaultVal 下拉框默认选择元素位置，默认为 `0`
-       * @returns 自身，便于链式调用
-       */
-      addDropdown(id, title, items, defaultVal = 0) {
-        return this.push(id, { type: "dropdown", title, items, defaultVal });
-      }
-      /**
-       * 向表单添加一个滑块
-       * @param id 元素 id
-       * @param title 滑块标题
-       * @param min 滑块最小值
-       * @param max 滑块最大值
-       * @param options 附加选项
-       * @returns 自身，便于链式调用
-       */
-      addSlider(id, title, min, max, options = {}) {
-        const { step, default: defaultVal } = options;
-        return this.push(id, { type: "slider", title, min, max, step, defaultVal });
-      }
-      /**
-       * 向表单添加一个步进滑块
-       * @param id 元素 id
-       * @param title 步进滑块标题
-       * @param items 步进滑块元素列表
-       * @param defaultVal 滑块默认位置，默认为 `0`
-       * @returns 自身，便于链式调用
-       */
-      addStepSlider(id, title, items, defaultVal = 0) {
-        return this.push(id, { type: "stepSlider", title, items, defaultVal });
-      }
-      // send
-      parseReturn(data2) {
-        const res = {};
-        for (let i = 0; i < data2.length; i += 1) {
-          const [id] = __privateGet(this, _objects)[i];
-          const val = data2[i] ?? void 0;
-          if (id) res[id] = val;
-        }
-        return res;
-      }
-      /**
-       * 异步向玩家发送该表单
-       * @param player 玩家对象
-       * @returns 返回结果，玩家关闭表单或发送失败返回 FormClose
-       */
-      async sendAsync(player) {
-        const data2 = await sendFormAsync(
-          player,
-          buildCustomForm(
-            this.title,
-            this.objects.map((v) => v[1])
-          )
-        );
-        if (data2 === FormClose4) return FormClose4;
-        return this.parseReturn(data2);
-      }
-    }, _objects = new WeakMap(), __name(_a, "CustomFormEx"), _a);
-    function sendModalFormAsync2(player, title, content, confirmButton = "§a确认", cancelButton = "§c取消") {
-      return new Promise((resolve) => {
-        player.sendModalForm(
-          title,
-          content,
-          confirmButton,
-          cancelButton,
-          (_, data2) => setTimeout(() => resolve(!!data2), 0)
-        );
-      });
-    }
-    __name(sendModalFormAsync2, "sendModalFormAsync");
-    var _a2;
-    var SimpleFormAsync = (_a2 = class {
-      /**
-       * @param options 附加选项
-       */
-      constructor(options = {}) {
-        this.title = "";
-        this.content = "";
-        this.buttons = [];
-        const { title, content, buttons } = options;
-        if (title) this.title = title;
-        if (content) this.content = content;
-        if (buttons) this.buttons = buttons;
-      }
-      /**
-       * 设置表单标题
-       * @param val 标题
-       * @returns 自身，便于链式调用
-       */
-      setTitle(val) {
-        this.title = val;
-        return this;
-      }
-      /**
-       * 设置表单内容
-       * @param val 内容
-       * @returns 自身，便于链式调用
-       */
-      setContent(val) {
-        this.content = val;
-        return this;
-      }
-      /**
-       * 给表单添加一个按钮
-       * @param text 按钮文本
-       * @param image 按钮图片
-       * @returns 自身，便于链式调用
-       */
-      addButton(text, image) {
-        this.buttons.push([text, image]);
-        return this;
-      }
-      /**
-       * 异步向玩家发送该表单
-       * @param player 玩家对象
-       * @returns 玩家选择的按钮序号，玩家关闭表单或发送失败返回 FormClose
-       */
-      sendAsync(player) {
-        const form = mc.newSimpleForm().setTitle(this.title).setContent(this.content);
-        this.buttons.forEach(([text, image]) => {
-          if (image) form.addButton(text, image);
-          else form.addButton(text);
-        });
-        return sendFormAsync(player, form);
-      }
-    }, __name(_a2, "SimpleFormAsync"), _a2);
-    var _a3;
-    var SimpleFormEx4 = (_a3 = class {
-      /**
-       * @param buttons 表单按钮参数
-       */
-      constructor(buttons = []) {
-        this.title = "";
-        this.content = "§a第 §e{{currentPage}} §f/ §6{{maxPage}} §a页 §7| §a共 §e{{count}} §a条";
-        this.buttons = [];
-        this.formatter = (v) => [
-          `§3${String(v)}`
-        ];
-        this.canTurnPage = false;
-        this.canJumpPage = false;
-        this.maxPageNum = 15;
-        this.hasSearchButton = false;
-        this.searcher = (buttons2, param) => {
-          const params = param.toLowerCase().split(/\s/g);
-          const formatted = this.formatButtons(buttons2).map((v) => v[0].toLowerCase());
-          const result = [];
-          for (const it of formatted) {
-            const score = params.reduce((acc, cur) => acc + (it.includes(cur) ? 1 : 0), 0);
-            if (score) result.push([score, buttons2[formatted.indexOf(it)]]);
-          }
-          return result.sort(([a], [b]) => b - a).map((v) => v[1]);
-        };
-        this.buttons = buttons;
-      }
-      /**
-       * 格式化给定按钮
-       * @param buttons 表单按钮参数列表
-       * @returns 格式化后的按钮
-       */
-      formatButtons(buttons = this.buttons) {
-        return buttons.map(this.formatter);
-      }
-      /**
-       * @returns 表单最大页数
-       */
-      getMaxPageNum() {
-        return this.canTurnPage ? Math.ceil(this.buttons.length / this.maxPageNum) : 1;
-      }
-      /**
-       * 获取对应页数的按钮参数列表
-       * @param page 页码
-       * @returns 按钮参数列表
-       */
-      getPage(page = 1) {
-        if (page > this.getMaxPageNum()) return [];
-        return this.buttons.slice((page - 1) * this.maxPageNum, page * this.maxPageNum);
-      }
-      /**
-       * 异步向玩家发送搜索表单
-       * @param player 玩家对象
-       * @param defaultVal 搜索框默认内容
-       * @returns 选择的搜索结果按钮参数。返回 null 为没搜到, FormClose 为取消搜索
-       */
-      async sendSearchForm(player, defaultVal = "") {
-        const form = new CustomFormEx4(this.title);
-        const res = await form.addInput("param", "请输入你要搜索的内容", { default: defaultVal }).sendAsync(player);
-        if (res === FormClose4) return FormClose4;
-        const searched = this.searcher(this.buttons, res.param);
-        if (!searched.length) {
-          await new SimpleFormAsync({
-            title: this.title,
-            content: "§6没有搜索到结果"
-          }).sendAsync(player);
-          return null;
-        }
-        const searchForm = new _a3();
-        searchForm.title = this.title;
-        searchForm.content = `§a为您找到了 §l§6${searched.length} §r§a个结果
-${searchForm.content}`;
-        searchForm.buttons = searched;
-        searchForm.formatter = this.formatter;
-        searchForm.canTurnPage = this.canTurnPage;
-        searchForm.canJumpPage = this.canJumpPage;
-        searchForm.maxPageNum = this.maxPageNum;
-        searchForm.hasSearchButton = false;
-        const selected = await searchForm.sendAsync(player);
-        return selected === FormClose4 ? FormClose4 : selected;
-      }
-      /**
-       * 异步向玩家发送表单
-       * @param player 玩家对象
-       * @param page 页码
-       * @returns 给定的按钮参数，表单被玩家关闭或发送失败返回 FormClose
-       */
-      async sendAsync(player, page = 1) {
-        const buttons = this.canTurnPage ? this.getPage(page) : this.buttons;
-        const formattedButtons = this.formatButtons(buttons);
-        const maxPage = this.getMaxPageNum();
-        const pageAboveOne = maxPage > 1;
-        const hasJumpBtn = this.canJumpPage && pageAboveOne;
-        const hasPreviousPage = page > 1 && pageAboveOne;
-        const hasNextPage = page < maxPage && pageAboveOne;
-        if (hasPreviousPage) formattedButtons.unshift(["§2<- 上一页"]);
-        if (hasJumpBtn) formattedButtons.unshift(["§1跳页"]);
-        if (this.hasSearchButton) formattedButtons.unshift(["§1搜索"]);
-        if (hasNextPage) formattedButtons.push(["§2下一页 ->"]);
-        const formatContent = /* @__PURE__ */ __name((content) => {
-          const count = this.buttons.length;
-          const formatMap = {
-            currentPage: page,
-            maxPage,
-            count
-          };
-          for (const [key, val] of Object.entries(formatMap)) {
-            content = content.replaceAll(`{{${key}}}`, String(val));
-          }
-          return content;
-        }, "formatContent");
-        const resultIndex = await new SimpleFormAsync({
-          title: this.title,
-          content: formatContent(this.content),
-          buttons: formattedButtons
-        }).sendAsync(player);
-        if (resultIndex === FormClose4) return FormClose4;
-        let offset = 0;
-        if (this.hasSearchButton) {
-          if (resultIndex === offset) {
-            const res = await this.sendSearchForm(player);
-            return res === null || res === FormClose4 ? this.sendAsync(player, page) : res;
-          }
-          offset += 1;
-        }
-        if (hasJumpBtn) {
-          if (resultIndex === offset) {
-            const res = await new CustomFormEx4(this.title).addSlider("num", "请选择你要跳转的页数", 1, maxPage, {
-              default: page
-            }).sendAsync(player);
-            return this.sendAsync(player, res === FormClose4 ? page : res.num);
-          }
-          offset += 1;
-        }
-        if (hasPreviousPage) {
-          if (resultIndex === offset) {
-            return this.sendAsync(player, page - 1);
-          }
-          offset += 1;
-        }
-        if (hasNextPage && resultIndex + 1 === formattedButtons.length) {
-          return this.sendAsync(player, page + 1);
-        }
-        const realIndex = resultIndex - offset;
-        return buttons[realIndex];
-      }
-    }, __name(_a3, "_SimpleFormEx"), _a3);
-    var _a4;
-    var SimpleFormOperational = (_a4 = class {
-      constructor(title = "", content = "", buttons = []) {
-        this.title = title;
-        this.content = content;
-        this.buttons = buttons;
-      }
-      async sendAsync(player) {
-        const form = new SimpleFormEx4(this.buttons);
-        form.title = this.title;
-        form.content = this.content;
-        form.formatter = ({ text, image }) => [text, image];
-        const res = await form.sendAsync(player);
-        if (res === FormClose4) return FormClose4;
-        return res.operation();
-      }
-    }, __name(_a4, "SimpleFormOperational"), _a4);
-  }
-});
-
 // ../node_modules/.pnpm/cosmokit@1.6.2/node_modules/cosmokit/lib/index.cjs
 var require_lib = __commonJS({
   "../node_modules/.pnpm/cosmokit@1.6.2/node_modules/cosmokit/lib/index.cjs"(exports2, module2) {
@@ -1563,6 +1031,541 @@ var require_lib2 = __commonJS({
   }
 });
 
+// ../FormAPIEx/lib/FormAPIEx.cjs
+var require_FormAPIEx = __commonJS({
+  "../FormAPIEx/lib/FormAPIEx.cjs"(exports2, module2) {
+    "use strict";
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __export = /* @__PURE__ */ __name((target, all) => {
+      for (var name in all)
+        __defProp2(target, name, { get: all[name], enumerable: true });
+    }, "__export");
+    var __copyProps2 = /* @__PURE__ */ __name((to, from, except, desc) => {
+      if (from && typeof from === "object" || typeof from === "function") {
+        for (let key of __getOwnPropNames2(from))
+          if (!__hasOwnProp2.call(to, key) && key !== except)
+            __defProp2(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
+      }
+      return to;
+    }, "__copyProps");
+    var __toCommonJS = /* @__PURE__ */ __name((mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod), "__toCommonJS");
+    var src_exports = {};
+    __export(src_exports, {
+      AUTHOR: /* @__PURE__ */ __name(() => AUTHOR, "AUTHOR"),
+      CustomFormEx: /* @__PURE__ */ __name(() => CustomFormEx4, "CustomFormEx"),
+      FormClose: /* @__PURE__ */ __name(() => FormClose4, "FormClose"),
+      LICENSE: /* @__PURE__ */ __name(() => LICENSE, "LICENSE"),
+      NAME: /* @__PURE__ */ __name(() => NAME, "NAME"),
+      SimpleFormAsync: /* @__PURE__ */ __name(() => SimpleFormAsync, "SimpleFormAsync"),
+      SimpleFormEx: /* @__PURE__ */ __name(() => SimpleFormEx4, "SimpleFormEx"),
+      SimpleFormOperational: /* @__PURE__ */ __name(() => SimpleFormOperational, "SimpleFormOperational"),
+      VERSION: /* @__PURE__ */ __name(() => VERSION, "VERSION"),
+      buildCustomForm: /* @__PURE__ */ __name(() => buildCustomForm, "buildCustomForm"),
+      deepClone: /* @__PURE__ */ __name(() => deepClone, "deepClone"),
+      formatError: /* @__PURE__ */ __name(() => formatError3, "formatError"),
+      sendFormAsync: /* @__PURE__ */ __name(() => sendFormAsync, "sendFormAsync"),
+      sendModalFormAsync: /* @__PURE__ */ __name(() => sendModalFormAsync2, "sendModalFormAsync"),
+      wrapAsyncFunc: /* @__PURE__ */ __name(() => wrapAsyncFunc2, "wrapAsyncFunc")
+    });
+    module2.exports = __toCommonJS(src_exports);
+    var version2 = "0.5.2";
+    var NAME = "FormAPIEx";
+    var VERSION = version2.split(".").map((v) => Number(v));
+    var AUTHOR = "student_2333 <lgc2333@126.com>";
+    var LICENSE = "Apache-2.0";
+    var FormClose4 = Symbol(`${NAME}_FormClose`);
+    function formatError3(e) {
+      return e instanceof Error ? `${e.message}
+${e.stack}` : String(e);
+    }
+    __name(formatError3, "formatError");
+    function wrapAsyncFunc2(func) {
+      return (...args) => {
+        setTimeout(() => func(...args).catch((e) => logger.error(formatError3(e))), 0);
+      };
+    }
+    __name(wrapAsyncFunc2, "wrapAsyncFunc");
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+    __name(deepClone, "deepClone");
+    function sendFormAsync(player, form) {
+      return new Promise((resolve) => {
+        player.sendForm(
+          form,
+          (_, data2) => setTimeout(
+            () => resolve(data2 === null || data2 === void 0 ? FormClose4 : data2),
+            0
+          )
+        );
+      });
+    }
+    __name(sendFormAsync, "sendFormAsync");
+    function buildCustomForm(formTitle, objects) {
+      const form = mc.newCustomForm();
+      form.setTitle(formTitle);
+      for (const obj of objects) {
+        switch (obj.type) {
+          case "label": {
+            form.addLabel(obj.text);
+            break;
+          }
+          case "input": {
+            const { title, placeholder, defaultVal } = obj;
+            form.addInput(title, placeholder ?? "", defaultVal ?? "");
+            break;
+          }
+          case "switch": {
+            const { title, defaultVal } = obj;
+            form.addSwitch(title, defaultVal ?? false);
+            break;
+          }
+          case "dropdown": {
+            const { title, items, defaultVal } = obj;
+            form.addDropdown(title, items, defaultVal ?? 0);
+            break;
+          }
+          case "slider": {
+            const { title, min, max, step, defaultVal } = obj;
+            form.addSlider(title, min, max, step ?? 1, defaultVal ?? min);
+            break;
+          }
+          case "stepSlider": {
+            const { title, items, defaultVal } = obj;
+            form.addStepSlider(title, items, defaultVal ?? 0);
+            break;
+          }
+        }
+      }
+      return form;
+    }
+    __name(buildCustomForm, "buildCustomForm");
+    var _objects, _a;
+    var CustomFormEx4 = (_a = class {
+      /**
+       * @param title 表单标题
+       */
+      constructor(title = "") {
+        __privateAdd(this, _objects);
+        this.title = "";
+        __privateSet(this, _objects, []);
+        this.title = title;
+      }
+      /**
+       * 获取表单元素列表
+       */
+      get objects() {
+        return deepClone(__privateGet(this, _objects));
+      }
+      /**
+       * 获取表单元素数量
+       */
+      get length() {
+        return __privateGet(this, _objects).length;
+      }
+      /**
+       * 设置表单标题
+       * @param val 标题
+       * @returns 自身，便于链式调用
+       */
+      setTitle(val) {
+        this.title = val;
+        return this;
+      }
+      // add object
+      // 格式化之后着色有问题
+      // prettier-ignore
+      /**
+       * 向表单尾部添加一个元素
+       * @param id 元素 id
+       * @param obj 元素
+       * @returns 自身，便于链式调用
+       */
+      push(id, obj) {
+        __privateGet(this, _objects).push([id, obj]);
+        return this;
+      }
+      // prettier-ignore
+      /**
+       * 向表单头部添加一个元素
+       * @param id 元素 id
+       * @param obj 元素
+       * @returns 自身，便于链式调用
+       */
+      unshift(id, obj) {
+        __privateGet(this, _objects).unshift([id, obj]);
+        return this;
+      }
+      // prettier-ignore
+      /**
+       * 向表单插入一个元素
+       * @param index 插入位置
+       * @param id 元素 id
+       * @param obj 元素
+       * @returns 自身，便于链式调用
+       */
+      insert(index, id, obj) {
+        __privateGet(this, _objects).splice(index, 0, [id, obj]);
+        return this;
+      }
+      // remove object
+      /**
+       * 删除表单元素
+       * @param id 元素 id
+       * @returns 自身，便于链式调用
+       */
+      remove(id) {
+        for (let i = 0; i < __privateGet(this, _objects).length; i += 1) {
+          const [objId] = __privateGet(this, _objects)[i];
+          if (objId === id) {
+            __privateGet(this, _objects).splice(i, 1);
+            break;
+          }
+        }
+        return this;
+      }
+      get(id) {
+        if (typeof id === "number") return __privateGet(this, _objects)[id];
+        for (const [objId, val] of __privateGet(this, _objects)) {
+          if (objId === id) return val;
+        }
+        return null;
+      }
+      addLabel(arg1, arg2) {
+        const id = arg2 ? arg1 : void 0;
+        const text = arg2 ?? arg1;
+        return this.push(id, { type: "label", text });
+      }
+      /**
+       * 向表单添加一个输入框
+       * @param id 元素 id
+       * @param title 输入框标题
+       * @param options 附加选项
+       * @returns 自身，便于链式调用
+       */
+      addInput(id, title, options = {}) {
+        const { placeholder, default: defaultVal } = options;
+        return this.push(id, {
+          type: "input",
+          title,
+          placeholder,
+          defaultVal
+        });
+      }
+      /**
+       * 向表单添加一个开关
+       * @param id 元素 id
+       * @param title 开关标题
+       * @param defaultVal 开关默认状态，默认为 `false`
+       * @returns 自身，便于链式调用
+       */
+      addSwitch(id, title, defaultVal = false) {
+        return this.push(id, { type: "switch", title, defaultVal });
+      }
+      /**
+       * 向表单添加一个下拉框
+       * @param id 元素 id
+       * @param title 下拉框标题
+       * @param items 下拉框元素
+       * @param defaultVal 下拉框默认选择元素位置，默认为 `0`
+       * @returns 自身，便于链式调用
+       */
+      addDropdown(id, title, items, defaultVal = 0) {
+        return this.push(id, { type: "dropdown", title, items, defaultVal });
+      }
+      /**
+       * 向表单添加一个滑块
+       * @param id 元素 id
+       * @param title 滑块标题
+       * @param min 滑块最小值
+       * @param max 滑块最大值
+       * @param options 附加选项
+       * @returns 自身，便于链式调用
+       */
+      addSlider(id, title, min, max, options = {}) {
+        const { step, default: defaultVal } = options;
+        return this.push(id, { type: "slider", title, min, max, step, defaultVal });
+      }
+      /**
+       * 向表单添加一个步进滑块
+       * @param id 元素 id
+       * @param title 步进滑块标题
+       * @param items 步进滑块元素列表
+       * @param defaultVal 滑块默认位置，默认为 `0`
+       * @returns 自身，便于链式调用
+       */
+      addStepSlider(id, title, items, defaultVal = 0) {
+        return this.push(id, { type: "stepSlider", title, items, defaultVal });
+      }
+      // send
+      parseReturn(data2) {
+        const res = {};
+        for (let i = 0; i < data2.length; i += 1) {
+          const [id] = __privateGet(this, _objects)[i];
+          const val = data2[i] ?? void 0;
+          if (id) res[id] = val;
+        }
+        return res;
+      }
+      /**
+       * 异步向玩家发送该表单
+       * @param player 玩家对象
+       * @returns 返回结果，玩家关闭表单或发送失败返回 FormClose
+       */
+      async sendAsync(player) {
+        const data2 = await sendFormAsync(
+          player,
+          buildCustomForm(
+            this.title,
+            this.objects.map((v) => v[1])
+          )
+        );
+        if (data2 === FormClose4) return FormClose4;
+        return this.parseReturn(data2);
+      }
+    }, _objects = new WeakMap(), __name(_a, "CustomFormEx"), _a);
+    function sendModalFormAsync2(player, title, content, confirmButton = "§a确认", cancelButton = "§c取消") {
+      return new Promise((resolve) => {
+        player.sendModalForm(
+          title,
+          content,
+          confirmButton,
+          cancelButton,
+          (_, data2) => setTimeout(() => resolve(!!data2), 0)
+        );
+      });
+    }
+    __name(sendModalFormAsync2, "sendModalFormAsync");
+    var _a2;
+    var SimpleFormAsync = (_a2 = class {
+      /**
+       * @param options 附加选项
+       */
+      constructor(options = {}) {
+        this.title = "";
+        this.content = "";
+        this.buttons = [];
+        const { title, content, buttons } = options;
+        if (title) this.title = title;
+        if (content) this.content = content;
+        if (buttons) this.buttons = buttons;
+      }
+      /**
+       * 设置表单标题
+       * @param val 标题
+       * @returns 自身，便于链式调用
+       */
+      setTitle(val) {
+        this.title = val;
+        return this;
+      }
+      /**
+       * 设置表单内容
+       * @param val 内容
+       * @returns 自身，便于链式调用
+       */
+      setContent(val) {
+        this.content = val;
+        return this;
+      }
+      /**
+       * 给表单添加一个按钮
+       * @param text 按钮文本
+       * @param image 按钮图片
+       * @returns 自身，便于链式调用
+       */
+      addButton(text, image) {
+        this.buttons.push([text, image]);
+        return this;
+      }
+      /**
+       * 异步向玩家发送该表单
+       * @param player 玩家对象
+       * @returns 玩家选择的按钮序号，玩家关闭表单或发送失败返回 FormClose
+       */
+      sendAsync(player) {
+        const form = mc.newSimpleForm().setTitle(this.title).setContent(this.content);
+        this.buttons.forEach(([text, image]) => {
+          if (image) form.addButton(text, image);
+          else form.addButton(text);
+        });
+        return sendFormAsync(player, form);
+      }
+    }, __name(_a2, "SimpleFormAsync"), _a2);
+    var _a3;
+    var SimpleFormEx4 = (_a3 = class {
+      /**
+       * @param buttons 表单按钮参数
+       */
+      constructor(buttons = []) {
+        this.title = "";
+        this.content = "§a第 §e{{currentPage}} §f/ §6{{maxPage}} §a页 §7| §a共 §e{{count}} §a条";
+        this.buttons = [];
+        this.formatter = (v) => [
+          `§3${String(v)}`
+        ];
+        this.canTurnPage = false;
+        this.canJumpPage = false;
+        this.maxPageNum = 15;
+        this.hasSearchButton = false;
+        this.searcher = (buttons2, param) => {
+          const params = param.toLowerCase().split(/\s/g);
+          const formatted = this.formatButtons(buttons2).map((v) => v[0].toLowerCase());
+          const result = [];
+          for (const it of formatted) {
+            const score = params.reduce((acc, cur) => acc + (it.includes(cur) ? 1 : 0), 0);
+            if (score) result.push([score, buttons2[formatted.indexOf(it)]]);
+          }
+          return result.sort(([a], [b]) => b - a).map((v) => v[1]);
+        };
+        this.buttons = buttons;
+      }
+      /**
+       * 格式化给定按钮
+       * @param buttons 表单按钮参数列表
+       * @returns 格式化后的按钮
+       */
+      formatButtons(buttons = this.buttons) {
+        return buttons.map(this.formatter);
+      }
+      /**
+       * @returns 表单最大页数
+       */
+      getMaxPageNum() {
+        return this.canTurnPage ? Math.ceil(this.buttons.length / this.maxPageNum) : 1;
+      }
+      /**
+       * 获取对应页数的按钮参数列表
+       * @param page 页码
+       * @returns 按钮参数列表
+       */
+      getPage(page = 1) {
+        if (page > this.getMaxPageNum()) return [];
+        return this.buttons.slice((page - 1) * this.maxPageNum, page * this.maxPageNum);
+      }
+      /**
+       * 异步向玩家发送搜索表单
+       * @param player 玩家对象
+       * @param defaultVal 搜索框默认内容
+       * @returns 选择的搜索结果按钮参数。返回 null 为没搜到, FormClose 为取消搜索
+       */
+      async sendSearchForm(player, defaultVal = "") {
+        const form = new CustomFormEx4(this.title);
+        const res = await form.addInput("param", "请输入你要搜索的内容", { default: defaultVal }).sendAsync(player);
+        if (res === FormClose4) return FormClose4;
+        const searched = this.searcher(this.buttons, res.param);
+        if (!searched.length) {
+          await new SimpleFormAsync({
+            title: this.title,
+            content: "§6没有搜索到结果"
+          }).sendAsync(player);
+          return null;
+        }
+        const searchForm = new _a3();
+        searchForm.title = this.title;
+        searchForm.content = `§a为您找到了 §l§6${searched.length} §r§a个结果
+${searchForm.content}`;
+        searchForm.buttons = searched;
+        searchForm.formatter = this.formatter;
+        searchForm.canTurnPage = this.canTurnPage;
+        searchForm.canJumpPage = this.canJumpPage;
+        searchForm.maxPageNum = this.maxPageNum;
+        searchForm.hasSearchButton = false;
+        const selected = await searchForm.sendAsync(player);
+        return selected === FormClose4 ? FormClose4 : selected;
+      }
+      /**
+       * 异步向玩家发送表单
+       * @param player 玩家对象
+       * @param page 页码
+       * @returns 给定的按钮参数，表单被玩家关闭或发送失败返回 FormClose
+       */
+      async sendAsync(player, page = 1) {
+        const buttons = this.canTurnPage ? this.getPage(page) : this.buttons;
+        const formattedButtons = this.formatButtons(buttons);
+        const maxPage = this.getMaxPageNum();
+        const pageAboveOne = maxPage > 1;
+        const hasJumpBtn = this.canJumpPage && pageAboveOne;
+        const hasPreviousPage = page > 1 && pageAboveOne;
+        const hasNextPage = page < maxPage && pageAboveOne;
+        if (hasPreviousPage) formattedButtons.unshift(["§2<- 上一页"]);
+        if (hasJumpBtn) formattedButtons.unshift(["§1跳页"]);
+        if (this.hasSearchButton) formattedButtons.unshift(["§1搜索"]);
+        if (hasNextPage) formattedButtons.push(["§2下一页 ->"]);
+        const formatContent = /* @__PURE__ */ __name((content) => {
+          const count = this.buttons.length;
+          const formatMap = {
+            currentPage: page,
+            maxPage,
+            count
+          };
+          for (const [key, val] of Object.entries(formatMap)) {
+            content = content.replaceAll(`{{${key}}}`, String(val));
+          }
+          return content;
+        }, "formatContent");
+        const resultIndex = await new SimpleFormAsync({
+          title: this.title,
+          content: formatContent(this.content),
+          buttons: formattedButtons
+        }).sendAsync(player);
+        if (resultIndex === FormClose4) return FormClose4;
+        let offset = 0;
+        if (this.hasSearchButton) {
+          if (resultIndex === offset) {
+            const res = await this.sendSearchForm(player);
+            return res === null || res === FormClose4 ? this.sendAsync(player, page) : res;
+          }
+          offset += 1;
+        }
+        if (hasJumpBtn) {
+          if (resultIndex === offset) {
+            const res = await new CustomFormEx4(this.title).addSlider("num", "请选择你要跳转的页数", 1, maxPage, {
+              default: page
+            }).sendAsync(player);
+            return this.sendAsync(player, res === FormClose4 ? page : res.num);
+          }
+          offset += 1;
+        }
+        if (hasPreviousPage) {
+          if (resultIndex === offset) {
+            return this.sendAsync(player, page - 1);
+          }
+          offset += 1;
+        }
+        if (hasNextPage && resultIndex + 1 === formattedButtons.length) {
+          return this.sendAsync(player, page + 1);
+        }
+        const realIndex = resultIndex - offset;
+        return buttons[realIndex];
+      }
+    }, __name(_a3, "_SimpleFormEx"), _a3);
+    var _a4;
+    var SimpleFormOperational = (_a4 = class {
+      constructor(title = "", content = "", buttons = []) {
+        this.title = title;
+        this.content = content;
+        this.buttons = buttons;
+      }
+      async sendAsync(player) {
+        const form = new SimpleFormEx4(this.buttons);
+        form.title = this.title;
+        form.content = this.content;
+        form.formatter = ({ text, image }) => [text, image];
+        const res = await form.sendAsync(player);
+        if (res === FormClose4) return FormClose4;
+        return res.operation();
+      }
+    }, __name(_a4, "SimpleFormOperational"), _a4);
+  }
+});
+
+// src/config.ts
+var import_schemastery = __toESM(require_lib2());
+
 // package.json
 var version = "1.1.0";
 var description = "Improved version of LxlBlackBe";
@@ -1581,12 +1584,64 @@ var PLUGIN_ROOT = `./plugins/${PLUGIN_NAME}`;
 var DATA_PATH = `${PLUGIN_ROOT}/data`;
 if (!file.exists(DATA_PATH)) file.mkdir(DATA_PATH);
 
+// src/config.ts
+var configPath = `${DATA_PATH}/config.json`;
+var Config = import_schemastery.default.object({
+  debug: import_schemastery.default.boolean().default(false),
+  apiToken: import_schemastery.default.string().required(false),
+  banIp: import_schemastery.default.boolean().default(true),
+  banDevice: import_schemastery.default.boolean().default(true),
+  hidePassMessage: import_schemastery.default.boolean().default(false),
+  disableBlackBE: import_schemastery.default.boolean().default(false),
+  kickByCloudMsg: import_schemastery.default.string().default(
+    `§c您已被BlackBE云端黑名单封禁§r
+
+详情请访问 §ghttps://blackbe.work/`
+  ),
+  kickByLocalMsg: import_schemastery.default.string().default(
+    `§c您已被服务器封禁§r
+
+解封时间: §g%ENDTIME%§r
+封禁原因: §g%REASON%`
+  ),
+  serverName: import_schemastery.default.string().default("服务器"),
+  apiHost: import_schemastery.default.string().default("https://api.blackbe.work/"),
+  clearCacheInterval: import_schemastery.default.number().default(36e5),
+  registerBanCommand: import_schemastery.default.boolean().default(true),
+  checkLocalListInterval: import_schemastery.default.number().default(5e3),
+  processOnPreJoin: import_schemastery.default.boolean().default(true),
+  onlyOpCanQuery: import_schemastery.default.boolean().default(false),
+  pardonBlackBE: import_schemastery.default.array(import_schemastery.default.string()).default([])
+});
+function readConfig() {
+  if (!file.exists(configPath)) {
+    setTimeout(saveConfig, 0);
+    return Config();
+  }
+  const content = file.readFrom(configPath);
+  if (!content) throw new Error(`failed to read config`);
+  const data2 = JSON.parse(content);
+  return Config(data2);
+}
+__name(readConfig, "readConfig");
+var config = readConfig();
+function saveConfig() {
+  file.writeTo(configPath, JSON.stringify(config, null, 2));
+}
+__name(saveConfig, "saveConfig");
+function reloadConfig() {
+  const newConfig = readConfig();
+  Object.assign(config, newConfig);
+}
+__name(reloadConfig, "reloadConfig");
+
 // src/db/base.ts
 var _Query = class _Query {
   constructor(ss) {
     this.ss = ss;
   }
   bindStmt(sql, params) {
+    logger.debug(`[SQL] ${sql} | ${JSON.stringify(params)}`);
     const stmt = this.ss.prepare(sql);
     if (params) stmt.bind(params);
     return stmt;
@@ -1631,13 +1686,17 @@ var _Query = class _Query {
     return stmt;
   }
   fetchAll(stmt) {
-    const [keys, ...rows] = stmt.fetchAll();
+    const data2 = stmt.fetchAll();
+    if (!data2) return [];
+    const [keys, ...rows] = data2;
     return rows.map(
       (row) => Object.assign({}, ...keys.map((k, i) => ({ [k]: row[i] })))
     );
   }
   fetchAllToList(stmt) {
-    const [keys, ...rows] = stmt.fetchAll();
+    const data2 = stmt.fetchAll();
+    if (!data2) return void 0;
+    const [keys, ...rows] = data2;
     const result = {};
     for (const key of keys) result[key] = [];
     for (const row of rows) {
@@ -1654,39 +1713,48 @@ var _Query = class _Query {
     const colNamesStr = names.join(", ");
     const argsStr = names.map(() => "?").join(", ");
     return this.bindStmt(
-      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}}) VALUES (${argsStr});`,
+      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}) VALUES (${argsStr});`,
       values
     ).execute().insertId;
   }
 };
 __name(_Query, "Query");
 var Query = _Query;
+((Query2) => {
+  let BanType;
+  ((BanType2) => {
+    BanType2["XUID"] = "xuid";
+    BanType2["NAME"] = "name";
+    BanType2["IP"] = "ip";
+    BanType2["CLIENT_ID"] = "clientId";
+  })(BanType = Query2.BanType || (Query2.BanType = {}));
+  Query2.banTypeStrMap = {
+    ["xuid" /* XUID */]: "XUID",
+    ["name" /* NAME */]: "玩家名",
+    ["ip" /* IP */]: "IP",
+    ["clientId" /* CLIENT_ID */]: "客户端 ID"
+  };
+  Query2.banTypeStrMapReverse = (() => {
+    const ent = Object.entries(Query2.banTypeStrMap);
+    return Object.fromEntries(ent.map(([k, v]) => [v, k]));
+  })();
+})(Query || (Query = {}));
 
 // src/db/methods.ts
-Query.banTypeStrMap = {
-  [Query.BanType.XUID]: "XUID",
-  [Query.BanType.NAME]: "玩家名",
-  [Query.BanType.IP]: "IP",
-  [Query.BanType.CLIENT_ID]: "客户端 ID"
-};
-Query.banTypeStrMapReverse = (() => {
-  const ent = Object.entries(Query.banTypeStrMap);
-  return Object.fromEntries(ent.map(([k, v]) => [v, k]));
-})();
 Query.prototype.getXuidFromInfoId = function(id) {
   return this.fetchAllToList(
     this.select("xuid", "xuid", "banInfoId = ?", [id])
-  ).xuid;
+  )?.xuid ?? [];
 };
 Query.prototype.getNameFromInfoId = function(id) {
   return this.fetchAllToList(
     this.select("name", "name", "banInfoId = ?", [id])
-  ).name;
+  )?.name ?? [];
 };
 Query.prototype.getIpFromInfoId = function(id) {
   return this.fetchAllToList(
     this.select("ip", "ip", "banInfoId = ?", [id])
-  ).ip;
+  )?.ip ?? [];
 };
 Query.prototype.getClientIdFromInfoId = function(id) {
   return this.fetchAllToList(
@@ -1696,15 +1764,17 @@ Query.prototype.getClientIdFromInfoId = function(id) {
       "banInfoId = ?",
       [id]
     )
-  ).clientId;
+  )?.clientId ?? [];
 };
 Query.prototype.getNameInfo = function(name) {
-  return this.select("*", "name", "name = ?", [name]).fetch();
+  const r = this.select("*", "name", "name = ?", [name]).fetch();
+  if (!("name" in r)) return void 0;
+  return r;
 };
 Query.prototype.getNamesFromXuid = function(xuid) {
   return this.fetchAllToList(
     this.select("name", "name", "xuid = ?", [xuid])
-  ).name;
+  )?.name ?? [];
 };
 Query.prototype.getInfoIdFromXuid = function(xuid) {
   return this.select("banInfoId", "xuid", "xuid = ?", [xuid]).fetch().banInfoId;
@@ -1727,23 +1797,23 @@ Query.prototype.getFullInfo = function(id) {
   const it = this.getInfo(id);
   if (!it) return void 0;
   const { reason, endTime } = it;
-  const { xuid } = this.fetchAllToList(
+  const xuid = this.fetchAllToList(
     this.select("xuid", "xuid", "banInfoId = ?", [id])
-  );
-  const { name } = this.fetchAllToList(
+  )?.xuid ?? [];
+  const name = this.fetchAllToList(
     this.select("name", "name", "banInfoId = ?", [id])
-  );
-  const { ip } = this.fetchAllToList(
+  )?.name ?? [];
+  const ip = this.fetchAllToList(
     this.select("ip", "ip", "banInfoId = ?", [id])
-  );
-  const { clientId } = this.fetchAllToList(
+  )?.ip ?? [];
+  const clientId = this.fetchAllToList(
     this.select(
       "clientId",
       "clientId",
       "banInfoId = ?",
       [id]
     )
-  );
+  )?.clientId ?? [];
   return { id, reason, endTime, name, xuid, ip, clientId };
 };
 Query.prototype.iterAllInfos = function* () {
@@ -1903,13 +1973,15 @@ CREATE TABLE IF NOT EXISTS banInfo (
 );
 
 CREATE TABLE IF NOT EXISTS xuid (
-  xuid TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  xuid TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS name (
-  name TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE NOT NULL,
   xuid TEXT,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (xuid) REFERENCES xuid(xuid) ON DELETE CASCADE,
@@ -1917,13 +1989,15 @@ CREATE TABLE IF NOT EXISTS name (
 );
 
 CREATE TABLE IF NOT EXISTS ip (
-  ip TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS clientId (
-  clientId TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  clientId TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
@@ -2039,57 +2113,6 @@ Query.get = function() {
 
 // src/command.ts
 var import_form_api_ex4 = __toESM(require_FormAPIEx());
-
-// src/config.ts
-var import_schemastery = __toESM(require_lib2());
-var configPath = `${DATA_PATH}/config.json`;
-var Config = import_schemastery.default.object({
-  apiToken: import_schemastery.default.string().required(false),
-  banIp: import_schemastery.default.boolean().default(true),
-  banDevice: import_schemastery.default.boolean().default(true),
-  hidePassMessage: import_schemastery.default.boolean().default(false),
-  disableBlackBE: import_schemastery.default.boolean().default(false),
-  kickByCloudMsg: import_schemastery.default.string().default(
-    `§c您已被BlackBE云端黑名单封禁§r
-
-详情请访问 §ghttps://blackbe.work/`
-  ),
-  kickByLocalMsg: import_schemastery.default.string().default(
-    `§c您已被服务器封禁§r
-
-解封时间: §g%ENDTIME%§r
-封禁原因: §g%REASON%`
-  ),
-  serverName: import_schemastery.default.string().default("服务器"),
-  apiHost: import_schemastery.default.string().default("https://api.blackbe.work/"),
-  clearCacheInterval: import_schemastery.default.number().default(36e5),
-  registerBanCommand: import_schemastery.default.boolean().default(true),
-  checkLocalListInterval: import_schemastery.default.number().default(5e3),
-  processOnPreJoin: import_schemastery.default.boolean().default(true),
-  onlyOpCanQuery: import_schemastery.default.boolean().default(false),
-  pardonBlackBE: import_schemastery.default.array(import_schemastery.default.string()).default([])
-});
-function readConfig() {
-  if (!file.exists(configPath)) {
-    setTimeout(saveConfig);
-    return Config();
-  }
-  const content = file.readFrom(configPath);
-  if (!content) throw new Error(`failed to read config`);
-  const data2 = JSON.parse(content);
-  return Config(data2);
-}
-__name(readConfig, "readConfig");
-var config = readConfig();
-function saveConfig() {
-  file.writeTo(configPath, JSON.stringify(config, null, 2));
-}
-__name(saveConfig, "saveConfig");
-function reloadConfig() {
-  const newConfig = readConfig();
-  Object.assign(config, newConfig);
-}
-__name(reloadConfig, "reloadConfig");
 
 // src/util.ts
 var import_form_api_ex = __toESM(require_FormAPIEx());
@@ -2263,14 +2286,14 @@ function banPlayer(banData, options = {}) {
   }
   const endTime = time ? new Date(Date.now() + time).toJSON() : void 0;
   const isInfoNew = !infoId;
-  infoId = q.updateInfo({ id: infoId, reason, endTime });
+  infoId = infoId ? reason !== void 0 || endTime !== void 0 ? q.updateInfo({ id: infoId, reason, endTime }) : infoId : q.updateInfo({ reason: reason ?? null, endTime: endTime ?? null });
   operationTips.push(
     `${isInfoNew ? "§a新增" : "§6更新"} §bID 为 §d${infoId} §b的违规记录`
   );
   if (xuid) {
     const oldInfoId = q.getInfoIdFromXuid(xuid);
-    if (oldInfoId && oldInfoId !== infoId) {
-      q.updateNameInfo({ name, xuid, banInfoId: infoId });
+    if (oldInfoId !== infoId) {
+      q.updateXuidInfo({ xuid, banInfoId: infoId });
       operationTips.push(
         `${oldInfoId ? "§6更新" : "§a新增"} §bXUID 记录 §d${xuid} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
       );
@@ -2300,10 +2323,11 @@ function banPlayer(banData, options = {}) {
         `§a新增 §b玩家名记录 §d${name}§b， 违规 ID： §g${infoId}${xuid ? `§b， §gXUID： ${xuid}` : ""}`
       );
     }
+    if (Object.keys(data2).length > 1) q.updateNameInfo(data2);
   }
   if (clientId) {
     const oldInfoId = q.getInfoIdFromClientId(clientId);
-    if (oldInfoId && oldInfoId !== infoId) {
+    if (oldInfoId !== infoId) {
       q.updateClientIdInfo({ clientId, banInfoId: infoId });
       operationTips.push(
         `${oldInfoId ? "§6更新" : "§a新增"} §bClient ID 记录 §d${xuid} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
@@ -2312,7 +2336,7 @@ function banPlayer(banData, options = {}) {
   }
   if (ip) {
     const oldInfoId = q.getInfoIdFromIp(ip);
-    if (oldInfoId && oldInfoId !== infoId) {
+    if (oldInfoId !== infoId) {
       q.updateIpInfo({ ip, banInfoId: infoId });
       operationTips.push(
         `${oldInfoId ? "§6更新" : "§a新增"} §bIP 记录 §d${ip} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
@@ -3077,10 +3101,16 @@ ${(0, import_form_api_ex5.formatError)(e)}`);
       return;
     }
     if (localId) {
-      const { result, operationTips } = banPlayer({ player });
+      try {
+        const { result, operationTips } = banPlayer({ player });
+        tell(formatLocalInfo(result, true));
+        for (const tip of operationTips) tell(tip, player);
+      } catch (e) {
+        logger.error(`更新玩家 ${realName} 的本地黑名单记录出错！
+${(0, import_form_api_ex5.formatError)(e)}`);
+        player.kick();
+      }
       logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`);
-      tell(formatLocalInfo(result, true));
-      for (const tip of operationTips) tell(tip, player);
       return;
     }
     if (!hidePassMessage) {
@@ -3137,6 +3167,7 @@ setInterval(() => {
 // src/index.ts
 ll.registerPlugin(PLUGIN_NAME, PLUGIN_DESCRIPTION, PLUGIN_VERSION, PLUGIN_EXTRA);
 {
+  if (config.debug) logger.setConsole(true, 5);
   const [old, now] = migrate2(Query.get());
   if (old !== now) logger.info(`DB migrated from version ${old} to ${now}`);
 }

@@ -7,6 +7,7 @@ export class Query implements Query {
     sql: string,
     params?: Query.Params<P>,
   ) {
+    logger.debug(`[SQL] ${sql} | ${JSON.stringify(params)}`)
     const stmt = this.ss.prepare<T, P>(sql)
     if (params) stmt.bind(params)
     return stmt
@@ -70,7 +71,9 @@ export class Query implements Query {
   }
 
   fetchAll<T extends Record<string, any>, P = any>(stmt: DBStmt<T, P>): T[] {
-    const [keys, ...rows] = stmt.fetchAll()
+    const data = stmt.fetchAll()
+    if (!data) return []
+    const [keys, ...rows] = data
     return rows.map((row) =>
       Object.assign({}, ...keys.map((k, i) => ({ [k]: row[i] }))),
     )
@@ -78,8 +81,10 @@ export class Query implements Query {
 
   fetchAllToList<T extends Record<string, any>, P = any>(
     stmt: DBStmt<T, P>,
-  ): Record<keyof T, T[keyof T][]> {
-    const [keys, ...rows] = stmt.fetchAll()
+  ): Record<keyof T, T[keyof T][]> | undefined {
+    const data = stmt.fetchAll()
+    if (!data) return undefined
+    const [keys, ...rows] = data
     const result: any = {}
     for (const key of keys) result[key] = []
     for (const row of rows) {
@@ -98,7 +103,7 @@ export class Query implements Query {
     const colNamesStr = names.join(', ')
     const argsStr = names.map(() => '?').join(', ')
     return this.bindStmt(
-      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}}) VALUES (${argsStr});`,
+      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}) VALUES (${argsStr});`,
       values,
     ).execute().insertId
   }
@@ -106,4 +111,23 @@ export class Query implements Query {
 
 export namespace Query {
   export type Params<P> = P[] | Record<string, P>
+
+  export enum BanType {
+    XUID = 'xuid',
+    NAME = 'name',
+    IP = 'ip',
+    CLIENT_ID = 'clientId',
+  }
+
+  export const banTypeStrMap = {
+    [Query.BanType.XUID]: 'XUID',
+    [Query.BanType.NAME]: '玩家名',
+    [Query.BanType.IP]: 'IP',
+    [Query.BanType.CLIENT_ID]: '客户端 ID',
+  }
+
+  export const banTypeStrMapReverse = (() => {
+    const ent = Object.entries(Query.banTypeStrMap) as [Query.BanType, string][]
+    return Object.fromEntries(ent.map(([k, v]) => [v, k]))
+  })()
 }

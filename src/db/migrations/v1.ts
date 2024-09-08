@@ -22,22 +22,26 @@ export interface BanInfoItemV1 {
 }
 
 export interface XuidItemV1 {
+  id: number
   xuid: string
   banInfoId: number
 }
 
 export interface NameItemV1 {
+  id: number
   name: string
   xuid?: string | null
   banInfoId: number
 }
 
 export interface IpItemV1 {
+  id: number
   ip: string
   banInfoId: number
 }
 
 export interface ClientIdItemV1 {
+  id: number
   clientId: string
   banInfoId: number
 }
@@ -50,13 +54,15 @@ CREATE TABLE IF NOT EXISTS banInfo (
 );
 
 CREATE TABLE IF NOT EXISTS xuid (
-  xuid TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  xuid TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS name (
-  name TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE NOT NULL,
   xuid TEXT,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (xuid) REFERENCES xuid(xuid) ON DELETE CASCADE,
@@ -64,13 +70,15 @@ CREATE TABLE IF NOT EXISTS name (
 );
 
 CREATE TABLE IF NOT EXISTS ip (
-  ip TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS clientId (
-  clientId TEXT PRIMARY KEY NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  clientId TEXT UNIQUE NOT NULL,
   banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );

@@ -19,7 +19,7 @@ export function banPlayer(
   banData:
     | { player: Player }
     | { name?: string; xuid?: string; ip?: string; clientId?: string },
-  options: { time?: number; reason?: string; kickTip?: string } = {},
+  options: { time?: number | null; reason?: string | null; kickTip?: string } = {},
 ): { result: Query.BanFullInfo; operationTips: string[] } {
   let xuid: string | undefined
   let name: string | undefined
@@ -80,7 +80,11 @@ export function banPlayer(
   // 更新或新建记录
   const endTime = time ? new Date(Date.now() + time).toJSON() : undefined
   const isInfoNew = !infoId
-  infoId = q.updateInfo({ id: infoId, reason, endTime })
+  infoId = infoId
+    ? reason !== undefined || endTime !== undefined
+      ? q.updateInfo({ id: infoId, reason, endTime })
+      : infoId
+    : q.updateInfo({ reason: reason ?? null, endTime: endTime ?? null })
   operationTips.push(
     `${isInfoNew ? '§a新增' : '§6更新'} §bID 为 §d${infoId} §b的违规记录`,
   )
@@ -88,8 +92,8 @@ export function banPlayer(
   // 更新其他表记录
   if (xuid) {
     const oldInfoId = q.getInfoIdFromXuid(xuid)
-    if (oldInfoId && oldInfoId !== infoId) {
-      q.updateNameInfo({ name, xuid, banInfoId: infoId })
+    if (oldInfoId !== infoId) {
+      q.updateXuidInfo({ xuid, banInfoId: infoId })
       operationTips.push(
         `${oldInfoId ? '§6更新' : '§a新增'}` +
           ` §bXUID 记录 §d${xuid} §b的 违规 ID 记录：` +
@@ -127,10 +131,11 @@ export function banPlayer(
           `${xuid ? `§b， §gXUID： ${xuid}` : ''}`,
       )
     }
+    if (Object.keys(data).length > 1) q.updateNameInfo(data) // ignore when only name
   }
   if (clientId) {
     const oldInfoId = q.getInfoIdFromClientId(clientId)
-    if (oldInfoId && oldInfoId !== infoId) {
+    if (oldInfoId !== infoId) {
       q.updateClientIdInfo({ clientId, banInfoId: infoId })
       operationTips.push(
         `${oldInfoId ? '§6更新' : '§a新增'}` +
@@ -141,7 +146,7 @@ export function banPlayer(
   }
   if (ip) {
     const oldInfoId = q.getInfoIdFromIp(ip)
-    if (oldInfoId && oldInfoId !== infoId) {
+    if (oldInfoId !== infoId) {
       q.updateIpInfo({ ip, banInfoId: infoId })
       operationTips.push(
         `${oldInfoId ? '§6更新' : '§a新增'}` +

@@ -5,6 +5,7 @@ import { DATA_PATH } from './const'
 const configPath = `${DATA_PATH}/config.json`
 
 export interface Config {
+  debug: boolean
   apiToken?: string
   banIp: boolean
   banDevice: boolean
@@ -23,6 +24,7 @@ export interface Config {
 }
 
 export const Config: Schema<Config> = Schema.object({
+  debug: Schema.boolean().default(false),
   apiToken: Schema.string().required(false),
   banIp: Schema.boolean().default(true),
   banDevice: Schema.boolean().default(true),
@@ -46,7 +48,7 @@ export const Config: Schema<Config> = Schema.object({
 
 export function readConfig(): Config {
   if (!file.exists(configPath)) {
-    setTimeout(saveConfig)
+    setTimeout(saveConfig, 0)
     return Config()
   }
   const content = file.readFrom(configPath)

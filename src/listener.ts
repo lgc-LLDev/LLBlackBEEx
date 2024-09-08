@@ -43,10 +43,15 @@ mc.listen(
     }
     if (localId) {
       // 更新信息，例如 ip 地址，顺便踢掉
-      const { result, operationTips } = banPlayer({ player })
+      try {
+        const { result, operationTips } = banPlayer({ player })
+        tell(formatLocalInfo(result, true))
+        for (const tip of operationTips) tell(tip, player)
+      } catch (e) {
+        logger.error(`更新玩家 ${realName} 的本地黑名单记录出错！\n${formatError(e)}`)
+        player.kick()
+      }
       logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`)
-      tell(formatLocalInfo(result, true))
-      for (const tip of operationTips) tell(tip, player)
       return
     }
 
