@@ -565,6 +565,1004 @@ ${searchForm.content}`;
   }
 });
 
+// ../node_modules/.pnpm/cosmokit@1.6.2/node_modules/cosmokit/lib/index.cjs
+var require_lib = __commonJS({
+  "../node_modules/.pnpm/cosmokit@1.6.2/node_modules/cosmokit/lib/index.cjs"(exports2, module2) {
+    "use strict";
+    var __defProp2 = Object.defineProperty;
+    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
+    var __getOwnPropNames2 = Object.getOwnPropertyNames;
+    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
+    var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+    var __export = /* @__PURE__ */ __name((target, all) => {
+      for (var name in all)
+        __defProp2(target, name, { get: all[name], enumerable: true });
+    }, "__export");
+    var __copyProps2 = /* @__PURE__ */ __name((to, from, except, desc) => {
+      if (from && typeof from === "object" || typeof from === "function") {
+        for (let key of __getOwnPropNames2(from))
+          if (!__hasOwnProp2.call(to, key) && key !== except)
+            __defProp2(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
+      }
+      return to;
+    }, "__copyProps");
+    var __toCommonJS = /* @__PURE__ */ __name((mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod), "__toCommonJS");
+    var src_exports = {};
+    __export(src_exports, {
+      Binary: /* @__PURE__ */ __name(() => Binary, "Binary"),
+      Time: /* @__PURE__ */ __name(() => Time, "Time"),
+      arrayBufferToBase64: /* @__PURE__ */ __name(() => arrayBufferToBase64, "arrayBufferToBase64"),
+      arrayBufferToHex: /* @__PURE__ */ __name(() => arrayBufferToHex, "arrayBufferToHex"),
+      base64ToArrayBuffer: /* @__PURE__ */ __name(() => base64ToArrayBuffer, "base64ToArrayBuffer"),
+      camelCase: /* @__PURE__ */ __name(() => camelCase, "camelCase"),
+      camelize: /* @__PURE__ */ __name(() => camelize, "camelize"),
+      capitalize: /* @__PURE__ */ __name(() => capitalize, "capitalize"),
+      clone: /* @__PURE__ */ __name(() => clone, "clone"),
+      contain: /* @__PURE__ */ __name(() => contain, "contain"),
+      deduplicate: /* @__PURE__ */ __name(() => deduplicate, "deduplicate"),
+      deepEqual: /* @__PURE__ */ __name(() => deepEqual, "deepEqual"),
+      defineProperty: /* @__PURE__ */ __name(() => defineProperty, "defineProperty"),
+      difference: /* @__PURE__ */ __name(() => difference, "difference"),
+      filterKeys: /* @__PURE__ */ __name(() => filterKeys, "filterKeys"),
+      hexToArrayBuffer: /* @__PURE__ */ __name(() => hexToArrayBuffer, "hexToArrayBuffer"),
+      hyphenate: /* @__PURE__ */ __name(() => hyphenate, "hyphenate"),
+      intersection: /* @__PURE__ */ __name(() => intersection, "intersection"),
+      is: /* @__PURE__ */ __name(() => is, "is"),
+      isNullable: /* @__PURE__ */ __name(() => isNullable, "isNullable"),
+      isPlainObject: /* @__PURE__ */ __name(() => isPlainObject, "isPlainObject"),
+      makeArray: /* @__PURE__ */ __name(() => makeArray, "makeArray"),
+      mapValues: /* @__PURE__ */ __name(() => mapValues, "mapValues"),
+      noop: /* @__PURE__ */ __name(() => noop, "noop"),
+      omit: /* @__PURE__ */ __name(() => omit, "omit"),
+      paramCase: /* @__PURE__ */ __name(() => paramCase, "paramCase"),
+      pick: /* @__PURE__ */ __name(() => pick, "pick"),
+      remove: /* @__PURE__ */ __name(() => remove, "remove"),
+      sanitize: /* @__PURE__ */ __name(() => sanitize, "sanitize"),
+      snakeCase: /* @__PURE__ */ __name(() => snakeCase, "snakeCase"),
+      trimSlash: /* @__PURE__ */ __name(() => trimSlash, "trimSlash"),
+      uncapitalize: /* @__PURE__ */ __name(() => uncapitalize, "uncapitalize"),
+      union: /* @__PURE__ */ __name(() => union, "union"),
+      valueMap: /* @__PURE__ */ __name(() => mapValues, "valueMap")
+    });
+    module2.exports = __toCommonJS(src_exports);
+    function noop() {
+    }
+    __name(noop, "noop");
+    __name2(noop, "noop");
+    function isNullable(value) {
+      return value === null || value === void 0;
+    }
+    __name(isNullable, "isNullable");
+    __name2(isNullable, "isNullable");
+    function isPlainObject(data2) {
+      return data2 && typeof data2 === "object" && !Array.isArray(data2);
+    }
+    __name(isPlainObject, "isPlainObject");
+    __name2(isPlainObject, "isPlainObject");
+    function filterKeys(object, filter) {
+      return Object.fromEntries(Object.entries(object).filter(([key, value]) => filter(key, value)));
+    }
+    __name(filterKeys, "filterKeys");
+    __name2(filterKeys, "filterKeys");
+    function mapValues(object, transform) {
+      return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, transform(value, key)]));
+    }
+    __name(mapValues, "mapValues");
+    __name2(mapValues, "mapValues");
+    function pick(source, keys, forced) {
+      if (!keys)
+        return { ...source };
+      const result = {};
+      for (const key of keys) {
+        if (forced || source[key] !== void 0)
+          result[key] = source[key];
+      }
+      return result;
+    }
+    __name(pick, "pick");
+    __name2(pick, "pick");
+    function omit(source, keys) {
+      if (!keys)
+        return { ...source };
+      const result = { ...source };
+      for (const key of keys) {
+        Reflect.deleteProperty(result, key);
+      }
+      return result;
+    }
+    __name(omit, "omit");
+    __name2(omit, "omit");
+    function defineProperty(object, key, value) {
+      return Object.defineProperty(object, key, { writable: true, value, enumerable: false });
+    }
+    __name(defineProperty, "defineProperty");
+    __name2(defineProperty, "defineProperty");
+    function contain(array1, array2) {
+      return array2.every((item) => array1.includes(item));
+    }
+    __name(contain, "contain");
+    __name2(contain, "contain");
+    function intersection(array1, array2) {
+      return array1.filter((item) => array2.includes(item));
+    }
+    __name(intersection, "intersection");
+    __name2(intersection, "intersection");
+    function difference(array1, array2) {
+      return array1.filter((item) => !array2.includes(item));
+    }
+    __name(difference, "difference");
+    __name2(difference, "difference");
+    function union(array1, array2) {
+      return Array.from(/* @__PURE__ */ new Set([...array1, ...array2]));
+    }
+    __name(union, "union");
+    __name2(union, "union");
+    function deduplicate(array) {
+      return [...new Set(array)];
+    }
+    __name(deduplicate, "deduplicate");
+    __name2(deduplicate, "deduplicate");
+    function remove(list, item) {
+      const index = list.indexOf(item);
+      if (index >= 0) {
+        list.splice(index, 1);
+        return true;
+      } else {
+        return false;
+      }
+    }
+    __name(remove, "remove");
+    __name2(remove, "remove");
+    function makeArray(source) {
+      return Array.isArray(source) ? source : isNullable(source) ? [] : [source];
+    }
+    __name(makeArray, "makeArray");
+    __name2(makeArray, "makeArray");
+    function is(type, value) {
+      if (arguments.length === 1)
+        return (value2) => is(type, value2);
+      return type in globalThis && value instanceof globalThis[type] || Object.prototype.toString.call(value).slice(8, -1) === type;
+    }
+    __name(is, "is");
+    __name2(is, "is");
+    function isArrayBufferLike(value) {
+      return is("ArrayBuffer", value) || is("SharedArrayBuffer", value);
+    }
+    __name(isArrayBufferLike, "isArrayBufferLike");
+    __name2(isArrayBufferLike, "isArrayBufferLike");
+    function isArrayBufferSource(value) {
+      return isArrayBufferLike(value) || ArrayBuffer.isView(value);
+    }
+    __name(isArrayBufferSource, "isArrayBufferSource");
+    __name2(isArrayBufferSource, "isArrayBufferSource");
+    var Binary;
+    ((Binary2) => {
+      Binary2.is = isArrayBufferLike;
+      Binary2.isSource = isArrayBufferSource;
+      function fromSource(source) {
+        if (ArrayBuffer.isView(source)) {
+          return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
+        } else {
+          return source;
+        }
+      }
+      __name(fromSource, "fromSource");
+      Binary2.fromSource = fromSource;
+      __name2(fromSource, "fromSource");
+      function toBase64(source) {
+        if (typeof Buffer !== "undefined") {
+          return Buffer.from(source).toString("base64");
+        }
+        let binary = "";
+        const bytes = new Uint8Array(source);
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+      }
+      __name(toBase64, "toBase64");
+      Binary2.toBase64 = toBase64;
+      __name2(toBase64, "toBase64");
+      function fromBase64(source) {
+        if (typeof Buffer !== "undefined")
+          return fromSource(Buffer.from(source, "base64"));
+        return Uint8Array.from(atob(source), (c) => c.charCodeAt(0));
+      }
+      __name(fromBase64, "fromBase64");
+      Binary2.fromBase64 = fromBase64;
+      __name2(fromBase64, "fromBase64");
+      function toHex(source) {
+        if (typeof Buffer !== "undefined")
+          return Buffer.from(source).toString("hex");
+        return Array.from(new Uint8Array(source), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+      __name(toHex, "toHex");
+      Binary2.toHex = toHex;
+      __name2(toHex, "toHex");
+      function fromHex(source) {
+        if (typeof Buffer !== "undefined")
+          return fromSource(Buffer.from(source, "hex"));
+        const hex = source.length % 2 === 0 ? source : source.slice(0, source.length - 1);
+        const buffer = [];
+        for (let i = 0; i < hex.length; i += 2) {
+          buffer.push(parseInt(`${hex[i]}${hex[i + 1]}`, 16));
+        }
+        return Uint8Array.from(buffer).buffer;
+      }
+      __name(fromHex, "fromHex");
+      Binary2.fromHex = fromHex;
+      __name2(fromHex, "fromHex");
+    })(Binary || (Binary = {}));
+    var base64ToArrayBuffer = Binary.fromBase64;
+    var arrayBufferToBase64 = Binary.toBase64;
+    var hexToArrayBuffer = Binary.fromHex;
+    var arrayBufferToHex = Binary.toHex;
+    function clone(source) {
+      if (!source || typeof source !== "object")
+        return source;
+      if (Array.isArray(source))
+        return source.map(clone);
+      if (is("Date", source))
+        return new Date(source.valueOf());
+      if (is("RegExp", source))
+        return new RegExp(source.source, source.flags);
+      if (isArrayBufferLike(source))
+        return source.slice(0);
+      if (ArrayBuffer.isView(source))
+        return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
+      return mapValues(source, clone);
+    }
+    __name(clone, "clone");
+    __name2(clone, "clone");
+    function deepEqual(a, b, strict) {
+      if (a === b)
+        return true;
+      if (!strict && isNullable(a) && isNullable(b))
+        return true;
+      if (typeof a !== typeof b)
+        return false;
+      if (typeof a !== "object")
+        return false;
+      if (!a || !b)
+        return false;
+      function check2(test, then) {
+        return test(a) ? test(b) ? then(a, b) : false : test(b) ? false : void 0;
+      }
+      __name(check2, "check");
+      __name2(check2, "check");
+      return check2(Array.isArray, (a2, b2) => a2.length === b2.length && a2.every((item, index) => deepEqual(item, b2[index]))) ?? check2(is("Date"), (a2, b2) => a2.valueOf() === b2.valueOf()) ?? check2(is("RegExp"), (a2, b2) => a2.source === b2.source && a2.flags === b2.flags) ?? check2(isArrayBufferLike, (a2, b2) => {
+        if (a2.byteLength !== b2.byteLength)
+          return false;
+        const viewA = new Uint8Array(a2);
+        const viewB = new Uint8Array(b2);
+        for (let i = 0; i < viewA.length; i++) {
+          if (viewA[i] !== viewB[i])
+            return false;
+        }
+        return true;
+      }) ?? Object.keys({ ...a, ...b }).every((key) => deepEqual(a[key], b[key], strict));
+    }
+    __name(deepEqual, "deepEqual");
+    __name2(deepEqual, "deepEqual");
+    function capitalize(source) {
+      return source.charAt(0).toUpperCase() + source.slice(1);
+    }
+    __name(capitalize, "capitalize");
+    __name2(capitalize, "capitalize");
+    function uncapitalize(source) {
+      return source.charAt(0).toLowerCase() + source.slice(1);
+    }
+    __name(uncapitalize, "uncapitalize");
+    __name2(uncapitalize, "uncapitalize");
+    function camelCase(source) {
+      return source.replace(/[_-][a-z]/g, (str) => str.slice(1).toUpperCase());
+    }
+    __name(camelCase, "camelCase");
+    __name2(camelCase, "camelCase");
+    function paramCase(source) {
+      return uncapitalize(source).replace(/_/g, "-").replace(/.[A-Z]+/g, (str) => str[0] + "-" + str.slice(1).toLowerCase());
+    }
+    __name(paramCase, "paramCase");
+    __name2(paramCase, "paramCase");
+    function snakeCase(source) {
+      return uncapitalize(source).replace(/-/g, "_").replace(/.[A-Z]+/g, (str) => str[0] + "_" + str.slice(1).toLowerCase());
+    }
+    __name(snakeCase, "snakeCase");
+    __name2(snakeCase, "snakeCase");
+    var camelize = camelCase;
+    var hyphenate = paramCase;
+    function trimSlash(source) {
+      return source.replace(/\/$/, "");
+    }
+    __name(trimSlash, "trimSlash");
+    __name2(trimSlash, "trimSlash");
+    function sanitize(source) {
+      if (!source.startsWith("/"))
+        source = "/" + source;
+      return trimSlash(source);
+    }
+    __name(sanitize, "sanitize");
+    __name2(sanitize, "sanitize");
+    var Time;
+    ((Time2) => {
+      Time2.millisecond = 1;
+      Time2.second = 1e3;
+      Time2.minute = Time2.second * 60;
+      Time2.hour = Time2.minute * 60;
+      Time2.day = Time2.hour * 24;
+      Time2.week = Time2.day * 7;
+      let timezoneOffset = (/* @__PURE__ */ new Date()).getTimezoneOffset();
+      function setTimezoneOffset(offset) {
+        timezoneOffset = offset;
+      }
+      __name(setTimezoneOffset, "setTimezoneOffset");
+      Time2.setTimezoneOffset = setTimezoneOffset;
+      __name2(setTimezoneOffset, "setTimezoneOffset");
+      function getTimezoneOffset() {
+        return timezoneOffset;
+      }
+      __name(getTimezoneOffset, "getTimezoneOffset");
+      Time2.getTimezoneOffset = getTimezoneOffset;
+      __name2(getTimezoneOffset, "getTimezoneOffset");
+      function getDateNumber(date = /* @__PURE__ */ new Date(), offset) {
+        if (typeof date === "number")
+          date = new Date(date);
+        if (offset === void 0)
+          offset = timezoneOffset;
+        return Math.floor((date.valueOf() / Time2.minute - offset) / 1440);
+      }
+      __name(getDateNumber, "getDateNumber");
+      Time2.getDateNumber = getDateNumber;
+      __name2(getDateNumber, "getDateNumber");
+      function fromDateNumber(value, offset) {
+        const date = new Date(value * Time2.day);
+        if (offset === void 0)
+          offset = timezoneOffset;
+        return new Date(+date + offset * Time2.minute);
+      }
+      __name(fromDateNumber, "fromDateNumber");
+      Time2.fromDateNumber = fromDateNumber;
+      __name2(fromDateNumber, "fromDateNumber");
+      const numeric = /\d+(?:\.\d+)?/.source;
+      const timeRegExp = new RegExp(`^${[
+        "w(?:eek(?:s)?)?",
+        "d(?:ay(?:s)?)?",
+        "h(?:our(?:s)?)?",
+        "m(?:in(?:ute)?(?:s)?)?",
+        "s(?:ec(?:ond)?(?:s)?)?"
+      ].map((unit) => `(${numeric}${unit})?`).join("")}$`);
+      function parseTime(source) {
+        const capture = timeRegExp.exec(source);
+        if (!capture)
+          return 0;
+        return (parseFloat(capture[1]) * Time2.week || 0) + (parseFloat(capture[2]) * Time2.day || 0) + (parseFloat(capture[3]) * Time2.hour || 0) + (parseFloat(capture[4]) * Time2.minute || 0) + (parseFloat(capture[5]) * Time2.second || 0);
+      }
+      __name(parseTime, "parseTime");
+      Time2.parseTime = parseTime;
+      __name2(parseTime, "parseTime");
+      function parseDate(date) {
+        const parsed = parseTime(date);
+        if (parsed) {
+          date = Date.now() + parsed;
+        } else if (/^\d{1,2}(:\d{1,2}){1,2}$/.test(date)) {
+          date = `${(/* @__PURE__ */ new Date()).toLocaleDateString()}-${date}`;
+        } else if (/^\d{1,2}-\d{1,2}-\d{1,2}(:\d{1,2}){1,2}$/.test(date)) {
+          date = `${(/* @__PURE__ */ new Date()).getFullYear()}-${date}`;
+        }
+        return date ? new Date(date) : /* @__PURE__ */ new Date();
+      }
+      __name(parseDate, "parseDate");
+      Time2.parseDate = parseDate;
+      __name2(parseDate, "parseDate");
+      function format(ms) {
+        const abs = Math.abs(ms);
+        if (abs >= Time2.day - Time2.hour / 2) {
+          return Math.round(ms / Time2.day) + "d";
+        } else if (abs >= Time2.hour - Time2.minute / 2) {
+          return Math.round(ms / Time2.hour) + "h";
+        } else if (abs >= Time2.minute - Time2.second / 2) {
+          return Math.round(ms / Time2.minute) + "m";
+        } else if (abs >= Time2.second) {
+          return Math.round(ms / Time2.second) + "s";
+        }
+        return ms + "ms";
+      }
+      __name(format, "format");
+      Time2.format = format;
+      __name2(format, "format");
+      function toDigits(source, length = 2) {
+        return source.toString().padStart(length, "0");
+      }
+      __name(toDigits, "toDigits");
+      Time2.toDigits = toDigits;
+      __name2(toDigits, "toDigits");
+      function template(template2, time = /* @__PURE__ */ new Date()) {
+        return template2.replace("yyyy", time.getFullYear().toString()).replace("yy", time.getFullYear().toString().slice(2)).replace("MM", toDigits(time.getMonth() + 1)).replace("dd", toDigits(time.getDate())).replace("hh", toDigits(time.getHours())).replace("mm", toDigits(time.getMinutes())).replace("ss", toDigits(time.getSeconds())).replace("SSS", toDigits(time.getMilliseconds(), 3));
+      }
+      __name(template, "template");
+      Time2.template = template;
+      __name2(template, "template");
+    })(Time || (Time = {}));
+  }
+});
+
+// ../node_modules/.pnpm/schemastery@3.14.6/node_modules/schemastery/lib/index.cjs
+var require_lib2 = __commonJS({
+  "../node_modules/.pnpm/schemastery@3.14.6/node_modules/schemastery/lib/index.cjs"(exports2, module2) {
+    "use strict";
+    var __defProp2 = Object.defineProperty;
+    var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+    var import_cosmokit = require_lib();
+    var kSchema = Symbol.for("schemastery");
+    globalThis.__schemastery_index__ ??= 0;
+    var Schema2 = /* @__PURE__ */ __name2(function(options) {
+      const schema = /* @__PURE__ */ __name2(function(data2, options2) {
+        return Schema2.resolve(data2, schema, options2)[0];
+      }, "schema");
+      if (options.refs) {
+        const refs2 = (0, import_cosmokit.valueMap)(options.refs, (options2) => new Schema2(options2));
+        const getRef = /* @__PURE__ */ __name2((uid) => refs2[uid], "getRef");
+        for (const key in refs2) {
+          const options2 = refs2[key];
+          options2.sKey = getRef(options2.sKey);
+          options2.inner = getRef(options2.inner);
+          options2.list = options2.list && options2.list.map(getRef);
+          options2.dict = options2.dict && (0, import_cosmokit.valueMap)(options2.dict, getRef);
+        }
+        return refs2[options.uid];
+      }
+      Object.assign(schema, options);
+      if (typeof schema.callback === "string") {
+        try {
+          schema.callback = new Function("return " + schema.callback)();
+        } catch {
+        }
+      }
+      Object.defineProperty(schema, "uid", { value: globalThis.__schemastery_index__++ });
+      Object.setPrototypeOf(schema, Schema2.prototype);
+      schema.meta ||= {};
+      schema.toString = schema.toString.bind(schema);
+      return schema;
+    }, "Schema");
+    Schema2.prototype = Object.create(Function.prototype);
+    Schema2.prototype[kSchema] = true;
+    var refs;
+    Schema2.prototype.toJSON = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function toJSON() {
+      if (refs) {
+        refs[this.uid] ??= JSON.parse(JSON.stringify({ ...this }));
+        return this.uid;
+      }
+      refs = { [this.uid]: { ...this } };
+      refs[this.uid] = JSON.parse(JSON.stringify({ ...this }));
+      const result = { uid: this.uid, refs };
+      refs = void 0;
+      return result;
+    }, "toJSON"), "toJSON");
+    Schema2.prototype.set = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function set(key, value) {
+      this.dict[key] = value;
+      return this;
+    }, "set"), "set");
+    Schema2.prototype.push = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function push(value) {
+      this.list.push(value);
+      return this;
+    }, "push"), "push");
+    function mergeDesc(original, messages) {
+      const result = typeof original === "string" ? { "": original } : { ...original };
+      for (const locale in messages) {
+        const value = messages[locale];
+        if (value?.$description || value?.$desc) {
+          result[locale] = value.$description || value.$desc;
+        } else if (typeof value === "string") {
+          result[locale] = value;
+        }
+      }
+      return result;
+    }
+    __name(mergeDesc, "mergeDesc");
+    __name2(mergeDesc, "mergeDesc");
+    function getInner(value) {
+      return value?.$value ?? value?.$inner;
+    }
+    __name(getInner, "getInner");
+    __name2(getInner, "getInner");
+    function extractKeys(data2) {
+      return (0, import_cosmokit.filterKeys)(data2 ?? {}, (key) => !key.startsWith("$"));
+    }
+    __name(extractKeys, "extractKeys");
+    __name2(extractKeys, "extractKeys");
+    Schema2.prototype.i18n = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function i18n(messages) {
+      const schema = Schema2(this);
+      schema.meta.description = mergeDesc(schema.meta.description, messages);
+      if (schema.dict) {
+        schema.dict = (0, import_cosmokit.valueMap)(schema.dict, (inner, key) => {
+          return inner.i18n((0, import_cosmokit.valueMap)(messages, (data2) => getInner(data2)?.[key] ?? data2?.[key]));
+        });
+      }
+      if (schema.list) {
+        schema.list = schema.list.map((inner, index) => {
+          return inner.i18n((0, import_cosmokit.valueMap)(messages, (data2 = {}) => {
+            if (Array.isArray(getInner(data2)))
+              return getInner(data2)[index];
+            if (Array.isArray(data2))
+              return data2[index];
+            return extractKeys(data2);
+          }));
+        });
+      }
+      if (schema.inner) {
+        schema.inner = schema.inner.i18n((0, import_cosmokit.valueMap)(messages, (data2) => {
+          if (getInner(data2))
+            return getInner(data2);
+          return extractKeys(data2);
+        }));
+      }
+      if (schema.sKey) {
+        schema.sKey = schema.sKey.i18n((0, import_cosmokit.valueMap)(messages, (data2) => data2?.$key));
+      }
+      return schema;
+    }, "i18n"), "i18n");
+    Schema2.prototype.extra = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function extra(key, value) {
+      const schema = Schema2(this);
+      schema.meta = { ...schema.meta, [key]: value };
+      return schema;
+    }, "extra"), "extra");
+    for (const key of ["required", "disabled", "collapse", "hidden", "loose"]) {
+      Object.assign(Schema2.prototype, {
+        [key](value = true) {
+          const schema = Schema2(this);
+          schema.meta = { ...schema.meta, [key]: value };
+          return schema;
+        }
+      });
+    }
+    Schema2.prototype.deprecated = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function deprecated() {
+      const schema = Schema2(this);
+      schema.meta.badges ||= [];
+      schema.meta.badges.push({ text: "deprecated", type: "danger" });
+      return schema;
+    }, "deprecated"), "deprecated");
+    Schema2.prototype.experimental = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function experimental() {
+      const schema = Schema2(this);
+      schema.meta.badges ||= [];
+      schema.meta.badges.push({ text: "experimental", type: "warning" });
+      return schema;
+    }, "experimental"), "experimental");
+    Schema2.prototype.pattern = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function pattern(regexp) {
+      const schema = Schema2(this);
+      const pattern2 = (0, import_cosmokit.pick)(regexp, ["source", "flags"]);
+      schema.meta = { ...schema.meta, pattern: pattern2 };
+      return schema;
+    }, "pattern"), "pattern");
+    Schema2.prototype.simplify = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function simplify(value) {
+      if ((0, import_cosmokit.deepEqual)(value, this.meta.default, this.type === "dict"))
+        return null;
+      if ((0, import_cosmokit.isNullable)(value))
+        return value;
+      if (this.type === "object" || this.type === "dict") {
+        const result = {};
+        for (const key in value) {
+          const schema = this.type === "object" ? this.dict[key] : this.inner;
+          const item = schema?.simplify(value[key]);
+          if (this.type === "dict" || !(0, import_cosmokit.isNullable)(item))
+            result[key] = item;
+        }
+        if ((0, import_cosmokit.deepEqual)(result, this.meta.default, this.type === "dict"))
+          return null;
+        return result;
+      } else if (this.type === "array" || this.type === "tuple") {
+        const result = [];
+        value.forEach((value2, index) => {
+          const schema = this.type === "array" ? this.inner : this.list[index];
+          const item = schema ? schema.simplify(value2) : value2;
+          result.push(item);
+        });
+        return result;
+      } else if (this.type === "intersect") {
+        const result = {};
+        for (const item of this.list) {
+          Object.assign(result, item.simplify(value));
+        }
+        return result;
+      } else if (this.type === "union") {
+        for (const schema of this.list) {
+          try {
+            Schema2.resolve(value, schema);
+            return schema.simplify(value);
+          } catch {
+          }
+        }
+      }
+      return value;
+    }, "simplify"), "simplify");
+    Schema2.prototype.toString = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function toString(inline) {
+      return formatters[this.type]?.(this, inline) ?? `Schema<${this.type}>`;
+    }, "toString"), "toString");
+    Schema2.prototype.role = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function role(role, extra2) {
+      const schema = Schema2(this);
+      schema.meta = { ...schema.meta, role, extra: extra2 };
+      return schema;
+    }, "role"), "role");
+    for (const key of ["default", "link", "comment", "description", "max", "min", "step"]) {
+      Object.assign(Schema2.prototype, {
+        [key](value) {
+          const schema = Schema2(this);
+          schema.meta = { ...schema.meta, [key]: value };
+          return schema;
+        }
+      });
+    }
+    var resolvers = {};
+    Schema2.extend = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function extend(type, resolve2) {
+      resolvers[type] = resolve2;
+    }, "extend"), "extend");
+    Schema2.resolve = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function resolve(data2, schema, options = {}, strict = false) {
+      if (!schema)
+        return [data2];
+      if ((0, import_cosmokit.isNullable)(data2)) {
+        if (schema.meta.required)
+          throw new TypeError(`missing required value`);
+        let current = schema;
+        let fallback = schema.meta.default;
+        while (current?.type === "intersect" && (0, import_cosmokit.isNullable)(fallback)) {
+          current = current.list[0];
+          fallback = current?.meta.default;
+        }
+        if ((0, import_cosmokit.isNullable)(fallback))
+          return [data2];
+        data2 = (0, import_cosmokit.clone)(fallback);
+      }
+      const callback = resolvers[schema.type];
+      if (!callback)
+        throw new TypeError(`unsupported type "${schema.type}"`);
+      try {
+        return callback(data2, schema, options, strict);
+      } catch (error) {
+        if (!schema.meta.loose)
+          throw error;
+        return [schema.meta.default];
+      }
+    }, "resolve"), "resolve");
+    Schema2.from = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function from(source) {
+      if ((0, import_cosmokit.isNullable)(source)) {
+        return Schema2.any();
+      } else if (["string", "number", "boolean"].includes(typeof source)) {
+        return Schema2.const(source).required();
+      } else if (source[kSchema]) {
+        return source;
+      } else if (typeof source === "function") {
+        switch (source) {
+          case String:
+            return Schema2.string().required();
+          case Number:
+            return Schema2.number().required();
+          case Boolean:
+            return Schema2.boolean().required();
+          case Function:
+            return Schema2.function().required();
+          default:
+            return Schema2.is(source).required();
+        }
+      } else {
+        throw new TypeError(`cannot infer schema from ${source}`);
+      }
+    }, "from"), "from");
+    Schema2.natural = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function natural() {
+      return Schema2.number().step(1).min(0);
+    }, "natural"), "natural");
+    Schema2.percent = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function percent() {
+      return Schema2.number().step(0.01).min(0).max(1).role("slider");
+    }, "percent"), "percent");
+    Schema2.date = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function date() {
+      return Schema2.union([
+        Schema2.is(Date),
+        Schema2.transform(Schema2.string().role("datetime"), (value) => {
+          const date2 = new Date(value);
+          if (isNaN(+date2))
+            throw new TypeError(`invalid date "${value}"`);
+          return date2;
+        }, true)
+      ]);
+    }, "date"), "date");
+    Schema2.extend("any", (data2) => {
+      return [data2];
+    });
+    Schema2.extend("never", (data2) => {
+      throw new TypeError(`expected nullable but got ${data2}`);
+    });
+    Schema2.extend("const", (data2, { value }) => {
+      if (data2 === value)
+        return [value];
+      throw new TypeError(`expected ${value} but got ${data2}`);
+    });
+    function checkWithinRange(data2, meta, description2, skipMin = false) {
+      const { max = Infinity, min = -Infinity } = meta;
+      if (data2 > max)
+        throw new TypeError(`expected ${description2} <= ${max} but got ${data2}`);
+      if (data2 < min && !skipMin)
+        throw new TypeError(`expected ${description2} >= ${min} but got ${data2}`);
+    }
+    __name(checkWithinRange, "checkWithinRange");
+    __name2(checkWithinRange, "checkWithinRange");
+    Schema2.extend("string", (data2, { meta }) => {
+      if (typeof data2 !== "string")
+        throw new TypeError(`expected string but got ${data2}`);
+      if (meta.pattern) {
+        const regexp = new RegExp(meta.pattern.source, meta.pattern.flags);
+        if (!regexp.test(data2))
+          throw new TypeError(`expect string to match regexp ${regexp}`);
+      }
+      checkWithinRange(data2.length, meta, "string length");
+      return [data2];
+    });
+    function decimalShift(data2, digits) {
+      const str = data2.toString();
+      if (str.includes("e"))
+        return data2 * Math.pow(10, digits);
+      const index = str.indexOf(".");
+      if (index === -1)
+        return data2 * Math.pow(10, digits);
+      const frac = str.slice(index + 1);
+      const integer = str.slice(0, index);
+      if (frac.length <= digits)
+        return +(integer + frac.padEnd(digits, "0"));
+      return +(integer + frac.slice(0, digits) + "." + frac.slice(digits));
+    }
+    __name(decimalShift, "decimalShift");
+    __name2(decimalShift, "decimalShift");
+    function isMultipleOf(data2, min, step) {
+      step = Math.abs(step);
+      if (!/^\d+\.\d+$/.test(step.toString())) {
+        return (data2 - min) % step === 0;
+      }
+      const index = step.toString().indexOf(".");
+      const digits = step.toString().slice(index + 1).length;
+      return Math.abs(decimalShift(data2, digits) - decimalShift(min, digits)) % decimalShift(step, digits) === 0;
+    }
+    __name(isMultipleOf, "isMultipleOf");
+    __name2(isMultipleOf, "isMultipleOf");
+    Schema2.extend("number", (data2, { meta }) => {
+      if (typeof data2 !== "number")
+        throw new TypeError(`expected number but got ${data2}`);
+      checkWithinRange(data2, meta, "number");
+      const { step } = meta;
+      if (step && !isMultipleOf(data2, meta.min ?? 0, step)) {
+        throw new TypeError(`expected number multiple of ${step} but got ${data2}`);
+      }
+      return [data2];
+    });
+    Schema2.extend("boolean", (data2) => {
+      if (typeof data2 === "boolean")
+        return [data2];
+      throw new TypeError(`expected boolean but got ${data2}`);
+    });
+    Schema2.extend("bitset", (data2, { bits, meta }) => {
+      let value = 0, keys = [];
+      if (typeof data2 === "number") {
+        value = data2;
+        for (const key in bits) {
+          if (data2 & bits[key]) {
+            keys.push(key);
+          }
+        }
+      } else if (Array.isArray(data2)) {
+        keys = data2;
+        for (const key of keys) {
+          if (typeof key !== "string")
+            throw new TypeError(`expected string but got ${key}`);
+          if (key in bits)
+            value |= bits[key];
+        }
+      } else {
+        throw new TypeError(`expected number or array but got ${data2}`);
+      }
+      if (value === meta.default)
+        return [value];
+      return [value, keys];
+    });
+    Schema2.extend("function", (data2) => {
+      if (typeof data2 === "function")
+        return [data2];
+      throw new TypeError(`expected function but got ${data2}`);
+    });
+    Schema2.extend("is", (data2, { callback }) => {
+      if (data2 instanceof callback)
+        return [data2];
+      throw new TypeError(`expected ${callback.name} but got ${data2}`);
+    });
+    function property(data2, key, schema, options) {
+      try {
+        const [value, adapted] = Schema2.resolve(data2[key], schema, options);
+        if (adapted !== void 0)
+          data2[key] = adapted;
+        return value;
+      } catch (e) {
+        if (!options?.autofix)
+          throw e;
+        delete data2[key];
+        return schema.meta.default;
+      }
+    }
+    __name(property, "property");
+    __name2(property, "property");
+    Schema2.extend("array", (data2, { inner, meta }, options) => {
+      if (!Array.isArray(data2))
+        throw new TypeError(`expected array but got ${data2}`);
+      checkWithinRange(data2.length, meta, "array length", !(0, import_cosmokit.isNullable)(inner.meta.default));
+      return [data2.map((_, index) => property(data2, index, inner, options))];
+    });
+    Schema2.extend("dict", (data2, { inner, sKey }, options, strict) => {
+      if (!(0, import_cosmokit.isPlainObject)(data2))
+        throw new TypeError(`expected object but got ${data2}`);
+      const result = {};
+      for (const key in data2) {
+        let rKey;
+        try {
+          rKey = Schema2.resolve(key, sKey)[0];
+        } catch (error) {
+          if (strict)
+            continue;
+          throw error;
+        }
+        result[rKey] = property(data2, key, inner, options);
+        data2[rKey] = data2[key];
+        if (key !== rKey)
+          delete data2[key];
+      }
+      return [result];
+    });
+    Schema2.extend("tuple", (data2, { list }, options, strict) => {
+      if (!Array.isArray(data2))
+        throw new TypeError(`expected array but got ${data2}`);
+      const result = list.map((inner, index) => property(data2, index, inner, options));
+      if (strict)
+        return [result];
+      result.push(...data2.slice(list.length));
+      return [result];
+    });
+    function merge(result, data2) {
+      for (const key in data2) {
+        if (key in result)
+          continue;
+        result[key] = data2[key];
+      }
+    }
+    __name(merge, "merge");
+    __name2(merge, "merge");
+    Schema2.extend("object", (data2, { dict }, options, strict) => {
+      if (!(0, import_cosmokit.isPlainObject)(data2))
+        throw new TypeError(`expected object but got ${data2}`);
+      const result = {};
+      for (const key in dict) {
+        const value = property(data2, key, dict[key], options);
+        if (!(0, import_cosmokit.isNullable)(value) || key in data2) {
+          result[key] = value;
+        }
+      }
+      if (!strict)
+        merge(result, data2);
+      return [result];
+    });
+    Schema2.extend("union", (data2, { list, toString: toString2 }, options, strict) => {
+      const messages = [];
+      for (const inner of list) {
+        try {
+          return Schema2.resolve(data2, inner, options, strict);
+        } catch (error) {
+          messages.push(error);
+        }
+      }
+      throw new TypeError(`expected ${toString2()} but got ${JSON.stringify(data2)}`);
+    });
+    Schema2.extend("intersect", (data2, { list, toString: toString2 }, options, strict) => {
+      let result;
+      for (const inner of list) {
+        const value = Schema2.resolve(data2, inner, options, true)[0];
+        if ((0, import_cosmokit.isNullable)(value))
+          continue;
+        if ((0, import_cosmokit.isNullable)(result)) {
+          result = value;
+        } else if (typeof result !== typeof value) {
+          throw new TypeError(`expected ${toString2()} but got ${JSON.stringify(data2)}`);
+        } else if (typeof value === "object") {
+          merge(result ??= {}, value);
+        } else if (result !== value) {
+          throw new TypeError(`expected ${toString2()} but got ${JSON.stringify(data2)}`);
+        }
+      }
+      if (!strict && (0, import_cosmokit.isPlainObject)(data2))
+        merge(result, data2);
+      return [result];
+    });
+    Schema2.extend("transform", (data2, { inner, callback, preserve }, options) => {
+      const [result, adapted = data2] = Schema2.resolve(data2, inner, options, true);
+      if (preserve) {
+        return [callback(result)];
+      } else {
+        return [callback(result), callback(adapted)];
+      }
+    });
+    var formatters = {};
+    function defineMethod(name, keys, format) {
+      formatters[name] = format;
+      Object.assign(Schema2, {
+        [name](...args) {
+          const schema = new Schema2({ type: name });
+          keys.forEach((key, index) => {
+            switch (key) {
+              case "sKey":
+                schema.sKey = args[index] ?? Schema2.string();
+                break;
+              case "inner":
+                schema.inner = Schema2.from(args[index]);
+                break;
+              case "list":
+                schema.list = args[index].map(Schema2.from);
+                break;
+              case "dict":
+                schema.dict = (0, import_cosmokit.valueMap)(args[index], Schema2.from);
+                break;
+              case "bits": {
+                schema.bits = {};
+                for (const key2 in args[index]) {
+                  if (typeof args[index][key2] !== "number")
+                    continue;
+                  schema.bits[key2] = args[index][key2];
+                }
+                break;
+              }
+              case "callback": {
+                schema.callback = args[index];
+                schema.callback["toJSON"] ||= () => schema.callback.toString();
+                break;
+              }
+              default:
+                schema[key] = args[index];
+            }
+          });
+          if (name === "object" || name === "dict") {
+            schema.meta.default = {};
+          } else if (name === "array" || name === "tuple") {
+            schema.meta.default = [];
+          } else if (name === "bitset") {
+            schema.meta.default = 0;
+          }
+          return schema;
+        }
+      });
+    }
+    __name(defineMethod, "defineMethod");
+    __name2(defineMethod, "defineMethod");
+    defineMethod("is", ["callback"], ({ callback }) => callback.name);
+    defineMethod("any", [], () => "any");
+    defineMethod("never", [], () => "never");
+    defineMethod("const", ["value"], ({ value }) => typeof value === "string" ? JSON.stringify(value) : value);
+    defineMethod("string", [], () => "string");
+    defineMethod("number", [], () => "number");
+    defineMethod("boolean", [], () => "boolean");
+    defineMethod("bitset", ["bits"], () => "bitset");
+    defineMethod("function", [], () => "function");
+    defineMethod("array", ["inner"], ({ inner }) => `${inner.toString(true)}[]`);
+    defineMethod("dict", ["inner", "sKey"], ({ inner, sKey }) => `{ [key: ${sKey.toString()}]: ${inner.toString()} }`);
+    defineMethod("tuple", ["list"], ({ list }) => `[${list.map((inner) => inner.toString()).join(", ")}]`);
+    defineMethod("object", ["dict"], ({ dict }) => {
+      if (Object.keys(dict).length === 0)
+        return "{}";
+      return `{ ${Object.entries(dict).map(([key, inner]) => {
+        return `${key}${inner.meta.required ? "" : "?"}: ${inner.toString()}`;
+      }).join(", ")} }`;
+    });
+    defineMethod("union", ["list"], ({ list }, inline) => {
+      const result = list.map(({ toString: format }) => format()).join(" | ");
+      return inline ? `(${result})` : result;
+    });
+    defineMethod("intersect", ["list"], ({ list }) => {
+      return `${list.map((inner) => inner.toString(true)).join(" & ")}`;
+    });
+    defineMethod("transform", ["inner", "callback", "preserve"], ({ inner }, isInner) => inner.toString(isInner));
+    module2.exports = Schema2;
+  }
+});
+
 // package.json
 var version = "1.1.0";
 var description = "Improved version of LxlBlackBe";
@@ -588,14 +1586,22 @@ var _Query = class _Query {
   constructor(ss) {
     this.ss = ss;
   }
+  bindStmt(sql, params) {
+    const stmt = this.ss.prepare(sql);
+    if (params) stmt.bind(params);
+    return stmt;
+  }
+  executeInStmt(sql, params) {
+    this.bindStmt(sql, params).execute();
+  }
   begin() {
-    this.ss.execute("BEGIN;");
+    this.executeInStmt("BEGIN;");
   }
   commit() {
-    this.ss.execute("COMMIT;");
+    this.executeInStmt("COMMIT;");
   }
   rollback() {
-    this.ss.execute("ROLLBACK;");
+    this.executeInStmt("ROLLBACK;");
   }
   withBegin(fn) {
     this.begin();
@@ -608,22 +1614,257 @@ var _Query = class _Query {
       throw e;
     }
   }
-  bindStmt(sql, params) {
-    const stmt = this.ss.prepare(sql);
-    if (params) stmt.bind(params);
-    return stmt;
-  }
-  executeInStmt(sql, params) {
-    this.bindStmt(sql, params).execute();
-  }
   executeParagraph(sql) {
     sql.split(";").forEach((s) => {
       if (s) this.executeInStmt(s.trim());
     });
   }
+  select(columns, fromTable, where, params) {
+    if (typeof columns === "string") columns = [columns];
+    const sql = `SELECT ${columns.join(", ")} FROM ${fromTable}${where ? ` WHERE ${where}` : ""};`;
+    return this.bindStmt(sql, params);
+  }
+  delete(fromTable, where, params) {
+    const sql = `DELETE FROM ${fromTable}${where ? ` WHERE ${where}` : ""};`;
+    const stmt = this.bindStmt(sql, params);
+    stmt.fetch();
+    return stmt;
+  }
+  fetchAll(stmt) {
+    const [keys, ...rows] = stmt.fetchAll();
+    return rows.map(
+      (row) => Object.assign({}, ...keys.map((k, i) => ({ [k]: row[i] })))
+    );
+  }
+  fetchAllToList(stmt) {
+    const [keys, ...rows] = stmt.fetchAll();
+    const result = {};
+    for (const key of keys) result[key] = [];
+    for (const row of rows) {
+      for (const key of keys) result[key].push(row[key]);
+    }
+    return result;
+  }
+  insertOrReplace(data2, tableName, columns) {
+    const names = columns.filter((v) => data2[v] !== void 0);
+    if (!names.length) {
+      throw new Error("No data to insert");
+    }
+    const values = names.map((v) => data2[v]);
+    const colNamesStr = names.join(", ");
+    const argsStr = names.map(() => "?").join(", ");
+    return this.bindStmt(
+      `INSERT OR REPLACE INTO ${tableName} (${colNamesStr}}) VALUES (${argsStr});`,
+      values
+    ).execute().insertId;
+  }
 };
 __name(_Query, "Query");
 var Query = _Query;
+
+// src/db/methods.ts
+Query.banTypeStrMap = {
+  [Query.BanType.XUID]: "XUID",
+  [Query.BanType.NAME]: "玩家名",
+  [Query.BanType.IP]: "IP",
+  [Query.BanType.CLIENT_ID]: "客户端 ID"
+};
+Query.banTypeStrMapReverse = (() => {
+  const ent = Object.entries(Query.banTypeStrMap);
+  return Object.fromEntries(ent.map(([k, v]) => [v, k]));
+})();
+Query.prototype.getXuidFromInfoId = function(id) {
+  return this.fetchAllToList(
+    this.select("xuid", "xuid", "banInfoId = ?", [id])
+  ).xuid;
+};
+Query.prototype.getNameFromInfoId = function(id) {
+  return this.fetchAllToList(
+    this.select("name", "name", "banInfoId = ?", [id])
+  ).name;
+};
+Query.prototype.getIpFromInfoId = function(id) {
+  return this.fetchAllToList(
+    this.select("ip", "ip", "banInfoId = ?", [id])
+  ).ip;
+};
+Query.prototype.getClientIdFromInfoId = function(id) {
+  return this.fetchAllToList(
+    this.select(
+      "clientId",
+      "clientId",
+      "banInfoId = ?",
+      [id]
+    )
+  ).clientId;
+};
+Query.prototype.getNameInfo = function(name) {
+  return this.select("*", "name", "name = ?", [name]).fetch();
+};
+Query.prototype.getNamesFromXuid = function(xuid) {
+  return this.fetchAllToList(
+    this.select("name", "name", "xuid = ?", [xuid])
+  ).name;
+};
+Query.prototype.getInfoIdFromXuid = function(xuid) {
+  return this.select("banInfoId", "xuid", "xuid = ?", [xuid]).fetch().banInfoId;
+};
+Query.prototype.getInfoIdFromName = function(name) {
+  return this.select("banInfoId", "name", "name = ?", [name]).fetch().banInfoId;
+};
+Query.prototype.getInfoIdFromIp = function(ip) {
+  return this.select("banInfoId", "ip", "ip = ?", [ip]).fetch().banInfoId;
+};
+Query.prototype.getInfoIdFromClientId = function(clientId) {
+  return this.select("banInfoId", "clientId", "clientId = ?", [clientId]).fetch().banInfoId;
+};
+Query.prototype.getInfo = function(id) {
+  const it = this.select("*", "banInfo", "id = ?", [id]).fetch();
+  if (!("id" in it)) return void 0;
+  return it;
+};
+Query.prototype.getFullInfo = function(id) {
+  const it = this.getInfo(id);
+  if (!it) return void 0;
+  const { reason, endTime } = it;
+  const { xuid } = this.fetchAllToList(
+    this.select("xuid", "xuid", "banInfoId = ?", [id])
+  );
+  const { name } = this.fetchAllToList(
+    this.select("name", "name", "banInfoId = ?", [id])
+  );
+  const { ip } = this.fetchAllToList(
+    this.select("ip", "ip", "banInfoId = ?", [id])
+  );
+  const { clientId } = this.fetchAllToList(
+    this.select(
+      "clientId",
+      "clientId",
+      "banInfoId = ?",
+      [id]
+    )
+  );
+  return { id, reason, endTime, name, xuid, ip, clientId };
+};
+Query.prototype.iterAllInfos = function* () {
+  const stmt = this.select("*", "banInfo");
+  do {
+    const it = stmt.fetch();
+    if (!("id" in it)) break;
+    yield it;
+  } while (stmt.step());
+};
+Query.prototype.updateXuidInfo = function(data2) {
+  return this.withBegin(() => this.insertOrReplace(data2, "xuid", ["xuid", "banInfoId"]));
+};
+Query.prototype.updateNameInfo = function(data2) {
+  return this.withBegin(
+    () => this.insertOrReplace(data2, "name", ["name", "xuid", "banInfoId"])
+  );
+};
+Query.prototype.updateIpInfo = function(data2) {
+  return this.withBegin(() => this.insertOrReplace(data2, "ip", ["ip", "banInfoId"]));
+};
+Query.prototype.updateClientIdInfo = function(data2) {
+  return this.withBegin(
+    () => this.insertOrReplace(data2, "clientId", ["clientId", "banInfoId"])
+  );
+};
+Query.prototype.updateInfo = function(data2) {
+  return this.withBegin(
+    () => this.insertOrReplace(data2, "banInfo", ["id", "reason", "endTime"])
+  );
+};
+Query.prototype.searchNameInfo = function(query) {
+  return this.fetchAll(
+    this.select("*", "name", "name LIKE ?", [
+      `%${Query.escape(query, ["%", "_"])}%`
+    ])
+  );
+};
+Query.prototype.searchXuidInfo = function(query) {
+  return this.fetchAll(
+    this.select("*", "xuid", "xuid LIKE ?", [
+      `%${Query.escape(query, ["%", "_"])}%`
+    ])
+  );
+};
+Query.prototype.searchIpInfo = function(query) {
+  return this.fetchAll(
+    this.select("*", "ip", "ip LIKE ?", [
+      `%${Query.escape(query, ["%", "_"])}%`
+    ])
+  );
+};
+Query.prototype.searchClientIdInfo = function(query) {
+  return this.fetchAll(
+    this.select("*", "clientId", "clientId LIKE ?", [
+      `%${Query.escape(query, ["%", "_"])}%`
+    ])
+  );
+};
+Query.prototype.searchBanInfo = function(query) {
+  return this.fetchAll(
+    this.select("*", "banInfo", "reason LIKE ?", [
+      `%${Query.escape(query, ["%", "_"])}%`
+    ])
+  );
+};
+Query.prototype.deleteXuid = function(xuid) {
+  return this.withBegin(() => !!this.delete("xuid", "xuid = ?", [xuid]).affectedRows);
+};
+Query.prototype.deleteName = function(name) {
+  return this.withBegin(() => !!this.delete("name", "name = ?", [name]).affectedRows);
+};
+Query.prototype.deleteIp = function(ip) {
+  return this.withBegin(() => !!this.delete("ip", "ip = ?", [ip]).affectedRows);
+};
+Query.prototype.deleteClientId = function(clientId) {
+  return this.withBegin(
+    () => !!this.delete("clientId", "clientId = ?", [clientId]).affectedRows
+  );
+};
+Query.prototype.deleteInfo = function(id) {
+  return this.withBegin(() => !!this.delete("banInfo", "id = ?", [id]).affectedRows);
+};
+Query.prototype.getInfoIdUniversal = function(kw) {
+  let infoId;
+  if (infoId = this.getInfoIdFromXuid(kw)) {
+    return [Query.BanType.XUID, infoId];
+  }
+  if (infoId = this.getInfoIdFromName(kw)) {
+    return [Query.BanType.NAME, infoId];
+  }
+  if (infoId = this.getInfoIdFromIp(kw)) {
+    return [Query.BanType.IP, infoId];
+  }
+  if (infoId = this.getInfoIdFromClientId(kw)) {
+    return [Query.BanType.CLIENT_ID, infoId];
+  }
+  return void 0;
+};
+Query.prototype.delBanUniversal = function(banType, kw) {
+  switch (banType) {
+    case Query.BanType.XUID:
+      return this.deleteXuid(kw);
+    case Query.BanType.NAME:
+      return this.deleteName(kw);
+    case Query.BanType.IP:
+      return this.deleteIp(kw);
+    case Query.BanType.CLIENT_ID:
+      return this.deleteClientId(kw);
+    default:
+      return false;
+  }
+};
+Query.prototype.isInfoAlone = function(info) {
+  if (typeof info === "number") {
+    const queried = this.getFullInfo(info);
+    if (!queried) return false;
+    info = queried;
+  }
+  return !info.xuid.length && !info.name.length && !info.ip.length && !info.clientId.length;
+};
 
 // src/db/version.ts
 var versionCreateSql = `
@@ -657,40 +1898,109 @@ Query.prototype.updateVersion = function(version2) {
 var tableCreateSqlPara = `
 CREATE TABLE IF NOT EXISTS banInfo (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  reason TEXT NOT NULL,
-  endTime TEXT NOT NULL
+  reason TEXT,
+  endTime TEXT
 );
 
 CREATE TABLE IF NOT EXISTS xuid (
   xuid TEXT PRIMARY KEY NOT NULL,
-  banInfo INTEGER,
-  FOREIGN KEY (banInfo) REFERENCES banInfo(id) ON DELETE CASCADE
+  banInfoId INTEGER NOT NULL,
+  FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS name (
   name TEXT PRIMARY KEY NOT NULL,
-  xuid TEXT NOT NULL,
-  banInfoId INTEGER,
+  xuid TEXT,
+  banInfoId INTEGER NOT NULL,
   FOREIGN KEY (xuid) REFERENCES xuid(xuid) ON DELETE CASCADE,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ip (
   ip TEXT PRIMARY KEY NOT NULL,
-  banInfoId INTEGER,
+  banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS clientId (
   clientId TEXT PRIMARY KEY NOT NULL,
-  banInfoId INTEGER,
+  banInfoId INTEGER NOT NULL,
   FOREIGN KEY (banInfoId) REFERENCES banInfo(id) ON DELETE CASCADE
 );
 `.trim();
+var insertBanInfoSql = `
+INSERT INTO banInfo (reason, endTime) VALUES (?, ?)
+`.trim();
+var insertXuidSql = `
+INSERT INTO xuid (xuid, banInfo) VALUES (?, ?)
+`.trim();
+var insertNameSql = `
+INSERT INTO name (name, xuid, banInfoId) VALUES (?, ?, ?)
+`.trim();
+var insertIpSql = `
+INSERT OR IGNORE INTO ip (ip, banInfoId) VALUES (?, ?)
+`.trim();
+var insertClientIdSql = `
+INSERT OR IGNORE INTO clientId (clientId, banInfoId) VALUES (?, ?)
+`.trim();
+var oldLocalListPath = `${DATA_PATH}/localList.json`;
+function migrateLocalList(q) {
+  if (!file.exists(oldLocalListPath)) {
+    return;
+  }
+  ;
+  (() => {
+    const content = file.readFrom(oldLocalListPath);
+    if (!content) {
+      logger.warn("Cannot read old local list data, skip migrate");
+      return;
+    }
+    let oldLocalList;
+    try {
+      oldLocalList = JSON.parse(content);
+    } catch (e) {
+      logger.warn("Cannot parse old local list data, skip migrate");
+      return;
+    }
+    let banInfoCount = 0;
+    let extraRowCount = 0;
+    q.withBegin(() => {
+      oldLocalList.list.forEach((item) => {
+        const { name, xuid, ips, clientIds, reason, endTime, ip } = item;
+        const banInfoStmt = q.bindStmt(insertBanInfoSql, [reason, endTime]).execute();
+        const banInfoId = banInfoStmt.insertId;
+        banInfoCount += 1;
+        const stmts = [];
+        if (xuid) stmts.push(q.bindStmt(insertXuidSql, [xuid, banInfoId]));
+        if (name) stmts.push(q.bindStmt(insertNameSql, [name, xuid ?? null, banInfoId]));
+        if (ip) stmts.push(q.bindStmt(insertIpSql, [ip, banInfoId]));
+        if (ips) {
+          ips.forEach((ip2) => {
+            stmts.push(q.bindStmt(insertIpSql, [ip2, banInfoId]));
+          });
+        }
+        if (clientIds) {
+          clientIds.forEach((clientId) => {
+            stmts.push(q.bindStmt(insertClientIdSql, [clientId, banInfoId]));
+          });
+        }
+        stmts.forEach((stmt) => {
+          extraRowCount += stmt.execute().affectedRows;
+        });
+      });
+    });
+    logger.info(
+      `Migrated ${banInfoCount} infos and ${extraRowCount} related data from old local list`
+    );
+  })();
+  file.delete(oldLocalListPath);
+}
+__name(migrateLocalList, "migrateLocalList");
 var migrate = /* @__PURE__ */ __name((q) => {
   q.withBegin(() => {
     q.executeParagraph(tableCreateSqlPara);
   });
+  migrateLocalList(q);
 }, "migrate");
 var v1_default = migrate;
 
@@ -701,10 +2011,15 @@ function migrate2(q) {
   const currentVersion = migrateFuncs.length;
   const migrateCount = currentVersion - version2;
   if (migrateCount > 0) {
+    logger.info(
+      `Database is now at version ${currentVersion}. Will be migrated to version ${currentVersion}.`
+    );
     for (let i = 0; i < migrateCount; i++) {
+      logger.info(`Migrating to version ${version2 + i + 1}...`);
       migrateFuncs[i + version2](q);
     }
     q.updateVersion(currentVersion);
+    logger.info(`Successfully migrated database.`);
   }
   return [version2, currentVersion];
 }
@@ -726,68 +2041,55 @@ Query.get = function() {
 var import_form_api_ex4 = __toESM(require_FormAPIEx());
 
 // src/config.ts
+var import_schemastery = __toESM(require_lib2());
 var configPath = `${DATA_PATH}/config.json`;
-var localListPath = `${DATA_PATH}/localList.json`;
-var config = {
-  apiToken: "",
-  banIp: true,
-  banDevice: true,
-  hidePassMessage: false,
-  disableBlackBE: false,
-  kickByCloudMsg: `§c您已被BlackBE云端黑名单封禁§r
+var Config = import_schemastery.default.object({
+  apiToken: import_schemastery.default.string().required(false),
+  banIp: import_schemastery.default.boolean().default(true),
+  banDevice: import_schemastery.default.boolean().default(true),
+  hidePassMessage: import_schemastery.default.boolean().default(false),
+  disableBlackBE: import_schemastery.default.boolean().default(false),
+  kickByCloudMsg: import_schemastery.default.string().default(
+    `§c您已被BlackBE云端黑名单封禁§r
 
-详情请访问 §ghttps://blackbe.work/`,
-  kickByLocalMsg: `§c您已被服务器封禁§r
+详情请访问 §ghttps://blackbe.work/`
+  ),
+  kickByLocalMsg: import_schemastery.default.string().default(
+    `§c您已被服务器封禁§r
 
 解封时间: §g%ENDTIME%§r
-封禁原因: §g%REASON%`,
-  serverName: "服务器",
-  // proxy: false,
-  apiHost: "https://api.blackbe.work/",
-  clearCacheInterval: 36e5,
-  registerBanCommand: true,
-  checkLocalListInterval: 5e3,
-  processOnPreJoin: true,
-  onlyOpCanQuery: false,
-  pardonBlackBE: []
-};
-var localList = { list: [] };
+封禁原因: §g%REASON%`
+  ),
+  serverName: import_schemastery.default.string().default("服务器"),
+  apiHost: import_schemastery.default.string().default("https://api.blackbe.work/"),
+  clearCacheInterval: import_schemastery.default.number().default(36e5),
+  registerBanCommand: import_schemastery.default.boolean().default(true),
+  checkLocalListInterval: import_schemastery.default.number().default(5e3),
+  processOnPreJoin: import_schemastery.default.boolean().default(true),
+  onlyOpCanQuery: import_schemastery.default.boolean().default(false),
+  pardonBlackBE: import_schemastery.default.array(import_schemastery.default.string()).default([])
+});
+function readConfig() {
+  if (!file.exists(configPath)) {
+    setTimeout(saveConfig);
+    return Config();
+  }
+  const content = file.readFrom(configPath);
+  if (!content) throw new Error(`failed to read config`);
+  const data2 = JSON.parse(content);
+  return Config(data2);
+}
+__name(readConfig, "readConfig");
+var config = readConfig();
 function saveConfig() {
   file.writeTo(configPath, JSON.stringify(config, null, 2));
 }
 __name(saveConfig, "saveConfig");
-function saveLocalList() {
-  file.writeTo(localListPath, JSON.stringify(localList, null, 2));
-}
-__name(saveLocalList, "saveLocalList");
 function reloadConfig() {
-  function loadConfig(path, overrideConfig) {
-    const content = file.readFrom(path);
-    if (!content) throw new Error(`failed to read ${path}`);
-    Object.entries(JSON.parse(content)).forEach(([k, v]) => {
-      Object.defineProperty(overrideConfig, k, { value: v });
-    });
-    return overrideConfig;
-  }
-  __name(loadConfig, "loadConfig");
-  if (!file.exists(configPath)) saveConfig();
-  if (!file.exists(localListPath)) saveLocalList();
-  loadConfig(configPath, config);
-  loadConfig(localListPath, localList);
-  saveConfig();
-  let localListChanged = false;
-  for (const bl of localList.list) {
-    if (bl.ip) {
-      bl.ips = [bl.ip];
-      bl.clientIds = [];
-      delete bl.ip;
-      localListChanged = true;
-    }
-  }
-  if (localListChanged) saveLocalList();
+  const newConfig = readConfig();
+  Object.assign(config, newConfig);
 }
 __name(reloadConfig, "reloadConfig");
-reloadConfig();
 
 // src/util.ts
 var import_form_api_ex = __toESM(require_FormAPIEx());
@@ -812,20 +2114,10 @@ function delFormatCode(text) {
   return text.replace(/§[0-9abcdefgklmnor]/g, "");
 }
 __name(delFormatCode, "delFormatCode");
-function checkValInArray(arr, callback) {
-  for (const it of arr) if (callback(it)) return true;
-  return false;
-}
-__name(checkValInArray, "checkValInArray");
 function stripIp(ip) {
   return ip.split(":")[0];
 }
 __name(stripIp, "stripIp");
-function pushNoDuplicateItem(list, item) {
-  if (!list.includes(item)) list.push(item);
-  return list;
-}
-__name(pushNoDuplicateItem, "pushNoDuplicateItem");
 function setupFunctionalityForm(buttons) {
   const form = new import_form_api_ex.SimpleFormEx(buttons);
   form.title = PLUGIN_NAME;
@@ -910,103 +2202,185 @@ async function postAsync(options) {
   return responseType === "json" ? JSON.parse(res) : res;
 }
 __name(postAsync, "postAsync");
+function tell(msg, player) {
+  if (player) player.tell(msg);
+  else if (msg.startsWith("§c")) logger.error(delFormatCode(msg.replace("§c", "")));
+  else logger.info(delFormatCode(msg));
+}
+__name(tell, "tell");
 
 // src/black-local.ts
-function formatLocalKickMsg(data2) {
+function formatLocalKickMsg(player, data2) {
   const { reason, endTime } = data2;
   return formatVarString(config.kickByLocalMsg, {
-    NAME: data2.name ?? "未知",
-    XUID: data2.xuid ?? "未知",
+    NAME: player.realName,
+    XUID: player.xuid,
     REASON: reason ?? "无",
     ENDTIME: endTime ? formatDate({ date: new Date(endTime) }) : "永久"
   });
 }
 __name(formatLocalKickMsg, "formatLocalKickMsg");
-function banPlayer(data2, options = {}) {
-  let name;
+function banPlayer(banData, options = {}) {
   let xuid;
+  let name;
   let ip;
   let clientId;
-  if ("player" in data2) {
-    const { player } = data2;
+  if ("player" in banData) {
+    const { player } = banData;
     ({ realName: name, xuid } = player);
     ({ ip, clientId } = player.getDevice());
   } else {
     ;
-    ({ name, xuid, ip, clientId } = data2);
+    ({ name, xuid, ip, clientId } = banData);
   }
   if (ip) ip = stripIp(ip);
-  const queryParams = [name, xuid, ip, clientId].filter((v) => v);
-  if (!queryParams.length) return false;
-  const results = [];
-  for (const it of localList.list) {
-    if (name && name === it.name || xuid && xuid === it.xuid || ip && it.ips && it.ips.includes(ip) || clientId && it.clientIds && it.clientIds.includes(clientId)) {
-      results.push(it);
+  if (![xuid, name, ip, clientId].filter(Boolean).length) {
+    throw TypeError("Empty arg");
+  }
+  const q = Query.get();
+  const operationTips = [];
+  const { time, reason, kickTip } = options;
+  let infoId;
+  if (xuid) {
+    infoId = q.getInfoIdFromXuid(xuid);
+  }
+  if (!infoId && name) {
+    const nameInfo = q.getNameInfo(name);
+    if (nameInfo) {
+      if (!xuid) xuid = nameInfo.xuid || void 0;
+      infoId = nameInfo.banInfoId;
+    }
+    if (!xuid) {
+      xuid = data.xuid2name(name) || void 0;
+      if (xuid && !infoId) infoId = q.getInfoIdFromXuid(xuid);
     }
   }
-  const isModify = !!results.length;
-  if (!isModify) {
-    const it = {
-      ips: [],
-      clientIds: []
-    };
-    localList.list.push(it);
-    results.push(it);
+  if (!infoId && clientId) {
+    infoId = q.getInfoIdFromClientId(clientId);
   }
-  const { time, reason } = options;
+  if (!infoId && ip) {
+    infoId = q.getInfoIdFromIp(ip);
+  }
   const endTime = time ? new Date(Date.now() + time).toJSON() : void 0;
-  for (const it of results) {
-    if (name) it.name = name;
-    if (xuid) it.xuid = xuid;
-    if (ip) it.ips = pushNoDuplicateItem(it.ips || [], ip);
-    if (clientId) it.clientIds = pushNoDuplicateItem(it.clientIds || [], clientId);
-    if (endTime) it.endTime = endTime;
-    if (reason) it.reason = reason;
+  const isInfoNew = !infoId;
+  infoId = q.updateInfo({ id: infoId, reason, endTime });
+  operationTips.push(
+    `${isInfoNew ? "§a新增" : "§6更新"} §bID 为 §d${infoId} §b的违规记录`
+  );
+  if (xuid) {
+    const oldInfoId = q.getInfoIdFromXuid(xuid);
+    if (oldInfoId && oldInfoId !== infoId) {
+      q.updateNameInfo({ name, xuid, banInfoId: infoId });
+      operationTips.push(
+        `${oldInfoId ? "§6更新" : "§a新增"} §bXUID 记录 §d${xuid} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
+      );
+    }
   }
-  if ("player" in data2) {
-    const { kickTip } = options;
-    data2.player.kick(kickTip ?? formatLocalKickMsg(results[0]));
+  if (name) {
+    const oldNameInfo = q.getNameInfo(name);
+    const data2 = { name };
+    if (oldNameInfo) {
+      const { xuid: oldNameXuid, banInfoId: oldInfoId } = oldNameInfo;
+      if (oldNameXuid && oldNameXuid !== xuid) {
+        data2.xuid = xuid;
+        operationTips.push(
+          `${oldNameXuid ? "§6更新" : "§a新增"} §b玩家名记录 §d${name} §b的 XUID 记录： ${oldNameXuid ? `§1${oldNameXuid} §r-> ` : ""}§d${xuid}`
+        );
+      }
+      if (oldInfoId && oldInfoId !== infoId) {
+        data2.banInfoId = infoId;
+        operationTips.push(
+          `${oldInfoId ? "§6更新" : "§a新增"} §b玩家名记录 §d${name} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
+        );
+      }
+    } else {
+      if (xuid) data2.xuid = xuid;
+      data2.banInfoId = infoId;
+      operationTips.push(
+        `§a新增 §b玩家名记录 §d${name}§b， 违规 ID： §g${infoId}${xuid ? `§b， §gXUID： ${xuid}` : ""}`
+      );
+    }
   }
-  saveLocalList();
-  return { isModify, results };
+  if (clientId) {
+    const oldInfoId = q.getInfoIdFromClientId(clientId);
+    if (oldInfoId && oldInfoId !== infoId) {
+      q.updateClientIdInfo({ clientId, banInfoId: infoId });
+      operationTips.push(
+        `${oldInfoId ? "§6更新" : "§a新增"} §bClient ID 记录 §d${xuid} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
+      );
+    }
+  }
+  if (ip) {
+    const oldInfoId = q.getInfoIdFromIp(ip);
+    if (oldInfoId && oldInfoId !== infoId) {
+      q.updateIpInfo({ ip, banInfoId: infoId });
+      operationTips.push(
+        `${oldInfoId ? "§6更新" : "§a新增"} §bIP 记录 §d${ip} §b的 违规 ID 记录： ${oldInfoId ? `§1${oldInfoId} §r-> ` : ""}§d${infoId}`
+      );
+    }
+  }
+  const result = q.getFullInfo(infoId);
+  if (!result) throw new Error("Failed to get full info");
+  if ("player" in banData) {
+    banData.player.kick(
+      kickTip || formatLocalKickMsg(banData.player, { reason, endTime })
+    );
+  }
+  return { result, operationTips };
 }
 __name(banPlayer, "banPlayer");
 function queryLocal(param, moreInfo = false, strict = false) {
-  param = param.trim();
-  const params = strict ? [param] : param.split(/\s/g);
-  const ret = [];
-  for (const it of localList.list) {
-    const { name, xuid, ips, clientIds } = it;
-    const willCheck = [name, xuid];
+  const q = Query.get();
+  const ids = [];
+  const pushIds = /* @__PURE__ */ __name((...newIds) => {
+    newIds.forEach((id) => {
+      if (typeof id === "number" && !ids.includes(id)) ids.push(id);
+    });
+  }, "pushIds");
+  if (strict) {
+    pushIds(q.getInfoIdFromXuid(param), q.getInfoIdFromName(param));
     if (moreInfo) {
-      if (ips) willCheck.push(...ips);
-      if (clientIds) willCheck.push(...clientIds);
+      pushIds(q.getInfoIdFromClientId(param), q.getInfoIdFromIp(param));
     }
-    for (const val of willCheck) {
-      if (val && checkValInArray(params, (pr) => strict ? val === pr : val.includes(pr))) {
-        ret.push(it);
-        break;
-      }
+  } else {
+    if (param.match(/^\d+$/)) {
+      pushIds(q.getInfo(parseInt(param, 10))?.id);
     }
+    const searchWords = param.split(/\s+/g);
+    const banInfoCounts = /* @__PURE__ */ new Map();
+    const countBanInfoId = /* @__PURE__ */ __name((banInfoId) => {
+      banInfoCounts.set(banInfoId, (banInfoCounts.get(banInfoId) || 0) + 1);
+    }, "countBanInfoId");
+    searchWords.forEach((word) => {
+      q.searchNameInfo(word).forEach((item) => countBanInfoId(item.banInfoId));
+      q.searchXuidInfo(word).forEach((item) => countBanInfoId(item.banInfoId));
+      q.searchIpInfo(word).forEach((item) => countBanInfoId(item.banInfoId));
+      q.searchClientIdInfo(word).forEach((item) => countBanInfoId(item.banInfoId));
+      q.searchBanInfo(word).forEach((item) => countBanInfoId(item.id));
+    });
+    const sortedBanInfoIds = [...banInfoCounts.keys()].sort(
+      (a, b) => banInfoCounts.get(b) - banInfoCounts.get(a)
+    );
+    ids.push(...sortedBanInfoIds);
   }
-  return ret;
+  return ids.map((id) => q.getFullInfo(id)).filter((v) => !!v);
 }
 __name(queryLocal, "queryLocal");
 function formatLocalInfo(obj, moreInfo = false) {
-  const formatList = /* @__PURE__ */ __name((li) => li && li.length ? `
-${li.map((v) => `  - §b${v}§r`).join("\n")}` : "§b无", "formatList");
-  const { name, xuid, ips, endTime, clientIds, reason } = obj;
+  const formatList = /* @__PURE__ */ __name((li, pfx = "§b") => li && li.length ? `
+${li.map((v) => `  - ${pfx}${v}§r`).join("\n")}` : "§b无§r", "formatList");
+  const { name, xuid, ip, endTime, clientId, reason } = obj;
   const lines = [];
-  lines.push(`§2玩家ID§r： §l§d${name ?? "未知"}§r`);
-  lines.push(`§2XUID§r： §b${xuid ?? "未知"}`);
   lines.push(`§2记录原因§r： §b${reason ?? "无"}`);
   if (moreInfo) {
     lines.push(
       `§2结束时间§r： §b${endTime ? formatDate({ date: new Date(endTime) }) : "永久"}`
     );
   }
-  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ips)}`);
-  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientIds)}`);
+  lines.push(`§2已记录玩家ID§r： ${formatList(name)}`);
+  lines.push(`§2已记录XUID§r： ${formatList(xuid)}`);
+  if (moreInfo) lines.push(`§2已记录IP§r： ${formatList(ip)}`);
+  if (moreInfo) lines.push(`§2已记录设备ID§r： ${formatList(clientId)}`);
   return lines.join("\n");
 }
 __name(formatLocalInfo, "formatLocalInfo");
@@ -1153,34 +2527,57 @@ __name(clearCache, "clearCache");
 setInterval(() => clearCache(), config.clearCacheInterval);
 
 // src/manage.ts
-function delLocalListItem(obj) {
-  const { list } = localList;
-  const deleted = list.splice(list.indexOf(obj), 1);
-  saveLocalList();
-  return !!deleted.length;
-}
-__name(delLocalListItem, "delLocalListItem");
 async function localItemForm(player, obj, moreInfo = false) {
-  const delItem = /* @__PURE__ */ __name(async () => {
+  const delFullItem = /* @__PURE__ */ __name(async () => {
     if (await (0, import_form_api_ex2.sendModalFormAsync)(
       player,
       PLUGIN_NAME,
-      "§6真的要删除这条黑名单项目吗？\n§c删前请三思！！！"
+      "§6真的要删除这条黑名单项目吗？\n§c如果这么做，该项目下的所有已记录 XUID / 玩家名 / 客户端 ID / IP 都将会解封！删前请三思！！！"
     )) {
       player.tell(
-        delLocalListItem(obj) ? "§a删除成功！" : "§c删除失败！未找到该黑名单项目"
+        Query.get().deleteInfo(obj.id) ? "§a删除成功！" : "§c删除失败！未找到该黑名单项目"
       );
     } else {
       player.tell("§6删除操作已取消");
     }
-  }, "delItem");
-  const editTime = /* @__PURE__ */ __name(async () => {
-    const res = await new import_form_api_ex2.CustomFormEx(PLUGIN_NAME).addSwitch("forever", "是否永久封禁", !obj.endTime).addInput("time", "如果不是永久封禁，请输入从现在开始要封禁的时间（单位分钟）").sendAsync(player);
+  }, "delFullItem");
+  const delRecordItem = /* @__PURE__ */ __name(async (tip) => {
+    const { name, xuid, clientId, ip } = obj;
+    const items = [
+      ...name.map((x) => [Query.BanType.NAME, x]),
+      ...xuid.map((x) => [Query.BanType.XUID, x]),
+      ...clientId.map((x) => [Query.BanType.CLIENT_ID, x]),
+      ...ip.map((x) => [Query.BanType.IP, x])
+    ];
+    const res = await new import_form_api_ex2.CustomFormEx(PLUGIN_NAME).addDropdown(
+      "itIdx",
+      `${tip}§r
+请选择要删除的记录项`,
+      items.map(([t, v]) => `${Query.banTypeStrMap[t]} | ${v}`)
+    ).sendAsync(player);
+    if (res === import_form_api_ex2.FormClose) return;
+    const { itIdx } = res;
+    const [type, value] = items[itIdx];
+    const q = Query.get();
+    q.delBanUniversal(type, value);
+    obj = q.getFullInfo(obj.id);
+    const nowTip = `§a已解封 ${Query.banTypeStrMap[type]} ${value}`;
+    player.tell(nowTip);
+    if (q.isInfoAlone(obj)) {
+      player.tell("§6因该封禁记录已没有任何对应的玩家信息，已附带删除");
+      return;
+    }
+    delRecordItem(nowTip);
+  }, "delRecordItem");
+  const editInfo = /* @__PURE__ */ __name(async () => {
+    const res = await new import_form_api_ex2.CustomFormEx(PLUGIN_NAME).addSwitch("forever", "是否永久封禁", !obj.endTime).addInput("time", "如果不是永久封禁，请输入从现在开始要封禁的时间（单位分钟）").addInput("reason", "请输入想修改的封禁原因内容，如想要清空封禁原因请留空", {
+      default: obj.reason ?? ""
+    }).sendAsync(player);
     if (res === import_form_api_ex2.FormClose) {
       player.tell("§6修改操作已取消");
       return;
     }
-    const { forever, time } = res;
+    const { forever, time, reason } = res;
     const timeNum = Number(time);
     if ((!timeNum || timeNum <= 0) && !forever) {
       await (0, import_form_api_ex2.sendModalFormAsync)(
@@ -1190,34 +2587,25 @@ async function localItemForm(player, obj, moreInfo = false) {
         "§a知道了",
         "§a知道了"
       );
-      editTime();
+      editInfo();
       return;
     }
-    obj.endTime = forever ? void 0 : new Date(Date.now() + timeNum * 60 * 1e3).toJSON();
-    saveLocalList();
+    const q = Query.get();
+    q.updateInfo({
+      id: obj.id,
+      endTime: forever ? null : new Date(Date.now() + timeNum * 60 * 1e3).toJSON(),
+      reason: reason.trim() || null
+    });
+    obj = q.getFullInfo(obj.id);
     player.tell("§a操作成功！");
-  }, "editTime");
-  const editDesc = /* @__PURE__ */ __name(async () => {
-    const res = await new import_form_api_ex2.CustomFormEx(PLUGIN_NAME).addInput("reason", "请输入想修改的封禁原因内容", {
-      placeholder: "如想要清空封禁原因请留空",
-      default: obj.reason
-    }).sendAsync(player);
-    if (res === import_form_api_ex2.FormClose) {
-      player.tell("§6修改操作已取消");
-      return;
-    }
-    const reason = res.reason.trim();
-    obj.reason = reason || void 0;
-    saveLocalList();
-    player.tell("§a操作成功！");
-  }, "editDesc");
+  }, "editInfo");
   const form = setupFunctionalityForm([["返回", null]]);
   form.content = formatLocalInfo(obj, moreInfo);
   if (moreInfo) {
     form.buttons.unshift(
-      ["删除条目", delItem],
-      ["修改封禁时间", editTime],
-      ["修改封禁原因", editDesc]
+      ["删除整个条目", delFullItem],
+      ["删除记录项", delRecordItem],
+      ["修改封禁信息", editInfo]
     );
   }
   return processListFormReturn(await form.sendAsync(player));
@@ -1230,24 +2618,47 @@ async function blackBEItemForm(player, obj, moreInfo = false) {
 }
 __name(blackBEItemForm, "blackBEItemForm");
 async function localListForm(player) {
-  if (!localList.list.length) {
+  const q = Query.get();
+  const localList = [...q.iterAllInfos()];
+  if (!localList.length) {
     player.tell(`§6本地黑名单列表为空`);
     return;
   }
-  const form = new import_form_api_ex2.SimpleFormEx(localList.list);
+  const form = new import_form_api_ex2.SimpleFormEx(localList);
   form.title = PLUGIN_NAME;
   form.canTurnPage = true;
   form.canJumpPage = true;
   form.hasSearchButton = true;
-  form.formatter = ({ name, xuid, endTime }) => [
-    `§6${name ?? "未知"} §7(${xuid ?? "未知"})
-§2${endTime ? `${formatDate({ date: new Date(endTime) })} 解封` : "永久封禁"}`
-  ];
+  form.formatter = ({ id, endTime }) => {
+    const q2 = Query.get();
+    const endTimeStr = endTime ? formatDate({ date: new Date(endTime) }) : "永久封禁";
+    const content = [
+      q2.getNameFromInfoId(id),
+      q2.getXuidFromInfoId(id),
+      q2.getClientIdFromInfoId(id),
+      q2.getIpFromInfoId(id)
+    ].flat();
+    const contentStr = content.join(", ");
+    const contentStrCut = contentStr.length > 25 ? contentStr.slice(0, 25) + "..." : contentStr;
+    return [`§bID： ${id} §7| §2${endTimeStr}
+${contentStrCut}`];
+  };
   form.searcher = (_, param) => queryLocal(param, true);
   const sendTask = /* @__PURE__ */ __name(async () => {
     const res = await form.sendAsync(player);
-    if (res !== import_form_api_ex2.FormClose) {
-      const infoRes = await localItemForm(player, res, true);
+    if (res === import_form_api_ex2.FormClose) return;
+    const info = Query.get().getFullInfo(res.id);
+    if (!info) {
+      (0, import_form_api_ex2.sendModalFormAsync)(
+        player,
+        PLUGIN_NAME,
+        "§c未找到该黑名单项目！",
+        "§a知道了",
+        "§a知道了"
+      );
+      sendTask();
+    } else {
+      const infoRes = await localItemForm(player, info, true);
       if (infoRes === false) sendTask();
     }
   }, "sendTask");
@@ -1260,7 +2671,7 @@ var import_form_api_ex3 = __toESM(require_FormAPIEx());
 async function queryBlackBE(param) {
   const tasks = [
     check({ name: param, qq: param, xuid: param, withToken: false }),
-    config.apiToken ? checkPrivate({ name: param, qq: param, xuid: param }) : Promise.resolve()
+    config.apiToken ? checkPrivate({ name: param, qq: param, xuid: param }) : Promise.resolve(void 0)
   ];
   const [comm, priv] = await Promise.all(tasks);
   const commInfo = [];
@@ -1277,12 +2688,9 @@ async function queryBlackBE(param) {
 }
 __name(queryBlackBE, "queryBlackBE");
 function formatLocalItemShort(obj) {
-  const { name, xuid, ips, clientIds } = obj;
-  const items = [name, xuid, ...ips ?? [], ...clientIds ?? []].filter(
-    (v) => v
-  );
-  const it1 = items.shift();
-  return `§b${it1}${items.length ? ` §7(${items.join(", ")})` : ""}`;
+  const { id, xuid, name, ip, clientId } = obj;
+  const items = [xuid, name, ...ip, ...clientId].filter((v) => v);
+  return `§6ID ${id}： §7${items.join(", ")}`;
 }
 __name(formatLocalItemShort, "formatLocalItemShort");
 var queryResultFormatter = /* @__PURE__ */ __name(({
@@ -1404,12 +2812,6 @@ function checkCommandOp(player) {
   return !player || player.isOP();
 }
 __name(checkCommandOp, "checkCommandOp");
-function tell(msg, player) {
-  if (player) player.tell(msg);
-  else if (msg.startsWith("§c")) logger.error(delFormatCode(msg.replace("§c", "")));
-  else logger.info(delFormatCode(msg));
-}
-__name(tell, "tell");
 function banCommand(willBan, time, reason, player) {
   if (time && time <= 0) {
     tell("§c封禁时间不能小于 0", player);
@@ -1429,17 +2831,8 @@ function banCommand(willBan, time, reason, player) {
       reason
     }
   );
-  if (!res) return;
-  const { isModify, results } = res;
-  if (results.length) {
-    tell(
-      `§a已成功${isModify ? "修改" : "增加"} §6${results.length} §a条项目§r
-${results.map((v) => `- ${formatLocalItemShort(v)}§r`).join("\n")}`,
-      player
-    );
-  } else {
-    tell("§a执行成功，没有项目变动", player);
-  }
+  const { operationTips } = res;
+  for (const tip of operationTips) tell(tip, player);
 }
 __name(banCommand, "banCommand");
 async function banForm(player) {
@@ -1469,21 +2862,45 @@ async function banForm(player) {
   banCommand(willBan, timeNum, reason, player);
 }
 __name(banForm, "banForm");
-function unBanCommand(willUnBan, player) {
-  const queried = queryLocal(willUnBan, true, true);
-  if (!queried.length) {
-    tell("§a执行成功，没有项目变动", player);
-    return;
+function unBanCommand(willUnBan, player, unBanEntirely) {
+  if (unBanEntirely) {
+    const queried = queryLocal(willUnBan, true, true);
+    if (!queried.length) {
+      tell("§a执行完毕，没有项目变动", player);
+      return;
+    }
+    const q = Query.get();
+    const suc = [];
+    for (const obj of queried) {
+      if (q.deleteInfo(obj.id)) suc.push(obj);
+    }
+    tell(
+      `§a已成功删除 §6${suc.length} §a条记录§r
+${suc.map((v) => `- ${formatLocalItemShort(v)}§r`).join("\n")}`,
+      player
+    );
+  } else {
+    const q = Query.get();
+    const res = q.getInfoIdUniversal(willUnBan);
+    if (!res) {
+      tell("§a执行完毕，没有项目变动", player);
+      return;
+    }
+    const [type, infoId] = res;
+    const delOk = q.delBanUniversal(type, willUnBan);
+    if (!infoId || !delOk) {
+      tell("§c删除失败", player);
+      return;
+    }
+    tell(`§a已成功解封 ${Query.banTypeStrMap[type]} ${willUnBan}`, player);
+    if (q.isInfoAlone(infoId)) {
+      q.deleteInfo(infoId);
+      tell(
+        `§6因对应封禁记录 （ID： ${infoId}） 没有任何对应的玩家信息，已附带删除`,
+        player
+      );
+    }
   }
-  const succ = [];
-  for (const obj of queried) {
-    if (delLocalListItem(obj)) succ.push(obj);
-  }
-  tell(
-    `§a已成功删除 §6${succ.length} §a条项目§r
-${succ.map((v) => `- ${formatLocalItemShort(v)}§r`).join("\n")}`,
-    player
-  );
 }
 __name(unBanCommand, "unBanCommand");
 mc.listen("onServerStarted", () => {
@@ -1606,11 +3023,7 @@ ${String(e)}`);
     cmdBan.optional("duration", ParamType.Int);
     cmdBan.overload(["player", "reason", "duration"]);
     cmdBan.setCallback(
-      (_, { player }, __, {
-        player: stringSelector,
-        reason,
-        duration
-      }) => {
+      (_cmd, { player }, _out, { player: stringSelector, reason, duration }) => {
         banCommand(stringSelector, duration, reason, player);
         return true;
       }
@@ -1622,12 +3035,12 @@ ${String(e)}`);
       PermType.GameMasters
     );
     cmdUnBan.mandatory("player", ParamType.String);
+    cmdUnBan.optional("unBanEntirely", ParamType.Bool);
     cmdUnBan.overload(["player"]);
+    cmdUnBan.overload(["player", "unBanEntirely"]);
     cmdUnBan.setCallback(
-      (_, { player }, __, {
-        player: stringSelector
-      }) => {
-        unBanCommand(stringSelector, player);
+      (_cmd, { player }, _out, { player: stringSelector, unBanEntirely }) => {
+        unBanCommand(stringSelector, player, unBanEntirely ?? false);
         return true;
       }
     );
@@ -1649,20 +3062,30 @@ mc.listen(
     if (!hidePassMessage) {
       logger.info(`正在从本地黑名单查询玩家 ${realName} 的封禁记录……`);
     }
+    let localId;
     try {
-      for (const it of localList.list) {
-        if (realName === it.name || xuid === it.xuid || banIp && it.ips && it.ips.includes(stripedIp) || banDevice && it.clientIds && it.clientIds.includes(clientId)) {
-          banPlayer({ player }, { kickTip: formatLocalKickMsg(it) });
-          logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`);
-          return;
-        }
-      }
+      const q = Query.get();
+      do {
+        if (localId = q.getInfoIdFromXuid(xuid)) break;
+        if (localId = q.getInfoIdFromName(realName)) break;
+        if (banIp ? false : localId = q.getInfoIdFromClientId(clientId)) break;
+        if (banDevice ? false : localId = q.getInfoIdFromIp(stripedIp)) break;
+      } while (false);
     } catch (e) {
       logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！
 ${(0, import_form_api_ex5.formatError)(e)}`);
       return;
     }
-    if (!hidePassMessage) logger.info(`没有查询到玩家 ${realName} 的本地黑名单记录`);
+    if (localId) {
+      const { result, operationTips } = banPlayer({ player });
+      logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`);
+      tell(formatLocalInfo(result, true));
+      for (const tip of operationTips) tell(tip, player);
+      return;
+    }
+    if (!hidePassMessage) {
+      logger.info(`没有查询到玩家 ${realName} 的本地黑名单记录`);
+    }
     if (config.pardonBlackBE.includes(realName) || config.pardonBlackBE.includes(xuid)) {
       if (!hidePassMessage) {
         logger.info(`玩家 ${realName} 的 BlackBE 违规记录检查已被赦免`);
@@ -1693,21 +3116,21 @@ ${(0, import_form_api_ex5.formatError)(e)}`);
   })
 );
 setInterval(() => {
-  const { list } = localList;
-  const originalLen = list.length;
-  let offset = 0;
-  for (let i = 0; i < originalLen; i += 1) {
-    const realI = i - offset;
-    const it = list[realI];
-    const { endTime } = it;
+  const q = Query.get();
+  const expiredInfoIds = [];
+  for (const it of q.iterAllInfos()) {
+    const { id, endTime } = it;
     const nowTime = Date.now();
     if (endTime && nowTime >= new Date(endTime).getTime()) {
-      list.splice(realI, 1);
-      offset += 1;
-      saveLocalList();
-      const formatted = delFormatCode(formatLocalItemShort(it));
-      logger.warn(`玩家 ${formatted} 的黑名单封禁到期，已自动解封`);
+      expiredInfoIds.push(id);
     }
+  }
+  if (!expiredInfoIds.length) return;
+  const expiredFullInfos = expiredInfoIds.map((id) => q.getFullInfo(id)).filter((v) => !!v);
+  for (const id of expiredInfoIds) q.deleteInfo(id);
+  logger.warn(`本地黑名单中有 ${expiredInfoIds.length} 条记录到期，已自动删除`);
+  for (const info of expiredFullInfos) {
+    logger.warn(`- ${delFormatCode(formatLocalItemShort(info))}`);
   }
 }, config.checkLocalListInterval);
 
@@ -1715,5 +3138,5 @@ setInterval(() => {
 ll.registerPlugin(PLUGIN_NAME, PLUGIN_DESCRIPTION, PLUGIN_VERSION, PLUGIN_EXTRA);
 {
   const [old, now] = migrate2(Query.get());
-  if (old !== now) logger.info(`DB migrated from ${old} to ${now}`);
+  if (old !== now) logger.info(`DB migrated from version ${old} to ${now}`);
 }

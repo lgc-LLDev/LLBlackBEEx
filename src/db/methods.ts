@@ -2,6 +2,10 @@ import { Query } from './base'
 
 declare module './base' {
   export interface Query {
+    getXuidFromInfoId(id: number): string[]
+    getNameFromInfoId(id: number): string[]
+    getIpFromInfoId(id: number): string[]
+    getClientIdFromInfoId(id: number): string[]
     getNameInfo(name: string): Query.NameItem | undefined
     getNamesFromXuid(xuid: string): string[] | undefined
     getInfoIdFromXuid(xuid: string): number | undefined
@@ -10,6 +14,7 @@ declare module './base' {
     getInfoIdFromClientId(clientId: string): number | undefined
     getInfo(id: number): Query.BanInfoItem | undefined
     getFullInfo(id: number): Query.BanFullInfo | undefined
+    iterAllInfos(): IterableIterator<Query.BanInfoItem>
     updateXuidInfo(data: Partial<Query.XuidItem>): number
     updateNameInfo(data: Partial<Query.NameItem>): number
     updateIpInfo(data: Partial<Query.IpItem>): number
@@ -20,6 +25,15 @@ declare module './base' {
     searchIpInfo(query: string): Query.IpItem[]
     searchClientIdInfo(query: string): Query.ClientIdItem[]
     searchBanInfo(query: string): Query.BanInfoItem[]
+    deleteXuid(xuid: string): boolean
+    deleteName(name: string): boolean
+    deleteIp(ip: string): boolean
+    deleteClientId(clientId: string): boolean
+    deleteInfo(id: number): boolean
+    getInfoIdUniversal(kw: string): [banType: Query.BanType, infoId: number] | undefined
+    delBanUniversal(banType: Query.BanType, kw: string): boolean
+    isInfoAlone(id: number): boolean
+    isInfoAlone(info: Query.BanFullInfo): boolean
   }
 
   export namespace Query {
@@ -32,7 +46,59 @@ declare module './base' {
       ip: string[]
       clientId: string[]
     }
+
+    export enum BanType {
+      XUID = 'xuid',
+      NAME = 'name',
+      IP = 'ip',
+      CLIENT_ID = 'clientId',
+    }
+
+    export let banTypeStrMap: Record<BanType, string>
+    export let banTypeStrMapReverse: Record<string, BanType>
   }
+}
+
+Query.banTypeStrMap = {
+  [Query.BanType.XUID]: 'XUID',
+  [Query.BanType.NAME]: '玩家名',
+  [Query.BanType.IP]: 'IP',
+  [Query.BanType.CLIENT_ID]: '客户端 ID',
+}
+Query.banTypeStrMapReverse = (() => {
+  const ent = Object.entries(Query.banTypeStrMap) as [Query.BanType, string][]
+  return Object.fromEntries(ent.map(([k, v]) => [v, k]))
+})()
+
+//
+
+Query.prototype.getXuidFromInfoId = function (id) {
+  return this.fetchAllToList(
+    this.select<Pick<Query.XuidItem, 'xuid'>>('xuid', 'xuid', 'banInfoId = ?', [id]),
+  ).xuid
+}
+
+Query.prototype.getNameFromInfoId = function (id) {
+  return this.fetchAllToList(
+    this.select<Pick<Query.NameItem, 'name'>>('name', 'name', 'banInfoId = ?', [id]),
+  ).name
+}
+
+Query.prototype.getIpFromInfoId = function (id) {
+  return this.fetchAllToList(
+    this.select<Pick<Query.IpItem, 'ip'>>('ip', 'ip', 'banInfoId = ?', [id]),
+  ).ip
+}
+
+Query.prototype.getClientIdFromInfoId = function (id) {
+  return this.fetchAllToList(
+    this.select<Pick<Query.ClientIdItem, 'clientId'>>(
+      'clientId',
+      'clientId',
+      'banInfoId = ?',
+      [id],
+    ),
+  ).clientId
 }
 
 Query.prototype.getNameInfo = function (name) {
@@ -99,6 +165,15 @@ Query.prototype.getFullInfo = function (id) {
   return { id, reason, endTime, name, xuid, ip, clientId } as Query.BanFullInfo
 }
 
+Query.prototype.iterAllInfos = function* () {
+  const stmt = this.select<Query.BanInfoItem | {}>('*', 'banInfo')
+  do {
+    const it = stmt.fetch()
+    if (!('id' in it)) break
+    yield it
+  } while (stmt.step())
+}
+
 Query.prototype.updateXuidInfo = function (data) {
   return this.withBegin(() => this.insertOrReplace(data, 'xuid', ['xuid', 'banInfoId']))
 }
@@ -162,5 +237,70 @@ Query.prototype.searchBanInfo = function (query) {
     this.select<Query.BanInfoItem>('*', 'banInfo', 'reason LIKE ?', [
       `%${Query.escape(query, ['%', '_'])}%`,
     ]),
+  )
+}
+
+Query.prototype.deleteXuid = function (xuid) {
+  return this.withBegin(() => !!this.delete('xuid', 'xuid = ?', [xuid]).affectedRows)
+}
+
+Query.prototype.deleteName = function (name) {
+  return this.withBegin(() => !!this.delete('name', 'name = ?', [name]).affectedRows)
+}
+
+Query.prototype.deleteIp = function (ip) {
+  return this.withBegin(() => !!this.delete('ip', 'ip = ?', [ip]).affectedRows)
+}
+
+Query.prototype.deleteClientId = function (clientId) {
+  return this.withBegin(
+    () => !!this.delete('clientId', 'clientId = ?', [clientId]).affectedRows,
+  )
+}
+
+Query.prototype.deleteInfo = function (id) {
+  return this.withBegin(() => !!this.delete('banInfo', 'id = ?', [id]).affectedRows)
+}
+
+Query.prototype.getInfoIdUniversal = function (kw) {
+  let infoId: number | undefined
+  if ((infoId = this.getInfoIdFromXuid(kw))) {
+    return [Query.BanType.XUID, infoId]
+  }
+  if ((infoId = this.getInfoIdFromName(kw))) {
+    return [Query.BanType.NAME, infoId]
+  }
+  if ((infoId = this.getInfoIdFromIp(kw))) {
+    return [Query.BanType.IP, infoId]
+  }
+  if ((infoId = this.getInfoIdFromClientId(kw))) {
+    return [Query.BanType.CLIENT_ID, infoId]
+  }
+  return undefined
+}
+
+Query.prototype.delBanUniversal = function (banType, kw) {
+  switch (banType) {
+    case Query.BanType.XUID:
+      return this.deleteXuid(kw)
+    case Query.BanType.NAME:
+      return this.deleteName(kw)
+    case Query.BanType.IP:
+      return this.deleteIp(kw)
+    case Query.BanType.CLIENT_ID:
+      return this.deleteClientId(kw)
+    default:
+      return false
+  }
+}
+
+Query.prototype.isInfoAlone = function (info) {
+  if (typeof info === 'number') {
+    const queried = this.getFullInfo(info)
+    if (!queried) return false
+    info = queried
+  }
+  return (
+    !info.xuid.length && !info.name.length && !info.ip.length && !info.clientId.length
   )
 }

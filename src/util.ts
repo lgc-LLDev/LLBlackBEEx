@@ -168,3 +168,9 @@ export async function postAsync(options: AsyncPostOptions) {
   const res = await doPost(urlWithParams, normalizedHeaders, dataString, contentType)
   return responseType === 'json' ? JSON.parse(res) : res
 }
+
+export function tell(msg: string, player?: Player) {
+  if (player) player.tell(msg)
+  else if (msg.startsWith('§c')) logger.error(delFormatCode(msg.replace('§c', '')))
+  else logger.info(delFormatCode(msg))
+}

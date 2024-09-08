@@ -62,6 +62,13 @@ export class Query implements Query {
     return this.bindStmt<T, P>(sql, params)
   }
 
+  delete(fromTable: string, where?: string, params?: any[]) {
+    const sql = `DELETE FROM ${fromTable}` + `${where ? ` WHERE ${where}` : ''};`
+    const stmt = this.bindStmt(sql, params)
+    stmt.fetch()
+    return stmt
+  }
+
   fetchAll<T extends Record<string, any>, P = any>(stmt: DBStmt<T, P>): T[] {
     const [keys, ...rows] = stmt.fetchAll()
     return rows.map((row) =>

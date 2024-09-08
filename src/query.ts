@@ -7,17 +7,15 @@ import {
 
 import { queryLocal } from './black-local'
 import {
-  BlackBECommonData,
   BlackBECommonInfo,
-  BlackBEPrivateData,
   BlackBEPrivInfoWithRespId,
-  BlackBEReturn,
   check,
   checkPrivate,
   formatBlackBELvl,
 } from './blackbe'
 import { config } from './config'
 import { PLUGIN_NAME } from './const'
+import { Query } from './db'
 import { blackBEItemForm, localItemForm } from './manage'
 import { logErr } from './util'
 
@@ -28,14 +26,9 @@ export async function queryBlackBE(
     check({ name: param, qq: param, xuid: param, withToken: false }),
     config.apiToken
       ? checkPrivate({ name: param, qq: param, xuid: param })
-      : Promise.resolve(),
-  ]
-
-  // @ts-expect-error 故意需要
-  const [comm, priv]: [
-    BlackBEReturn<BlackBECommonData>,
-    BlackBEReturn<BlackBEPrivateData[]>?,
-  ] = await Promise.all(tasks)
+      : Promise.resolve(undefined),
+  ] as const
+  const [comm, priv] = await Promise.all(tasks)
 
   const commInfo: BlackBECommonInfo[] = []
   const privInfo: BlackBEPrivInfoWithRespId[] = []
@@ -51,14 +44,10 @@ export async function queryBlackBE(
   return [commInfo, privInfo]
 }
 
-export function formatLocalItemShort(obj: LocalBlackListItem): string {
-  const { name, xuid, ips, clientIds } = obj
-  const items = [name, xuid, ...(ips ?? []), ...(clientIds ?? [])].filter(
-    (v) => v,
-  ) as string[]
-
-  const it1 = items.shift()
-  return `§b${it1}${items.length ? ` §7(${items.join(', ')})` : ''}`
+export function formatLocalItemShort(obj: Query.BanFullInfo): string {
+  const { id, xuid, name, ip, clientId } = obj
+  const items = [xuid, name, ...ip, ...clientId].filter((v) => v) as string[]
+  return `§6ID ${id}： §7${items.join(', ')}`
 }
 
 export type QueryResultTypes = 'common' | 'private' | 'local'
@@ -75,7 +64,7 @@ export interface QueryResultPrivateFormatterArg {
 
 export interface QueryResultLocalFormatterArg {
   type: 'local'
-  value: LocalBlackListItem
+  value: Query.BanFullInfo
 }
 
 export type QueryResultFormatterArg =
@@ -117,7 +106,7 @@ export async function queryResultForm(
   }
 
   player.tell(`§a请您稍安勿躁，我们正在努力查询中！`)
-  const localRes: LocalBlackListItem[] = []
+  const localRes: Query.BanFullInfo[] = []
   const blackBECommRes: BlackBECommonInfo[] = []
   const blackBEPrivRes: BlackBEPrivInfoWithRespId[] = []
   try {
