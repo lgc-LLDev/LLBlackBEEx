@@ -1,9 +1,10 @@
 {
   "extends": "../tsconfig.template.json",
-  "exclude": ["./v0/**", "./dist/**"],
+  "include": ["src"],
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": ".",
-    "resolveJsonModule": true
+    "outDir": "dist",
+    "rootDir": "src",
+    // "emitDeclarationOnly": true,
+    "noEmit": true
   }
 }

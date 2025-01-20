@@ -1,10 +1,11 @@
 import { formatError, wrapAsyncFunc } from 'form-api-ex'
 
-import { banPlayer, formatLocalKickMsg } from './black-local'
+import { banPlayer, formatLocalInfo } from './black-local'
 import { check, formatBlackBEInfo, formatBlackBEKickMsg } from './blackbe'
-import { config, localList, saveLocalList } from './config'
+import { config } from './config'
+import { Query } from './db'
 import { formatLocalItemShort } from './query'
-import { delFormatCode, stripIp } from './util'
+import { delFormatCode, stripIp, tell } from './util'
 
 // hhh
 const listenerType = (config.processOnPreJoin
@@ -27,26 +28,36 @@ mc.listen(
       logger.info(`正在从本地黑名单查询玩家 ${realName} 的封禁记录……`)
     }
 
+    let localId: number | undefined
     try {
-      for (const it of localList.list) {
-        if (
-          realName === it.name ||
-          xuid === it.xuid ||
-          (banIp && it.ips && it.ips.includes(stripedIp)) ||
-          (banDevice && it.clientIds && it.clientIds.includes(clientId))
-        ) {
-          // 更新信息，例如 ip 地址，顺便踢掉
-          banPlayer({ player }, { kickTip: formatLocalKickMsg(it) })
-          logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`)
-          return
-        }
-      }
+      const q = Query.get()
+      do {
+        if ((localId = q.getInfoIdFromXuid(xuid))) break
+        if ((localId = q.getInfoIdFromName(realName))) break
+        if (banIp ? false : (localId = q.getInfoIdFromClientId(clientId))) break
+        if (banDevice ? false : (localId = q.getInfoIdFromIp(stripedIp))) break
+      } while (false)
     } catch (e) {
       logger.error(`查询玩家 ${realName} 的本地黑名单记录出错！\n${formatError(e)}`)
       return
     }
+    if (localId) {
+      // 更新信息，例如 ip 地址，顺便踢掉
+      try {
+        const { result, operationTips } = banPlayer({ player })
+        tell(formatLocalInfo(result, true))
+        for (const tip of operationTips) tell(tip, player)
+      } catch (e) {
+        logger.error(`更新玩家 ${realName} 的本地黑名单记录出错！\n${formatError(e)}`)
+        player.kick()
+      }
+      logger.warn(`查询到玩家 ${realName} 存在本地封禁记录，已将其踢出`)
+      return
+    }
 
-    if (!hidePassMessage) logger.info(`没有查询到玩家 ${realName} 的本地黑名单记录`)
+    if (!hidePassMessage) {
+      logger.info(`没有查询到玩家 ${realName} 的本地黑名单记录`)
+    }
 
     // 查 BlackBE
     if (
@@ -89,25 +100,27 @@ mc.listen(
 )
 
 setInterval(() => {
-  const { list } = localList
-  const originalLen = list.length
+  const q = Query.get()
+  const expiredInfoIds: number[] = []
 
-  let offset = 0
-  for (let i = 0; i < originalLen; i += 1) {
-    const realI = i - offset
-
-    const it = list[realI]
-    const { endTime } = it
+  for (const it of q.iterAllInfos()) {
+    const { id, endTime } = it
     const nowTime = Date.now()
-
     if (endTime && nowTime >= new Date(endTime).getTime()) {
-      // del
-      list.splice(realI, 1)
-      offset += 1
-      saveLocalList()
-
-      const formatted = delFormatCode(formatLocalItemShort(it))
-      logger.warn(`玩家 ${formatted} 的黑名单封禁到期，已自动解封`)
+      expiredInfoIds.push(id)
     }
+  }
+
+  if (!expiredInfoIds.length) return
+
+  const expiredFullInfos = expiredInfoIds
+    .map((id) => q.getFullInfo(id))
+    .filter((v): v is Query.BanFullInfo => !!v)
+
+  for (const id of expiredInfoIds) q.deleteInfo(id)
+
+  logger.warn(`本地黑名单中有 ${expiredInfoIds.length} 条记录到期，已自动删除`)
+  for (const info of expiredFullInfos) {
+    logger.warn(`- ${delFormatCode(formatLocalItemShort(info))}`)
   }
 }, config.checkLocalListInterval)

@@ -3,9 +3,10 @@ import { CustomFormEx, FormClose } from 'form-api-ex'
 import { banPlayer, queryLocal } from './black-local'
 import { config, reloadConfig } from './config'
 import { PLUGIN_NAME } from './const'
-import { delLocalListItem, localListForm } from './manage'
+import { Query } from './db'
+import { localListForm } from './manage'
 import { formatLocalItemShort, queryCmd } from './query'
-import { delFormatCode, getOnlineRealPlayers, logErr } from './util'
+import { getOnlineRealPlayers, logErr, tell } from './util'
 
 const ONLY_OP_TEXT = '此命令仅限OP执行'
 const NO_CONSOLE_TEXT = '此命令无法在控制台中执行'
@@ -15,12 +16,6 @@ const NO_ENOUGH_ARG = '参数数量不足'
 
 function checkCommandOp(player?: Player): boolean {
   return !player || player.isOP()
-}
-
-function tell(msg: string, player?: Player) {
-  if (player) player.tell(msg)
-  else if (msg.startsWith('§c')) logger.error(delFormatCode(msg.replace('§c', '')))
-  else logger.info(delFormatCode(msg))
 }
 
 function banCommand(willBan: string, time?: number, reason?: string, player?: Player) {
@@ -45,18 +40,9 @@ function banCommand(willBan: string, time?: number, reason?: string, player?: Pl
       reason,
     },
   )
-  if (!res) return
 
-  const { isModify, results } = res
-  if (results.length) {
-    tell(
-      `§a已成功${isModify ? '修改' : '增加'} §6${results.length} §a条项目§r\n` +
-        `${results.map((v) => `- ${formatLocalItemShort(v)}§r`).join('\n')}`,
-      player,
-    )
-  } else {
-    tell('§a执行成功，没有项目变动', player)
-  }
+  const { operationTips } = res
+  for (const tip of operationTips) tell(tip, player)
 }
 
 export async function banForm(player: Player) {
@@ -97,23 +83,49 @@ export async function banForm(player: Player) {
   banCommand(willBan, timeNum, reason, player)
 }
 
-function unBanCommand(willUnBan: string, player?: Player) {
-  const queried = queryLocal(willUnBan, true, true)
-  if (!queried.length) {
-    tell('§a执行成功，没有项目变动', player)
-    return
-  }
+function unBanCommand(willUnBan: string, player?: Player, unBanEntirely?: boolean) {
+  if (unBanEntirely) {
+    const queried = queryLocal(willUnBan, true, true)
+    if (!queried.length) {
+      tell('§a执行完毕，没有项目变动', player)
+      return
+    }
 
-  const succ = []
-  for (const obj of queried) {
-    if (delLocalListItem(obj)) succ.push(obj)
-  }
+    const q = Query.get()
+    const suc: Query.BanFullInfo[] = []
+    for (const obj of queried) {
+      if (q.deleteInfo(obj.id)) suc.push(obj)
+    }
+    tell(
+      `§a已成功删除 §6${suc.length} §a条记录§r\n` +
+        `${suc.map((v) => `- ${formatLocalItemShort(v)}§r`).join('\n')}`,
+      player,
+    )
+  } else {
+    const q = Query.get()
+    const res = q.getInfoIdUniversal(willUnBan)
+    if (!res) {
+      tell('§a执行完毕，没有项目变动', player)
+      return
+    }
 
-  tell(
-    `§a已成功删除 §6${succ.length} §a条项目§r\n` +
-      `${succ.map((v) => `- ${formatLocalItemShort(v)}§r`).join('\n')}`,
-    player,
-  )
+    const [type, infoId] = res
+    const delOk = q.delBanUniversal(type, willUnBan)
+    if (!infoId || !delOk) {
+      tell('§c删除失败', player)
+      return
+    }
+
+    tell(`§a已成功解封 ${Query.banTypeStrMap[type]} ${willUnBan}`, player)
+
+    if (q.isInfoAlone(infoId)) {
+      q.deleteInfo(infoId)
+      tell(
+        `§6因对应封禁记录 （ID： ${infoId}） 没有任何对应的玩家信息，已附带删除`,
+        player,
+      )
+    }
+  }
 }
 
 mc.listen('onServerStarted', () => {
@@ -265,6 +277,12 @@ mc.listen('onServerStarted', () => {
   cmdMain.setup()
 
   if (config.registerBanCommand) {
+    interface CmdBanCallbackData {
+      player: string
+      reason?: string
+      duration?: number
+    }
+
     const cmdBan = mc.newCommand(
       'ban',
       `${PLUGIN_NAME} - 本地黑名单封禁`,
@@ -276,18 +294,10 @@ mc.listen('onServerStarted', () => {
     cmdBan.overload(['player', 'reason', 'duration'])
     cmdBan.setCallback(
       (
-        _,
+        _cmd,
         { player },
-        __,
-        {
-          player: stringSelector,
-          reason,
-          duration,
-        }: {
-          player: string
-          reason?: string
-          duration?: number
-        },
+        _out,
+        { player: stringSelector, reason, duration }: CmdBanCallbackData,
       ) => {
         banCommand(stringSelector, duration, reason, player)
         return true
@@ -295,25 +305,28 @@ mc.listen('onServerStarted', () => {
     )
     cmdBan.setup()
 
+    interface CmdUnBanCallbackData {
+      player: string
+      unBanEntirely?: boolean
+    }
+
     const cmdUnBan = mc.newCommand(
       'unban',
       `${PLUGIN_NAME} - 本地黑名单解封`,
       PermType.GameMasters,
     )
     cmdUnBan.mandatory('player', ParamType.String)
+    cmdUnBan.optional('unBanEntirely', ParamType.Bool)
     cmdUnBan.overload(['player'])
+    cmdUnBan.overload(['player', 'unBanEntirely'])
     cmdUnBan.setCallback(
       (
-        _,
+        _cmd,
         { player },
-        __,
-        {
-          player: stringSelector,
-        }: {
-          player: string
-        },
+        _out,
+        { player: stringSelector, unBanEntirely }: CmdUnBanCallbackData,
       ) => {
-        unBanCommand(stringSelector, player)
+        unBanCommand(stringSelector, player, unBanEntirely ?? false)
         return true
       },
     )
