@@ -1,5 +1,8 @@
 <!-- markdownlint-disable MD033 MD036 MD041 -->
 
+**本人已无心继续参与 BDS 插件开发，本插件暂停维护，请寻找更好的替代品，若希望继续维护请联系我**
+**本插件含有未解决 Bug，由于 LSE QuickJS 的 API 限制重构版无法正常运作，请寻找更好的替代品**
+
 <div align="center">
 
 <img alt="logo" src="https://raw.githubusercontent.com/lgc-LLDev/readme/main/LLBlackBEEx/icon.png" height="256px" width="256px"/>
