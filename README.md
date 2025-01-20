@@ -2,7 +2,7 @@
 
 **本人已无心继续参与 BDS 插件开发，本插件暂停维护，请寻找更好的替代品，若希望继续维护请联系我**
 
-**本插件含有未解决 Bug，由于 LSE QuickJS 的 API 限制重构版无法正常运作，请寻找更好的替代品**
+**本插件含有未解决 Bug，本人曾尝试重构（[#1](https://github.com/lgc-LLDev/LLBlackBEEx/pull/1)），但因 LSE QuickJS 的 API 限制导致其功能出现异常，遂放弃开发，请寻找更好的替代品**
 
 <div align="center">
 
